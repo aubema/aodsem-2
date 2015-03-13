@@ -1,0 +1,58 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                     nodat                    *"
+echo "*                                              *"
+echo "*        Create an empty aod map for a         *"
+echo "*               specific domain                *"
+echo "*                                              *"
+echo "*     Martin Aube 2000                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+ln -s ~/AODSEM/Nesfiles/vide.pgm vide.pgm
+echo " AOD map name (.pgm will be added)?"
+read name
+echo " Cell size (deg.)?"
+read size
+echo " Lower left cell latitude?"
+read lat0
+echo " Lower left cell longitude?"
+read lon0
+echo " Number of cells along N-S axis?"
+read nx
+echo " Number of cells along E-W axis?"
+read ny
+# ecriture du fichier de parametres 
+echo "vide" > interp.par
+echo "180" >> interp.par
+echo "0" >> interp.par
+echo "90" >> interp.par
+echo "180" >> interp.par
+echo "0" >> interp.par
+echo "0" >> interp.par
+echo $size >> interp.par
+echo $nx >> interp.par
+echo $ny >> interp.par
+echo $lat0 >> interp.par
+echo $lon0 >> interp.par
+echo "65534 " >> interp.par
+ln -s ~/AODSEM/Bin/interp interp
+echo " Executing interp..."
+./interp
+mv vide_i.pgm $name".pgm"
+echo " Deleting temporary files in " $folder
+rm -f interp
+rm vide.pgm
+if [ -f core ] 
+   then   echo "******** An error occured during execution of nodat! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of nodat." 
+fi 
+

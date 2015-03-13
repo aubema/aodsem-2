@@ -1,0 +1,30 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                     deres                    *"
+echo "*                                              *"
+echo "*      Reduce the horizontal resolution of     *"
+echo "*  a 3-d aerosol distribution file (*.dat.aer) *"
+echo "*                                              *"
+echo "*     Martin Aube 2000                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+ls *.dat
+ln -s ~/AODSEM/Bin/deresol deresol
+echo " Executing deresol..."
+./deresol
+echo " Deleting temporary files in " $folder
+rm -f deresol
+if [ -f core ] 
+   then   echo "******** An error occured during execution of deres! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of deres." 
+fi 
+

@@ -1,0 +1,52 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *             Edit parameter for aodarit              *"
+echo " *                                                     *"
+echo " *          Compute aritmetics on two initial          *"
+echo " *             aerosol optical depth maps              *"
+echo " *                                                     *"
+echo " *     Martin Aube 2000                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f aodarit.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more aodarit.par
+fi 
+ls *.pgm
+echo " "
+echo " New parameters:"
+echo " "
+
+echo "Choose an operation:"
+echo " "
+echo "   1 ..... +"
+echo "   2 ..... -"
+echo "   3 ..... x"
+echo "   4 ..... /"
+echo "   5 ..... square diff + RMS"
+read oper
+echo "Set negative output to 0 (1=yes, 0=no)?"
+read neg
+echo "Output root file name (.pgm will be added)?"
+read date
+echo "Root name of file #1 .pgm will be added)?"
+read nom1
+echo "Root name of file #2 (.pgm will be added)?"
+read nom2
+echo "Maximum numerical value (sugg. 65533)?"
+read limit
+
+
+echo $oper "   Operation" > aodarit.par
+echo $neg  "   Set negative output to 0 (1=yes, 0=no)" >> aodarit.par
+echo $date "   Output root file name .pgm will be added" >> aodarit.par
+echo $nom1 "   Root name of file #1 .pgm will be added" >> aodarit.par
+echo $nom2 "   Root name of file #2 .pgm will be added" >> aodarit.par
+echo $limit "   Limit" >> aodarit.par
+echo "Done"

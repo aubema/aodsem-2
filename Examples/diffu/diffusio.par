@@ -1,0 +1,4 @@
+obs_vs_ana    Output file
+obs-04    AOD reference file
+ana-04    AOD comparison file
+2    Buffer zone width

@@ -1,0 +1,75 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *              Edit parameter for interp              *"
+echo " *                                                     *"
+echo " *       Interpolating aerosol optical depth maps      *"
+echo " *                                                     *"
+echo " *     Martin Aube 2000                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f interp.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more interp.par
+fi 
+ls *.pgm
+echo " "
+echo " New parameters:"
+echo " "
+echo "Root name of the file (.pgm will be added) ?"  
+read nom
+echo "Pixel size in degrees?"
+read pixsizin
+echo "Center latitude of the south-west pixel in degrees?"
+read lat0in
+echo "Center longitude of the south-west pixel in degrees?"
+read lon0in
+echo "Sliding interpolation window size in degrees?"
+read intbox
+echo " Choose an interpolating function:"
+echo "      nearest neighbour ... 0"
+echo "      linear .............. 1"
+echo "      2nd order ........... 2"
+echo "      mean ................ 3"
+echo "      minimum ............. 4"
+echo "      maximum ............. 5"
+read function
+echo "Activate interpolating box size optimization? (no=0, yes=1)"
+read optimiz
+echo "Size of output cell in degrees?"
+read pixsizout
+echo "Number of cells along N-S axis?"
+read ncellx
+echo "Number of cells along E-W axis?"
+read ncelly
+echo "Center latitude of the south-west cell?"
+read lat0out
+echo "Center longitude of the south-west cell?"
+read lon0out
+echo "Default numerical value (nodata=65534)?"
+read defval
+
+
+
+
+echo $nom "   Root name of the file"  > interp.par
+echo $pixsizin "   Pixel size in degrees">> interp.par
+echo $lat0in "   Center latitude of the south-west pixel in degrees">> interp.par
+echo $lon0in "   Center longitude of the south-west pixel in degrees">> interp.par
+echo $intbox "   Interpolating window size in degrees">> interp.par
+echo $function "   Interpolating function">> interp.par
+echo $optimiz "   Activate interpolating box size optimization (no=0, yes=1)">> interp.par
+echo $pixsizout "   Size of output cell in degrees">> interp.par
+echo $ncellx "   Number of cells along N-S axis">> interp.par
+echo $ncelly "   Number of cells along E-W axis">> interp.par
+echo $lat0out "   Center latitude of the south-west cell">> interp.par
+echo $lon0out "   Center longitude of the south-west cell">> interp.par
+echo $defval "   Default numerical value (nodata=65534)">> interp.par
+
+
+echo "Done"

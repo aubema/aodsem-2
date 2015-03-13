@@ -1,0 +1,38 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *                        op2na                        *"
+echo " *                                                     *"
+echo " *      Convert .res.bmi file into extinction cross     *"
+echo " *                   section NARCM file                *"
+echo " *                                                     *"
+echo " *     copyright Martin Aube 2002                       *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+if [ -f newmnt1.res.bmi ] 
+   then   echo "Skipping .res.bmi files download"
+   else   echo "Downloading .res.bmi files"
+          ln -s $HOME/AODSEM/Nesfiles/*res.bmi .
+fi 
+ls *.bmi
+ln -s ~/AODSEM/Bin/opt2narcm opt2narcm
+echo " Executing opt2narcm..."
+./opt2narcm
+echo " Deleting temporary files in " $folder
+rm -f opt2narcm
+if [ -f core ] 
+   then   echo "******** An error occured during execution of op2na!
+********"    rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of op2na." 
+fi 
+
+
+
+

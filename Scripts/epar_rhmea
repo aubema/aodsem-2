@@ -1,0 +1,38 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *              Edit parameter for corco               *"
+echo " *                                                     *"
+echo " *          Compute correlation coefficient            *"
+echo " *                 from a x-y file                     *"
+echo " *                                                     *"
+echo " *     Martin Aube 2000                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f rhmoyen.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more rhmoyen.par
+fi 
+ls *.rhu
+echo " "
+echo " New parameters:"
+echo " "
+echo "Input .rhu file name?"  
+read nom
+echo "Starting level (1 to 10)?"
+read lev0
+echo "Last level (1 to 10)?"
+read levf 
+
+
+echo $nom "   Input .rhu file name"> rhmoyen.par
+echo $lev0  "   Starting level (1 to 10)">> rhmoyen.par
+echo $levf  "   Last level (1 to 10)">> rhmoyen.par
+
+
+echo "Done"

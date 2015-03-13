@@ -1,0 +1,11 @@
+Nom de la fonction: aodar
+
+Commande d'edition de parametres: oui
+
+Utilite:  Faire des operations aritmetiques de base avec deux images .pgm
+
+Entree: fichier de parametres aodarit.par, fichiers .pgm aod (ici
+aod_0001.pgm et aod_0002.pgm)
+
+Sortie: fichier .pgm d'epaisseur optique resultante (ici
+aod_0001+0002.pgm qui correspond a la somme des deux images d'entree)

@@ -1,0 +1,41 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *            Edit parameter for cmbgeiapgm            *"
+echo " *                                                     *"
+echo " *                Combine 2 GEIA pgm file              *"
+echo " *                                                     *"
+echo " *                                                     *"
+echo " *     Martin Aube 2002                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f cmbgeiapgm.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more cmbgeiapgm.par
+fi 
+ls *
+echo " "
+echo " New parameters:"
+echo " "
+echo "First GEIA-pgm file (.pgm will be added)?"
+read nom0
+echo "Second GEIA-pgm file (.pgm will be added)?"
+read nom2
+echo "Output root file name (.pgm will be added)?"
+read outf
+
+
+
+echo $nom0 "    First GEIA-pgm file" > cmbgeiapgm.par
+echo $nom2 "    Second GEIA-pgm file" >> cmbgeiapgm.par
+echo $outf "    Output pgm file" >>  cmbgeiapgm.par
+
+
+echo "Done"
+
+

@@ -1,0 +1,30 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                    patmo                     *"
+echo "*                                              *"
+echo "*    Convert patmos-2 file into a pgm file     *"
+echo "*                                              *"
+echo "*     Martin Aube 2000                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+ls
+echo " Preparing input files..."
+ln -s ~/AODSEM/Bin/patmos2pgm patmos2pgm
+echo " Executing patmos2pgm..."
+./patmos2pgm
+echo " Deleting temporary files in " $folder
+rm -f patmos2pgm
+if [ -f core ] 
+   then   echo "******** An error occured during execution of patmo! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of patmo." 
+fi 
+

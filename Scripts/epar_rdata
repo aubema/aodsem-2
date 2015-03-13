@@ -1,0 +1,208 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *            Edit parameter for repdatas              *"
+echo " *                                                     *"
+echo " *  Run successive data assimilation over long period  *"
+echo " *                                                     *"
+echo " *     Martin Aube 2000                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+if [ -f newmnt1.res.bmi ] 
+   then   echo "Skipping .res.bmi files download"
+   else   echo "Downloading .res.bmi files"
+          ln -s $HOME/AODSEM/Nesfiles/*res.bmi .
+fi 
+echo " Experiment directory "$folder
+echo " "
+if [ -f repdatas.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more repdatas.par
+fi 
+#JDG#R ls *.pgm
+echo " "
+echo " New parameters:"
+echo " "
+echo "AODSEM run general properties"
+#JDG#D
+echo "2D to 3D mode for analysis increment generation (0=geographic, 1=dynamic)?"
+read aod3dsw
+echo " Begin file type (0=.dat, 1=.pgm, 2=empty)?"
+read begtype
+if [ $begtype -eq 1 ]
+then
+	ls *.pgm
+	echo " Root name of first file  ? (.pgm will be add)"
+	read initfile
+elif [ $begtype -eq 0 ]
+then
+	ls *.dat
+	echo " Root name of first file ? (.dat will be add)"
+	read initfile
+else
+  initfile="rvide"
+
+fi
+#JDG#F
+echo "Dynamical time step (in minute)?"
+read timestep
+echo "Buffer width in cell unit?"
+read buffer
+echo "Use an emission inventory (1=yes,0=no)?"
+read srcsw
+echo " Account for wet removal (1=yes, 0=no)?"
+read wetsw
+echo " Wavelengths of the aod maps (space seperated values ex. 3 5) (Maximum of 2 values) ?"
+echo " "
+echo " 1 ..... 0.34 um"
+echo " 2 ..... 0.38 um"
+echo " 3 ..... 0.44 um"
+echo " 4 ..... 0.47 um"
+echo " 5 ..... 0.50 um"
+echo " 6 ..... 0.55 um"
+echo " 7 ..... 0.67 um"
+echo " 8 ..... 0.86 um"
+echo " 9 ..... 0.87 um"
+echo " 10 .... 0.94 um"
+echo " 11 .... 1.02 um"
+echo " 12 .... 1.24 um"
+echo " 13 .... 1.64 um"
+echo " 14 .... 2.13 um"
+#Initialisation des variables
+read nwave nwave1
+if [[ $nwave1 == "" ]]
+then nwave1=0
+fi
+if [ -f domain.par ] 
+   then
+      echo " Domain parameter file (domain.par) exist. Using the following values!"
+      echo  
+      read pixs ncellx ncelly lat0 lon0 < domain.par
+      echo " ==================================="
+      echo " Domain properties:"
+      echo " Number of N-S pixels= " $ncellx
+      echo " Number of E-W pixels= " $ncelly
+      echo " Pixel size in 1/100 th degrees= " $pixs
+      echo " Center latitude of the south-west pixel in degrees= " $lat0
+      echo " Center longitude of the south-west pixel in degrees= " $lon0
+      echo " ==================================="
+      echo
+   else
+      echo " No domain parameter file found!"
+      echo
+      echo " Domain properties:"
+      echo " Number of N-S pixels?"
+      read ncellx
+      echo " Number of E-W pixels?"
+      read ncelly
+      echo " Pixel size in 1/100th degrees?"
+      read pixs
+      echo " Center latitude of the south-west pixel in degrees?"
+      read lat0
+      echo " Center longitude of the south-west pixel in degrees?"
+      read lon0
+      echo $pixs $ncellx $ncelly $lat0 $lon0 > domain.par       
+fi
+#  charger les valeurs de domain.par dans les variables concernees    
+read pixs ncellx ncelly lat0 lon0 < domain.par
+pixsiz=$pixs
+
+if [[ $initfile = "rvide" ]]
+then
+	#  convertir les 1/100th deg. en decimale
+	let "ndegr=pixs/100"
+	let "ndeci=(pixs-ndegr*100)/10"
+	let "ncent=pixs-ndegr*100-ndeci*10"
+	pixsize=$ndegr"."$ndeci$ncent
+	
+ 	#
+   	#    fabriquer l image de depart
+     	#
+	echo " rvide" > freem.par
+       	echo $pixsize >> freem.par
+	echo $lat0 >> freem.par
+	echo $lon0 >> freem.par
+	echo $ncellx >> freem.par
+	echo $ncelly >> freem.par
+   	nodat < freem.par
+        sed -e "s/65534/0/g" rvide.pgm > bidon.5
+        mv bidon.5 rvide.pgm
+        rm -f bidon.5
+
+	#
+	# specifier que l'image est un pgm
+	#
+	begtype=1
+fi		   
+
+
+echo "Output averaging box size in 1/100 th degrees?"
+read avgbox
+
+
+#JDG#D
+ls *.res.bmi
+#JDG#F
+echo " Root name of the cross section data base file (extension .res.bmi will be added)?"
+read crofile
+#JDG#D
+echo "Number of the first output file ? "
+read filenb
+#JDG#F
+ls *.pgm
+echo "Number of data assimilation steps?"
+read nasimil
+#JDG#R les 2 lignes suivantes
+#echo "First file identifier number (4 digits)?"
+#read filenb
+echo "Enter begining date for this AODSEM run."
+echo "HH MM SS JJ MM YYYY"
+read hh0 mm0 ss0 jj0 mo0 yy0
+#
+#   ecriture dans le fichier
+#
+echo $aod3dsw "   2D to 3D mode for analysis increment generation (0=geographic, 1=dynamic)" > repdatas.par 
+echo $begtype"   begin file type 1=pgm 0=dat" >> repdatas.par
+echo $initfile" name of the first file (extension will be add)" >> repdatas.par
+echo $timestep"   Dynamical time step (in minute)" >> repdatas.par
+echo $buffer"   Buffer width in cell unit" >> repdatas.par
+echo $srcsw"   Emission inventory (1=y,0=n)" >> repdatas.par
+echo $wetsw"   Compute wet removal (1=y,0=n)" >> repdatas.par
+echo $nwave $nwave1 0 0 0 0 0 0 0 0 0 0 0 0"   Wavelength" >> repdatas.par
+echo $ncellx"   Number of N-S pixels" >> repdatas.par
+echo $ncelly"   Number of E-W pixels" >> repdatas.par
+echo $pixsiz"   Pixel size in 1/100 degrees" >> repdatas.par
+echo $lat0"   Center latitude of the south-west pixel in degrees" >> repdatas.par
+echo $lon0"   Center longitude of the south-west pixel in degrees" >> repdatas.par
+echo $avgbox"   Output averaging box size( 1/100 deg)" >> repdatas.par
+echo $crofile"   Root name of the cross section data base file" >> repdatas.par
+echo $nasimil"   Number of data assimilation steps" >> repdatas.par
+echo $filenb"   Number of the first output file" >> repdatas.par
+echo $hh0 $mm0 $ss0 $jj0 $mo0 $yy0"   Initial date" >> repdatas.par
+i=$nasimil
+n=1
+while test $n -le $i
+do
+   echo "Name of file for assimilation step #"$n" (.pgm will be add)"
+   read assifile
+   sed -n '3p' $assifile".pgm" > bidon.2
+   read bidon22 tagdat hhf mmf ssf jjf mof yyf < bidon.2
+   if [ "$tagdat" != "date" ]
+      then 
+      echo "No date specified in the pgm header!"
+      echo "Enter date of assimilation step #"$n
+      echo "HH MM SS JJ MM YYYY"
+      read hhf mmf ssf jjf mof yyf
+   fi
+   echo $hhf $mmf $ssf $jjf $mof $yyf "   Assimilation date #"$n >>  repdatas.par
+   #JDG#D
+
+   echo $assifile"    File for assimilation step #"$n" (.pgm will be add)" >> repdatas.par
+   #JDG#F
+   let "n=n+1"
+done
+echo "Done"
+

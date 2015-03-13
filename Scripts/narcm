@@ -1,0 +1,31 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                    narcm                     *"
+echo "*                                              *"
+echo "*      Convert NARCM model met files into      *"
+echo "*            AODSEM compatible files           *"
+echo "*                                              *"
+echo "*     Martin Aube 2000                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+ls
+echo " Preparing input files..."
+ln -s ~/AODSEM/Bin/narcm2aodsem narcm2aodsem 
+echo " Executing narcm2aodsem..."
+./narcm2aodsem
+echo " Deleting temporary files in " $folder
+rm -f narcm2aodsem
+if [ -f core ] 
+   then   echo "******** An error occured during execution of narcm! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of narcm." 
+fi 
+

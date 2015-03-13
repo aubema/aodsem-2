@@ -1,0 +1,17 @@
+#!/bin/bash
+
+for fich in $@
+do
+number=`wc -l $fich`
+echo $number > ttmp
+read number bidon < ttmp
+rm -f ttmp
+
+echo $number > tttmp
+cat $fich >> tttmp
+cp -f tttmp $fich
+rm -f tttmp
+
+done
+
+

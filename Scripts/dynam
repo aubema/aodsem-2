@@ -1,0 +1,54 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *                        dynam                        *"
+echo " *                                                     *"
+echo " *      aerosol advection and sedimentation model      *"
+echo " *                                                     *"
+echo " *     copyright Martin Aube 2000                      *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+if [ -f dynamic.par ] 
+   then
+      echo " Reading parameter file."  
+   else
+      echo " No parameter file found!"
+      epar_dynam
+fi
+if [ -f domain.par ]
+then
+	read bidon nx ny bidon < domain.par
+else
+	domai
+
+fi
+	echo $nx > bidon.1
+	echo $ny >> bidon.1
+	set-size < bidon.1
+	rm -f bidon.1
+
+ln -s ~/AODSEM/Nesfiles/humout humout
+ln -s ~/AODSEM/Nesfiles/land-sea.txt land-sea.txt
+echo " Executing dynamic..."
+./dynamic.exe
+echo " Deleting temporary files in " $folder
+rm -f dynamic.exe
+rm -f humout
+rm -f land-sea.txt
+rm -f v*.tmp
+if [ -f core ] 
+   then   echo "******** An error occured during execution of dynam!
+********"    rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of dynam." 
+fi 
+
+
+
+

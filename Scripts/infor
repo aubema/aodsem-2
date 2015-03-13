@@ -1,0 +1,5 @@
+#!/bin/bash
+echo " "
+echo " AODSEM basic help"
+echo " "
+konqueror http://www.graphycs.qc.ca/NOMAD/index.html &

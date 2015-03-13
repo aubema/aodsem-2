@@ -1,0 +1,36 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                     compo                    *"
+echo "*                                              *"
+echo "*    Combine PGM images by taking the mean     *"
+echo "*                                              *"
+echo "*    Martin Aube 2000                          *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+if [ -f composite.par ] 
+   then
+      echo " Reading parameter file."  
+   else
+      echo " No parameter file found!"
+      epar_compo
+fi 
+ln -s ~/AODSEM/Bin/composite composite
+ls *.pgm
+echo " Executing composite..."
+./composite
+echo " Deleting temporary files in " $folder
+rm -f composite
+if [ -f core ] 
+   then   echo "******** An error occured during execution of compo! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of compo." 
+fi 
+

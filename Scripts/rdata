@@ -1,0 +1,41 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                    rdata                     *"
+echo "*                                              *"
+echo "*       Run successive data assimilation       *"
+echo "*             over a long period               *"
+echo "*                                              *"
+echo "*     Martin Aube 2000                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+if [ -f repdatas.par ] 
+   then
+      echo " Reading parameter file."  
+   else
+      echo " No parameter file found!"
+         epar_rdata
+fi 
+ln -s ~/AODSEM/Bin/repdatas repdatas
+echo " Executing repdatas..."
+./repdatas
+echo " Deleting temporary files in " $folder
+rm -f repdatas
+echo " Beginning data assimilation run this will take a while!!!"
+chmod u+x partrun
+./partrun
+# rm -f partrun
+# rm -f part-*
+if [ -f core ] 
+   then   echo "******** An error occured during execution of rdata! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of rdata." 
+fi 
+

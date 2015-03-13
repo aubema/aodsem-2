@@ -1,0 +1,36 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                     3dari                    *"
+echo "*                                              *"
+echo "*       Compute aritmetics on two initial      *"
+echo "*          aerosol 3D distributions            *"
+echo "*                                              *"
+echo "*     Martin Aube 2001                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+if [ -f 3darit.par ] 
+   then
+      echo " Reading parameter file."  
+   else
+      echo " No parameter file found!"
+      epar_3dari
+fi 
+ln -s ~/AODSEM/Bin/3darit 3darit
+echo " Executing 3darit..."
+./3darit
+echo " Deleting temporary files in " $folder
+rm -f 3darit
+if [ -f core ] 
+   then   echo "******** An error occured during execution of 3dari! ********"
+          rm -f core
+          echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+          read bidon
+else
+  echo " Normal end of 3dari." 
+fi 
+

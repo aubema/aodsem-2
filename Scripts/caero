@@ -1,0 +1,33 @@
+#!/bin/bash
+
+echo "***********************************************"
+echo "*                                             *"
+echo "*                  caero                      *"
+echo "*                                             *"
+echo "*       Conversion des fichiers aeronet       *"
+echo "*         en format lisible par aero2         *"
+echo "*                                             *"
+echo "*        Jean-Denis Giguere 2003              *"
+echo "*                                             *"
+echo "***********************************************"
+
+for fich in $@
+do
+	echo "Conversion du fichier " $fich
+	sed 's/:/ /g' $fich > sans2pts
+	sed 's/,/ /g' sans2pts > sansvirg
+	sed 's/N\/A/999999999/g' sansvirg > sansNA
+	sed 's/\// /g' sansNA > sansslash
+	sed 's/=/ /g' sansslash > sansegal
+	sed 's/nan0x7fffffff/ /g' sansegal > $fich.cor
+done
+
+echo "Supression des fichiers temporaires"
+rm -f sans2pts
+rm -f sansvirg
+rm -f sansslash
+rm -f sansNA
+rm -f sansegal
+echo "Fin normal de l'execution de caero"
+
+

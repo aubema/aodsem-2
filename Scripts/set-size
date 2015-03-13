@@ -1,0 +1,27 @@
+#!/bin/bash
+# programme pour changer facilement la taille des matrices de dynamic.f
+# et la version du programme selon la ram disponible
+#
+folder=`pwd`
+version=0
+echo "Number of N-S cells?"
+read nlat
+echo "Number of E-W cells?"
+read nlon
+let 'dimr=nlat*nlon*380/160/80'
+let 'dimd=nlat*nlon*200/160/80'
+# echo "Using RAM (~"$dimr "MB) or DISK (~"$dimd "MB) [0=RAM, 1=DISK]?"
+# read version
+if [ $version -eq 0 ]
+  then
+    file="dynamic.f"
+  else
+    file="dynamic_disk.f"
+fi
+sed s/nxwid=80,nywid=160/nxwid=$nlat,nywid=$nlon/ $HOME/AODSEM/Source/$file >$HOME/dynamic-tmp.f
+echo "g77 dynamic-tmp.f Source/julian.f Source/timedate.f -o Bin/dynamic.exe"
+echo "Matrix size set to " $nlat $nlon
+g77 $HOME/dynamic-tmp.f  $HOME/AODSEM/Source/julian.f $HOME/AODSEM/Source/timedate.f -o $folder/dynamic.exe
+rm -f $HOME/dynamic-tmp.f
+
+

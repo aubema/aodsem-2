@@ -1,0 +1,824 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *                        freem                        *"
+echo " *                                                     *"
+echo " *       AODSEM's unconstrained transport model        *"
+echo " *                                                     *"
+echo " *                                                     *"
+echo " *     Copyright Martin Aube 2001                      *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+if [ -f newmnt1.res.bmi ] 
+   then   echo "freem == Skipping .res.bmi files download"
+   else   echo "freem == Downloading .res.bmi files"
+          ln -s $HOME/AODSEM/Nesfiles/*res.bmi .
+fi
+#
+# ====================================================================
+longmois ()
+{ # routine pour evaluer la longueur du mois courrant
+  if [ $month -eq 1 ]
+    then
+    mlong=31
+  elif [ $month -eq 2 ]
+    then
+    let "bisext=annee1%4"
+    let "bis100=annee1%100"
+    let "bis400=annee1%400"
+    if [ $bisext -eq 0 ]
+      then mlong=29
+      if [ $bis100 -eq 0 ]
+         then mlong=28
+         if [ $bis400 -eq 0 ] 
+            then mlong=29
+         fi
+      fi
+    else mlong=28
+    fi 
+  elif [ $month -eq 3 ]
+    then
+    mlong=31
+  elif [ $month -eq 4 ]
+    then
+    mlong=30
+  elif [ $month -eq 5 ]
+    then
+    mlong=31
+  elif [ $month -eq 6 ]
+    then
+    mlong=30
+  elif [ $month -eq 7 ]
+    then
+    mlong=31
+  elif [ $month -eq 8 ]
+    then
+    mlong=31
+  elif [ $month -eq 9 ]
+    then
+    mlong=30
+  elif [ $month -eq 10 ]
+    then
+    mlong=31
+  elif [ $month -eq 11 ]
+    then
+    mlong=30
+  else
+    mlong=31
+  fi
+} # fin de la routine 
+# ====================================================================
+#
+# inital values
+#
+defval=65534
+#
+#
+# wetsw=1 ->wet removal on
+echo "freem == Account for wet removal (1=yes, 0=no)?"
+read wetsw
+#wetsw=1
+#  set this size in deg. to max twice the met field resolution
+# e.g. for GEM global: 2x 1 = 2 degrees
+intbox=2
+#
+#  enable automatic interpolation box size 
+#  the software will search a box greater or equal
+#  to intbox that allow interpolation over all the
+#  domain  1=enable 0=disable enabling this option 
+#  may result in huge computation time
+autom=0
+#
+folder=`pwd`
+rm -f core
+echo "freem == Experiment directory "$folder 
+echo " "
+se0=0
+nst=1
+# max number of dynam time steps (have to be smaller than 100)
+# if your disk space is limited you can set this variable to 
+# a smaller value
+nmax=25
+echo "freem == Enter first time and date."
+echo "freem == H M S D M YYYY"
+read heure0 minute0 seconde0 jour0 mois0 annee0
+echo "freem == Enter last time and date."
+echo "freem == H M S D M YYYY"
+read heure minute seconde jour mois annee
+if [ $annee -ne $annee0 ] 
+  then
+     echo "freem == !!!!  multiple years run!  !!!!"
+     let dmois=mois+12-mois0
+  else let dmois=mois-mois0
+fi
+echo "freem == Dynamical time step in minutes (integer)?"
+read timestep
+echo "freem == Buffer width in cell units (min 1)?"
+read buffer
+echo "freem == Use an emission inventory (1=yes, 0=no)?"
+read src
+echo "freem == Wavelength of the aod map?"
+echo " "
+echo "freem == 1 ..... 0.34 um"
+echo "freem == 2 ..... 0.38 um"
+echo "freem == 3 ..... 0.44 um"
+echo "freem == 4 ..... 0.47 um"
+echo "freem == 5 ..... 0.50 um"
+echo "freem == 6 ..... 0.55 um"
+echo "freem == 7 ..... 0.67 um"
+echo "freem == 8 ..... 0.86 um"
+echo "freem == 9 ..... 0.87 um"
+echo "freem == 10 .... 0.94 um"
+echo "freem == 11 .... 1.02 um"
+echo "freem == 12 .... 1.24 um"
+echo "freem == 13 .... 1.64 um"
+echo "freem == 14 .... 2.13 um"
+read nwave
+if [ $nwave -eq 1 ] 
+   then  wavelen=340
+elif [ $nwave -eq 2 ] 
+   then  wavelen=380   
+elif [ $nwave -eq 3 ] 
+   then  wavelen=440
+elif [ $nwave -eq 4 ] 
+   then  wavelen=470   
+elif [ $nwave -eq 5 ] 
+   then  wavelen=500  
+elif [ $nwave -eq 6 ] 
+   then  wavelen=550  
+elif [ $nwave -eq 7 ] 
+   then  wavelen=670 
+elif [ $nwave -eq 8 ] 
+   then  wavelen=860 
+elif [ $nwave -eq 9 ] 
+   then  wavelen=870 
+elif [ $nwave -eq 10 ] 
+   then  wavelen=940 
+elif [ $nwave -eq 11 ] 
+   then  wavelen=1020 
+elif [ $nwave -eq 12 ] 
+   then  wavelen=1240 
+elif [ $nwave -eq 13 ] 
+   then  wavelen=1640 
+elif [ $nwave -eq 14 ] 
+   then  wavelen=2130 
+fi   
+
+if [ -f domain.par ] 
+   then
+      echo "freem == Domain parameter file (domain.par) exist. Using the following values!"
+      echo  
+      read pixs ncellx ncelly lat0 lon0 < domain.par
+      echo "freem == ==================================="
+      echo "freem == Domain properties:"
+      echo "freem == Number of N-S pixels= " $ncellx
+      echo "freem == Number of E-W pixels= " $ncelly
+      echo "freem == Pixel size in 1/100 th degrees= " $pixs
+      echo "freem == Center latitude of the south-west pixel in degrees= " $lat0
+      echo "freem == Center longitude of the south-west pixel in degrees= " $lon0
+      echo "freem == ==================================="
+      echo
+   else
+      echo "freem == No domain parameter file found!"
+      echo
+      echo "freem == Domain properties:"
+      echo "freem == Number of N-S pixels?"
+      read ncellx
+      echo "freem == Number of E-W pixels?"
+      read ncelly
+      echo "freem == Pixel size in 1/100th degrees?"
+      read pixs
+      echo "freem == Center latitude of the south-west pixel in degrees?"
+      read lat0
+      echo "freem == Center longitude of the south-west pixel in degrees?"
+      read lon0
+      echo $pixs $ncellx $ncelly $lat0 $lon0 > domain.par       
+fi
+#  charger les valeurs de domain.par dans les variables concernees    
+read pixs ncellx ncelly lat0 lon0 < domain.par
+#  convertir les 1/100th deg. en decimale
+let "ndegr=pixs/100"
+let "ndeci=(pixs-ndegr*100)/10"
+let "ncent=pixs-ndegr*100-ndeci*10"
+pixsiz=$ndegr"."$ndeci$ncent
+echo "freem == Smoothing box width (deg.)?"
+read lissebox
+ln -s $HOME/AODSEM/Nesfiles/*res.bmi .
+ls *.res.bmi
+echo "freem == Root name of the cross section data base file (extension .res.bmi will be added)?"
+read crofile
+if [ -f $crofile".res.bmi" ] 
+   then   echo " " 
+   else   echo "freem == Bad file name!  freem execution aborted!"
+          exit 1
+fi
+echo "freem == Initialisation file type (0=pgm, 1=3D, 2=empty map)?"
+read filty
+if [ $filty -eq 0 ]
+      then
+      ls *.pgm
+      echo "freem == Initial AOD file name (.pgm will be added)?"
+      read aodinit
+      cp $aodinit".pgm" freem.pgm
+elif [ $filty -eq 1 ]
+   then
+   ls *.dat
+   echo "freem == Initial 3D file name (.dat will be added)?"
+   read datinit
+   cp $datinit".dat" freem.dat
+   cp $datinit".vis" freem.vis
+elif [ $filty -eq 2 ]
+	then
+  #
+  #    fabriquer l image de depart
+  #
+  echo " freem" > freem.par
+  echo $pixsiz >> freem.par
+  echo $lat0 >> freem.par
+  echo $lon0 >> freem.par
+  echo $ncellx >> freem.par
+  echo $ncelly >> freem.par
+  nodat < freem.par
+fi
+echo "freem == Number for the first output file ? "
+read nbfiletmp
+let "nbfile=nbfiletmp-1"  #On renomme nbfile car il correspond au nombre
+	#precedant le numeros de la prochaine sortie
+echo "freem == Remove .dat files periodically (yes=1, no=0)?"
+echo "freem == (recommended to save disk space)"
+read remove
+   #
+   #     convertir les noms en moms standard pour le modele
+   #
+ if [ $filty -eq 0 ]
+    then
+         cp freem.pgm datas1.pgm
+      #
+      #     3D dist initiale non disponible -> utiliser une interpolation des obs.
+      #
+      #     interpoler la premiere observation
+      #
+    echo "datas1   Root name of the file"  > interp.par
+    echo $pixsiz "   Pixel size in degrees">> interp.par
+    echo $lat0 "   Center latitude of the south-west pixel in degrees">> interp.par
+    echo $lon0 "   Center longitude of the south-west pixel in degrees">> interp.par
+    echo $intbox "   Interpolating window size in degrees">> interp.par
+    #  2 is for 1/r**2 interpolating scheme
+    echo "2   Interpolating function">> interp.par
+    echo $autom "   Activate interpolating box size optimization (no=0, yes=1)">> interp.par
+    echo $pixsiz "   Size of output cell in degrees">> interp.par
+    echo $ncellx "   Number of cells along N-S axis">> interp.par
+    echo $ncelly "   Number of cells along E-W axis">> interp.par
+    echo $lat0 "   Center latitude of the south-west cell">> interp.par
+    echo $lon0 "   Center longitude of the south-west cell">> interp.par
+    echo  "0   Default num. value">> interp.par
+    inter
+    #
+    #     convertir les epaisseurs optiques en densite numerique
+    #
+    #     fichier #1
+    #
+    echo "datas1_i   Root name of the files"  > aodto3d.par
+    echo $nwave "   Wavelength of the aod map">> aodto3d.par
+    echo $heure0 $minute0 $seconde0 $jour0 $mois0 $annee0 "   Time of the distribution (hh mm ss dd mm yyyy)">> aodto3d.par
+    echo "1   vertical profile">> aodto3d.par
+    echo $crofile "   Root name of the cross section data base file">> aodto3d.par
+    aodto
+  elif [ $filty -eq 1 ]
+      then
+          mv freem.dat datas1_i.dat
+	  mv freem.vis datas1_i.vis
+  elif [ $filty -eq 2 ]
+      then
+      cp freem.pgm datas1_i.pgm
+	  echo "datas1_i   Root name of the files"  > aodto3d.par
+	  echo $nwave "   Wavelength of the aod map">> aodto3d.par
+	  echo $heure0 $minute0 $seconde0 $jour0 $mois0 $annee0 "   Time of the distribution (hh mm ss dd mm yyyy)">> aodto3d.par
+	  echo "1   vertical profile">> aodto3d.par
+	  echo $crofile "   Root name of the cross section data base file">> aodto3d.par
+	  aodto
+
+  fi
+  mv datas1_i.dat initial.dat
+  mv datas1_i.vis initial.vis
+#
+# On renomme les fichiers initial.dat en fichier bgf-####.dat
+#
+if [ $nbfile -lt 10 ]
+         then
+         cp initial.dat "bgf-000"$nbfile".dat"
+	 cp initial.vis "bgf-000"$nbfile".vis"
+      else
+         if [ $nbfile -lt 100 ]
+            then
+	 cp initial.dat "bgf-00"$nbfile".dat"
+	 cp initial.vis "bgf-00"$nbfile".vis"
+         else
+            if [ $nbfile -lt 1000 ]
+               then
+	 cp initial.dat "bgf-0"$nbfile".dat"
+	 cp initial.vis "bgf-0"$nbfile".vis"
+         else
+	 cp initial.dat "bgf-"$nbfile".dat"
+	 cp initial.vis "bgf-"$nbfile".vis"
+            fi
+         fi
+ fi
+#
+#    calcul du nombre de pas de calcul dynamiques
+#
+nm=0
+ntime=0
+annee1=$annee0
+mlong1=0
+while [ $nm -le $dmois ]
+  do
+  let "month=nm+mois0"
+  if [ $month -gt 12 ]
+    then let "month=month-12"
+	     let "annee1=annee1+1"
+  fi
+  longmois
+  if [ $month -eq $mois0 ]
+    then
+#cas du premier mois
+     if [ $mois -eq $mois0 ]
+     then
+	  let "ntime=ntime+((heure0+(jour-jour0)*24)*60-minute0+timestep/10)/timestep"
+     else
+          let "ntime=ntime+((heure0+(mlong-jour0)*24)*60-minute0+timestep/10)/timestep"
+     fi
+  else
+     if [ $month -eq $mois ]
+       then
+# cas du dernier mois
+       let "ntime=ntime+((heure+(jour-1)*24)*60+minute+timestep/10)/timestep"
+     else
+# mois intermediaire entre le premier et le dernier
+       let "ntime=ntime+(mlong*24*60+timestep/10)/timestep"
+     fi
+  fi
+let "nm=nm+1"
+done
+if [ $ntime -gt $nmax ]
+   then
+   let "nst=ntime/nmax+1"
+   let "mntime=1+ntime/nst"
+else
+   let "mntime=ntime"
+fi
+echo " "
+echo "freem == ========================================================"
+echo "freem == ========== Number of comtutational phases =" $nst
+echo "freem == ========== Number of time steps per phase =" $mntime
+echo "freem == ========================================================"
+echo " "
+#
+# Boucle sur toutes les phases de calcul de dynam
+#
+nn=1
+while test $nn -le $nst
+do
+      anf=$annee0
+      mof=$mois0
+      jof=$jour0
+      hef=$heure0
+      mif=$minute0
+	  month=$mof
+	  longmois 
+	  
+#	  let "nmin=nn*mntime*timestep"
+#	  let "nhre=nn*mntime*timestep/60"
+#	  let "njou=nn*mntime*timestep/60/24"
+#	  let "nhre=nhre-njou*24"	  
+#	  let "nmin=nmin-nhre*60-njou*60*24"
+         let "njou=nn*mntime*timestep/60/24"
+	 let "nhre=nn*mntime*timestep/60-njou*24"
+	 let "nmin=nn*mntime*timestep-nhre*60-njou*24*60"
+
+      let "mif=mif+nmin"	   
+      if [ $mif -ge 60 ] 
+         then
+         let "hef=hef+mif/60"
+         let "mif=mif-mif/60*60"
+      fi
+      let "hef=hef+nhre"
+      if [ $hef -ge 24 ] 
+         then
+         let "jof=jof+hef/24"		 
+         let "hef=hef-hef/24*24"
+      fi
+	  
+      let "jof=jof+njou"
+      if [ $jof -gt $mlong ]
+         then
+         let "mof=mof+1"
+         let "jof=jof-mlong"
+      fi
+	  if [ $mof -gt 12 ]
+         then 
+         let "anf=anf+1"
+         let "mof=mof-12"
+      fi
+
+
+	  
+	  
+
+  
+      if [ $nbfile -lt 10 ]
+         then
+         cp "bgf-000"$nbfile".dat" datas1_i.dat
+         cp "bgf-000"$nbfile".vis" datas1_i.vis
+      else
+         if [ $nbfile -lt 100 ]
+           then
+         cp "bgf-00"$nbfile".dat" datas1_i.dat
+         cp "bgf-00"$nbfile".vis" datas1_i.vis
+         else
+          if [ $nbfile -lt 1000 ]
+            then
+               cp "bgf-0"$nbfile".dat" datas1_i.dat
+               cp "bgf-0"$nbfile".vis" datas1_i.vis
+          else
+               cp "bgf-"$nbfile".dat" datas1_i.dat
+               cp "bgf-"$nbfile".vis" datas1_i.vis
+            fi
+         fi
+      fi
+      
+      if [ $remove -eq 0 ]
+         then
+           echo "freem == Compressing 3D dat files :-{"
+           
+#           gzip -f bgf-*.dat
+           
+#           gzip -f bgf-*.vis
+      else
+         echo "freem == Compressing 3D dat files :-{"
+
+#         gzip -f bgf-*0.dat         
+         rm -f bgf-*1.dat
+         rm -f bgf-*2.dat
+         rm -f bgf-*3.dat
+         rm -f bgf-*4.dat
+         rm -f bgf-*5.dat
+         rm -f bgf-*6.dat
+         rm -f bgf-*7.dat
+         rm -f bgf-*8.dat
+         rm -f bgf-*9.dat
+
+#         gzip -f bgf-*0.vis
+         rm -f bgf-*1.vis
+         rm -f bgf-*2.vis
+         rm -f bgf-*3.vis
+         rm -f bgf-*4.vis
+         rm -f bgf-*5.vis
+         rm -f bgf-*6.vis
+         rm -f bgf-*7.vis
+         rm -f bgf-*8.vis
+         rm -f bgf-*9.vis
+      fi
+   #
+   #     calcul dynamiques pour le background
+   #
+   grep "Date" datas1_i.dat > date0.tmp
+   read hrei mini seci joui moii anni bidon < date0.tmp
+   rm -f date0.tmp
+   echo "freem == ================================================================="
+   echo "freem == DATE initiale du RUN dynamic: " $hrei $mini $seci $joui $moii $anni  
+   echo "freem == DATE finale du RUN dynamic:   " $hef $mif $se0 $jof $mof $anf
+   echo "freem == ================================================================="   
+   echo "datas1_i   Root name of the 1st init. distribution"> dynamic.par
+   echo $hef $mif $se0 $jof $mof $anf "   Time of the output (hh mm ss dd mm yyyy)">> dynamic.par
+   echo $timestep "   dynamical time step in minute" >> dynamic.par
+   echo $src "   Fixed source inventory" >> dynamic.par
+   echo $wetsw "   Activate wet removal (1=y,0=n)" >> dynamic.par  
+   echo $buffer "    buffer width in pixels" >> dynamic.par
+   dynam 
+   #
+   #   Boucle sur tous les pas de calcul de dynam
+   #
+   n=1
+   while test $n -le $mntime
+   do
+      #
+      #   calcul de la date et heure pour l analyse en cours
+      #
+	  hre=$hrei
+	  min=$mini
+	  sec=$seci
+	  jou=$joui
+	  moi=$moii
+	  ann=$anni
+	  month=$moi
+	  longmois 
+	  
+	  let "nmin=n*timestep"
+	  let "nhre=n*timestep/60"
+	  let "njou=n*timestep/60/24"
+	  let "nhre=nhre-njou*24"	  
+	  let "nmin=nmin-nhre*60-njou*60*24"
+
+
+      let "min=min+nmin"	  
+      if [ $min -ge 60 ] 
+         then
+         let "hre=hre+min/60"
+         let "min=min-min/60*60"
+      fi
+      let "hre=hre+nhre"
+      if [ $hre -ge 24 ] 
+         then
+         let "jou=jou+hre/24"		 
+         let "hre=hre-hre/24*24"
+      fi
+	  
+      let "jou=jou+njou"
+      if [ $jou -gt $mlong ]
+         then
+         let "moi=moi+1"
+         let "jou=jou-mlong"
+      fi
+	  if [ $moi -gt 12 ]
+         then 
+         let "ann=ann+1"
+         let "moi=moi-12"
+      fi
+      #
+      #     renaming new background 3D file 
+      # 
+      if [ $n -lt 10 ]
+         then
+         cp "numvol_000"$n".dat" "backgd-000"$n".dat"
+         cp "numvol_000"$n".vis" "backgd-000"$n".vis"         
+      else
+         if [ $n -lt 100 ]
+            then
+            cp "numvol_00"$n".dat"  "backgd-00"$n".dat" 
+            cp "numvol_00"$n".vis"  "backgd-00"$n".vis"        
+         else
+            if [ $n -lt 1000 ]
+               then
+               cp "numvol_0"$n".dat"  "backgd-0"$n".dat" 
+               cp "numvol_0"$n".vis"  "backgd-0"$n".vis"            
+            else
+               cp "numvol_"$n".dat"  "backgd-"$n".dat" 
+               cp "numvol_"$n".vis"  "backgd-"$n".vis"           
+            fi
+         fi
+      fi
+      echo "freem ==  Computing AOD background no. "$n " ( Time:" $hre $min $sec " Date: " $jou $moi $ann " )"
+      #
+      #     Convertir la densite numerique en epaisseur optique
+      #
+      if [ $n -lt 10 ] 
+         then
+         echo "backgd-000"$n "   Root name of the files (ext .dat and .vis will be added)"  > 3dtoaod.par
+      else
+         if [ $n -lt 100 ]
+            then
+            echo "backgd-00"$n "   Root name of the files (ext .dat and .vis will be added)"  > 3dtoaod.par        
+         else
+            if [ $n -lt 1000 ]
+               then
+               echo "backgd-0"$n "   Root name of the files (ext .dat and .vis will be added)"  > 3dtoaod.par           
+            else
+               echo "backgd-"$n "   Root name of the files (ext .dat and .vis will be added)"  > 3dtoaod.par          
+            fi
+         fi
+      fi       
+      echo $crofile "   Root name of the cross section data base file (extension .res.bmi will be added)">> 3dtoaod.par
+      3dtoa
+      #
+      #     renaming new background image 
+      # 
+      if [ $n -lt 10 ]
+         then
+         cp "backgd-000"$n$wavelen"_01.pgm" "backgd-000"$n".pgm"
+      else
+         if [ $n -lt 100 ]
+            then
+            cp "backgd-00"$n$wavelen"_01.pgm"  "backgd-00"$n".pgm"        
+         else
+            if [ $n -lt 1000 ]
+               then
+               cp "backgd-0"$n$wavelen"_01.pgm"  "backgd-0"$n".pgm"            
+            else
+               cp "backgd-"$n$wavelen"_01.pgm"  "backgd-"$n".pgm"           
+            fi
+         fi
+      fi          
+      #
+      #     interpoler le background
+      #
+      if [ $n -lt 10 ] 
+         then
+         echo "backgd-000"$n"   Root name of the file"  > interp.par
+      else
+         if [ $n -lt 100 ]
+            then
+            echo "backgd-00"$n"   Root name of the file"  > interp.par        
+         else
+            if [ $n -lt 1000 ]
+               then
+               echo "backgd-0"$n"   Root name of the file"  > interp.par           
+            else
+               echo "backgd-"$n"   Root name of the file"  > interp.par          
+            fi
+         fi
+      fi           
+      echo $pixsiz "   Pixel size in degrees">> interp.par
+      echo $lat0 "   Center latitude of the south-west pixel in degrees">> interp.par
+      echo $lon0 "   Center longitude of the south-west pixel in degrees">> interp.par
+      echo $intbox "   Interpolating window size in degrees">> interp.par
+      #  2 is for 1/r� interpolating scheme
+      echo "2   Interpolating function">> interp.par
+      #  1 set box size optimization on
+      echo "0   Activate interpolating box size opt (no=0, yes=1)">> interp.par
+      echo $pixsiz "   Size of output cell in degrees">> interp.par
+      echo $ncellx "   Number of cells along N-S axis">> interp.par
+      echo $ncelly "   Number of cells along E-W axis">> interp.par
+      echo $lat0 "   Center latitude of the south-west cell">> interp.par
+      echo $lon0 "   Center longitude of the south-west cell">> interp.par 
+      echo $defval "   Default num. value">> interp.par
+      inter
+      #
+      #    lisser le background
+      #
+      if [ $n -lt 10 ] 
+         then
+         echo "backgd-000"$n"_i   Root name of the file"  > interp.par
+      else
+         if [ $n -lt 100 ]
+            then
+            echo "backgd-00"$n"_i   Root name of the file"  > interp.par       
+         else
+            if [ $n -lt 1000 ]
+               then
+               echo "backgd-0"$n"_i   Root name of the file"  > interp.par          
+            else
+               echo "backgd-"$n"_i   Root name of the file"  > interp.par         
+            fi
+         fi
+      fi          
+      echo $pixsiz "   Pixel size in degrees">> interp.par
+      echo $lat0 "   Center latitude of the south-west pixel in degrees">> interp.par
+      echo $lon0 "   Center longitude of the south-west pixel in degrees">> interp.par
+      echo $lissebox "   Interpolating window size in degrees">> interp.par
+      #  3 is for mean interpolating scheme
+      echo "3   Interpolating function">> interp.par
+      #  0 set box size optimization off
+      echo "0   Activate interpolating box size optimization (no=0, yes=1)">> interp.par
+      echo $pixsiz "   Size of output cell in degrees">> interp.par
+      echo $ncellx "   Number of cells along N-S axis">> interp.par
+      echo $ncelly "   Number of cells along E-W axis">> interp.par
+      echo $lat0 "   Center latitude of the south-west cell">> interp.par
+      echo $lon0 "   Center longitude of the south-west cell">> interp.par 
+      echo $defval "   Default num. value">> interp.par
+      inter
+      #
+      #     colorer l image de background
+      #
+      if [ $n -lt 10 ] 
+         then
+         echo "backgd-000"$n"_i_i   Root name of the file (ext .pgm be added)"> coloraod.par
+      else
+         if [ $n -lt 100 ]
+            then
+            echo "backgd-00"$n"_i_i   Root name of the file (ext .pgm be added)"> coloraod.par        
+         else
+            if [ $n -lt 1000 ]
+               then
+               echo "backgd-0"$n"_i_i   Root name of the file (ext .pgm be added)"> coloraod.par           
+            else
+               echo "backgd-"$n"_i_i   Root name of the file (ext .pgm be added)"> coloraod.par          
+            fi
+         fi
+      fi      
+      echo "1   Type of aerosol map">> coloraod.par
+      echo  $buffer "   buffer width">> coloraod.par
+      echo "0   colorcode ">> coloraod.par
+      echo "0   scale the values (0=no, 1=yes)">> coloraod.par
+      echo "1   scaling factor">> coloraod.par
+      echo "0   geographical mask (0=no, 1=yes)">> coloraod.par
+      ln -s ~/AODSEM/Bin/coloraod coloraod
+      ln -s ~/AODSEM/Nesfiles/color-code.txt color-code.txt
+      ./coloraod
+      rm -f color-code.txt
+      rm -f coloraod
+      convert coloraod.ppm coloraod.gif
+      #
+      #   archiver les resultats
+      #
+      let "nbfile=nbfile+1"
+      if [ $nbfile -lt 10 ] 
+         then
+         outname="bgf-000"$nbfile
+         outcld="cld-000"$nbfile
+      else
+         if [ $nbfile -lt 100 ] 
+            then
+            outname="bgf-00"$nbfile
+            outcld="cld-00"$nbfile
+         else
+            if [ $nbfile -lt 1000 ] 
+               then
+               outname="bgf-0"$nbfile
+               outcld="cld-0"$nbfile
+            else
+               outname="bgf-"$nbfile
+               outcld="cld-"$nbfile
+            fi
+         fi
+      fi      
+      if [ $n -lt 10 ] 
+         then
+         mv "backgd-000"$n"_i_i.pgm" $outname".pgm"
+         mv "backgd-000"$n".vis"  $outname".vis"
+         mv "backgd-000"$n".dat"  $outname".dat"
+         mv "cloud_000"$n".pgm"  $outcld".pgm"
+      else
+         if [ $n -lt 100 ]
+            then
+            mv "backgd-00"$n"_i_i.pgm" $outname".pgm"
+            mv "backgd-00"$n".vis"  $outname".vis"
+            mv "backgd-00"$n".dat"  $outname".dat"   
+            mv "cloud_00"$n".pgm"  $outcld".pgm"    
+         else
+            if [ $n -lt 1000 ]
+               then
+               mv "backgd-0"$n"_i_i.pgm" $outname".pgm"
+               mv "backgd-0"$n".vis"  $outname".vis"
+               mv "backgd-0"$n".dat"  $outname".dat"  
+               mv "cloud_0"$n".pgm"  $outcld".pgm"        
+            else
+               mv "backgd-"$n"_i_i.pgm" $outname".pgm"
+               mv "backgd-"$n".vis"  $outname".vis"
+               mv "backgd-"$n".dat"  $outname".dat" 
+               mv "cloud_"$n".pgm"  $outcld".pgm"         
+            fi
+         fi
+      fi 
+      mv coloraod.gif $outname".gif"
+      let "n=n+1"
+   done
+   rm -f numvol*
+   rm -f datas* 
+   rm -f backgd*
+#   echo " New root name for wet deposition file ?"
+#   read wet
+#   echo " New root name for dry deposition file ?"
+#   read dry
+
+wet="wet-"$nn
+dry="dry-"$nn
+
+   mv "wetdepf.dat" $wet".dat"
+   mv "drydepf.dat" $dry".dat"
+   let "nn=nn+1"
+done   
+if [ $remove -eq 0 ]
+    then
+    echo "freem == Compressing 3D dat files :-{"
+    gzip -f bgf-*.dat
+    gzip -f bgf-*.vis
+else
+    echo "freem == Compressing 3D dat files :-{"
+
+    gzip -f bgf-*0.dat         
+         rm -f bgf-*1.dat
+         rm -f bgf-*2.dat
+         rm -f bgf-*3.dat
+         rm -f bgf-*4.dat
+         rm -f bgf-*5.dat
+         rm -f bgf-*6.dat
+         rm -f bgf-*7.dat
+         rm -f bgf-*8.dat
+         rm -f bgf-*9.dat
+   
+    gzip -f bgf-*0.vis
+         rm -f bgf-*1.vis
+         rm -f bgf-*2.vis
+         rm -f bgf-*3.vis
+         rm -f bgf-*4.vis
+         rm -f bgf-*5.vis
+         rm -f bgf-*6.vis
+         rm -f bgf-*7.vis
+         rm -f bgf-*8.vis
+         rm -f bgf-*9.vis
+fi
+if [ -f core ] 
+   then   echo "freem == ******** An error occured during execution of freem! ********"
+   rm -f core
+   echo "freem == Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+   echo "freem == Normal end of freem." 
+fi
+
+
+
+
+

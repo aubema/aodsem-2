@@ -1,0 +1,14 @@
+Nom de la fonction: color
+
+Commande d'edition de parametres: oui
+
+Utilite: Colorier une image .pgm a partir d'un choix de trois
+codes de couleurs differents.
+
+Entree: Fichier parametres (ici coloraod.par), fichier .pgm
+(ici demo.pgm)
+
+Sortie: Fichier colore .gif (ici demo.gif), differents code
+de couleur (color-code.gif, contour10.gif, contour20.gif)
+
+

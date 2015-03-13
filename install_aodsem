@@ -1,0 +1,36 @@
+#!/bin/sh
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *         AODSEM Install program under linux          *"
+echo " *                                                     *"
+echo " *                                                     *"
+echo " *     Martin Aube 2000                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+cd
+folder=`pwd`
+if [ -f AODSEM*.tar.Z ] 
+   then   echo "Starting installation"
+          uncompress AODSEM*.Z
+          tar -xvf AODSEM*.tar
+          if [ -f .bash_profile ] 
+             then echo "PATH=$PATH:$HOME/AODSEM/Scripts:/usr/local/vtcl" >> .bash_profile
+                  bash -rcfile .bash_profile
+                  echo "To complete installation logout and login again!"
+                  echo "AODSEM may be started from this terminal by typing aodsemcc (for the graphical version) or aodsem (for the text version)."
+          else echo "Can't find .bash_profile!"
+               echo "Want to create one (y/n)?"
+               read reponse
+               case $reponse in
+                  y) echo "PATH=$PATH:$HOME/AODSEM/Scripts:/usr/local/vtcl" > .bash_profile 
+                   bash -rcfile .bash_profile
+                  echo "To complete installation logout and login again!"
+                  echo "AODSEM may be started from this terminal by typing aodsemcc (for the graphical version) or aodsem (for the text version)." ;;
+                  *) echo "Installation aborted!"
+                     exit 1;;
+               esac 
+            
+          fi   
+   else   echo " Put AODSEMvX.XX.tar.Z in "$folder "and type ./INSTALL.sh again."    
+fi 

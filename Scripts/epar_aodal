@@ -1,0 +1,43 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *          Edit parameter for aodalpha2aod            *"
+echo " *                                                     *"
+echo " *       Spectral extrapolation based on an AOD        *"
+echo " *         image and an angstrom coeff. image          *"
+echo " *                                                     *"
+echo " *     Martin Aube 2000                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f aodalpha2aod.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more aodalpha2aod.par
+fi 
+ls *.pgm
+echo " "
+echo " New parameters:"
+echo " "
+echo " AOD file root name?"
+read nom1
+echo " ALPHA file root name?" 
+read nom2
+echo " Gain and Offset (Phys.Val.=Gain*Num.Val.-Offset)?" 
+read gain offset
+echo " First wavelenght (nm)?" 
+read wave1
+echo " Target wavelenght (nm)?" 
+read wave2
+echo " AOD output root name?" 
+read nomout
+echo $nom1 "   AOD root file name" > aodalpha2aod.par
+echo $nom2  "   ALPHA root file name" >> aodalpha2aod.par
+echo $gain $offset "   gain and offset" >> aodalpha2aod.par
+echo $wave1 "   wavelength #1 " >> aodalpha2aod.par
+echo $wave2 "   wavelength #2 " >> aodalpha2aod.par
+echo $nomout "   Output root file name .pgm will be added" >> aodalpha2aod.par
+echo "Done"

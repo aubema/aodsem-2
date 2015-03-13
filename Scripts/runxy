@@ -1,0 +1,61 @@
+#!/bin/bash
+
+echo "***********************************************"
+echo "*                                             *"
+echo "*                  runxy                      *"
+echo "*                                             *"
+echo "*     Produit plusieur cartes d'epaisseur     *"
+echo "*       optique a partir de fichiers xyt      *"
+echo "*                                             *"
+echo "*        Jean-Denis Giguere 2003              *"
+echo "*                                             *"
+echo "***********************************************"
+
+if ! [ -f domain.par ]
+then
+	domai
+fi
+
+read sizecell nNS nEO lat long < domain.par
+tsizecell=${#sizecell}
+if [ $tsizecell -eq 1 ]
+then
+	sizecell=0.0$sizecell
+elif [ $tsizecell -eq 2 ]
+then
+	sizecell=0.$sizecell
+else
+
+	let sizetmp=$tsizecell-2
+	esizecell=${sizecell::$sizetmp}
+	fsizecell=${sizecell/$esizecell/}
+	sizecell=${esizecell}.${fsizecell}
+fi
+
+	
+
+for fichier in $@
+do
+
+# Routine pour extraire une extension de 4 caracteres
+	length=${#fichier}
+	let length=$length-4 #on suppose que toutes les extensions ont 4 caracteres
+	nnfich=${fichier::$length}
+	
+	# Creation du fichier de parametre pour xytto
+	
+	echo $nnfich> xytto.data
+	echo $sizecell >> xytto.data
+	echo $lat >> xytto.data
+	echo $long >> xytto.data
+	echo $nNS >> xytto.data
+	echo $nEO >> xytto.data
+	echo $nnfich >> xytto.data
+
+	echo "Excecution de xytto pour le fichier " $fichier
+	xytto < xytto.data
+
+done
+
+	
+	

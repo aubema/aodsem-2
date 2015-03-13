@@ -1,0 +1,48 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                    gem2n                     *"
+echo "*                                              *"
+echo "*        Convert CMC GEM web  model file       *"
+echo "*         into AODSEM compatible files         *"
+echo "*                                              *"
+echo "*     Martin Aube 2005                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+ls
+echo " Preparing input files..."
+ln -s ~/AODSEM/Bin/gem2nomad gem2nomad
+cp -f gempcp.index gem.index
+if [ ! -f gem.index ] 
+   then   echo "******** An error occured during execution of gem2n! ********"
+   echo "******** gem.index not found, run gemin! ********"
+   exit 0
+fi
+echo " Computing pcp files with gem2nomad..."
+./gem2nomad
+cp -f gemana.index gem.index
+if [ ! -f gem.index ] 
+   then   echo "******** An error occured during execution of gem2n! ********"
+   echo "******** gem.index not found, run gemin! ********"
+   exit 0
+fi
+echo "Computing ana files with gem2nomad..."
+./gem2nomad
+
+
+
+echo " Deleting temporary files in " $folder
+rm -f gem2nomad
+if [ -f core ] 
+   then   echo "******** An error occured during execution of gem22! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of gem2n." 
+fi 
+

@@ -1,0 +1,43 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *         Edit parameter for crosscorrelation         *"
+echo " *                                                     *"
+echo " *          Compute cross correlation between          *"
+echo " *           two optical depth pgm maps                *"
+echo " *                                                     *"
+echo " *     Martin Aube 2002                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f crosscorrelation.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more crosscorrelation.par
+fi 
+ls *.pgm
+echo " "
+echo " Output root file name (.ccr will be added)"
+read out
+echo " Root name of observation file (.pgm will be added)?"
+read obs
+echo " Root name of model results file (.pgm will be added)?"
+read model
+echo " Width of the buffer zone (in pixel)?"
+read buff
+
+
+
+
+
+
+echo $out "   Output file" > crosscorrelation.par
+echo $obs "   AOD reference file" >> crosscorrelation.par
+echo $model "   AOD comparison file" >> crosscorrelation.par
+echo $buff "   Buffer zone width" >> crosscorrelation.par
+
+echo "Done"
+

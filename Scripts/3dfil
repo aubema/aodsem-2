@@ -1,0 +1,38 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                   3dfil                      *"
+echo "*                                              *"
+echo "*  Filling empty column with nearest neighbour *"
+echo "*   value from the original aerosol 3D dist.   *"
+echo "*                                              *"
+echo "*                                              *"
+echo "*     Martin Aube, Jean-Denis Giguere 2004     *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+if [ -f 3dfillzero.par ] 
+   then
+      echo " Reading parameter file."  
+   else
+      echo " No parameter file found!"
+      epar_3dfil
+fi 
+echo " Preparing input files..."
+ln -s ~/AODSEM/Bin/3dfillzero 3dfillzero
+echo " Executing 3dfillzero..."
+./3dfillzero
+echo " Deleting temporary files in " $folder
+rm -f 3dfillzero
+if [ -f core ] 
+   then   echo "******** An error occured during execution of 3dfil! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of 3dfil." 
+fi 
+

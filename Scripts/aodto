@@ -1,0 +1,47 @@
+#!/bin/bash
+echo "aodto == ************************************************"
+echo "aodto == *                                              *"
+echo "aodto == *                    aodto                     *"
+echo "aodto == *                                              *"
+echo "aodto == *       Create an aerosol 3d distribution      *"
+echo "aodto == *       from an aerosol optical depth map      *"
+echo "aodto == *                                              *"
+echo "aodto == *     Martin Aube 2000                         *"
+echo "aodto == *                                              *"
+echo "aodto == ************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo "aodto == Experiment directory "$folder
+if [ -f newmnt1.res.bmi ] 
+   then   echo "aodto == Skipping .res.bmi files download"
+   else   echo "aodto == Downloading .res.bmi files"
+          ln -s $HOME/AODSEM/Nesfiles/*res.bmi .
+fi 
+if [ -f aodto3d.par ] 
+   then
+      echo "aodto == Reading parameter file."  
+   else
+      echo "aodto == No parameter file found!"
+      epar_aodto
+fi 
+ln -s ~/AODSEM/Bin/aodto3d aodto3d
+ln -s ~/AODSEM/Nesfiles/land-sea.txt land-sea.txt
+ln -s ~/AODSEM/Nesfiles/urbanmask.txt urbanmask.txt
+ln -s ~/AODSEM/Nesfiles/tau-H1.txt tau-H1.txt
+echo "aodto == Executing aodto3d..."
+./aodto3d
+echo "aodto == Deleting temporary files in " $folder
+rm -f aodto3d
+rm -f land-sea.txt
+rm -f urbanmask.txt
+rm -f tau-H1.txt
+if [ -f core ] 
+   then   echo "aodto == ******** An error occured during execution of aodto! ********"
+   rm -f core
+   echo "aodto == Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo "aodto == Normal end of aodto." 
+fi 
+

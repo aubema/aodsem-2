@@ -1,0 +1,279 @@
+#!/bin/bash
+
+echo "***********************************************"
+echo "*                                             *"
+echo "*                  aero2                      *"
+echo "*                                             *"
+echo "*           Prouduit des fichiers xyt         *"
+echo "*              a partir des donnees           *"
+echo "*                 d'aeronet                   *"
+echo "*                                             *"
+echo "*        Jean-Denis Giguere 2003              *"
+echo "*         et Martin Aubé 2004                 *"
+echo "*                                             *"
+echo "***********************************************"
+
+
+AODSEM_HOME=~
+echo "A partir de quelle date les donnees doivent-elles"
+echo "etre transformees ? (J M AAAA)"
+read jji mmi aaaai
+
+echo "Jusqu'a quelle date les donnees doivent-elles etre"
+echo "transformees ? (J M AAAA)"
+read jjf mmf aaaaf
+
+echo "A quelle heure les epaisseurs doivent-elles etre"
+echo "lues ? (H M S)"
+read hh mm ss
+if [ $hh -le 9 ] 
+then
+	carhh="0"$hh
+fi
+if [ $mm -le 9 ]
+then
+        carmm="0"$mm
+fi
+if [ $ss -le 9 ]
+then
+        carss="0"$ss
+fi
+echo "Ecart maximal tolere sur l'heure de la mesure"
+echo "(en minutes) Valeur sugg: 30 "
+read delta
+
+echo "Quel niveau d'aerosol voulez-vous utiliser ?"
+echo "(Level 1.0 : 0, Level 1.5 : 1, Level 2.0 : 2)"
+read level
+
+#Proprietes du domaine pour le pgm
+
+echo "Cell size (deg.)?"
+read pixsiz
+echo "Lower left cell latitude?"
+read lat0
+echo "Lower left cell longitude?"
+read lon0
+echo "Number of cells along N-S axis?"
+read nlat
+echo "Number of cells along E-W axis?"
+read nlon
+
+#Nettoyage du repertoire
+
+rm -f *.cor
+
+CAERO=$AODSEM_HOME/AODSEM/Scripts/caero
+if [ $level -eq 0 ]
+then
+	echo "Correction des fichier d'aeronet level 1.0"
+	 nbdelev=`ls -1 *.lev10 | wc -l`
+	if [ $nbdelev -gt 0 ]
+	then $CAERO *.lev10
+	fi
+
+elif [ $level -eq 1 ]
+then
+	echo "Correction des fichier d'aeronet level 1.5"
+        nbdelev=`ls -1 *.lev15 | wc -l`
+        if [ $nbdelev -gt 0 ]
+        then $CAERO *.lev15 
+	fi
+	
+else
+	echo "Correction des fichier d'aeronet level 2.0"
+	nbdelev=`ls -1 *.lev20 | wc -l`
+        if [ $nbdelev -gt 0 ]
+	then $CAERO *.lev20 
+	fi
+fi
+
+#Conversion des dates en jour de l'annee
+
+#Debut
+echo "1" > 2doy2.par
+echo "0 0 0" $jji $mmi $aaaai >> 2doy2.par
+echo "0" >> 2doy2.par
+
+2doy2 < 2doy2.par > jourdelan
+
+debut=`head -n 19 jourdelan | tail -n 1`
+
+rm -f 2doy2.par
+
+#Fin
+echo "1" > 2doy2.par
+echo "0 0 0" $jjf $mmf $aaaaf >> 2doy2.par
+echo "0" >> 2doy2.par
+
+2doy2 < 2doy2.par > jourdelan 
+
+fin=`head -n 19 jourdelan | tail -n 1`
+rm -f 2doy2.par
+
+#Heure
+echo "1" > 2doy2.par
+echo $hh $mm $ss "1 1 1980" >> 2doy2.par
+echo "0" >> 2doy2.par
+
+2doy2 < 2doy2.par > jourdelan 
+
+heure=`head -n 19 jourdelan | tail -n 1`
+rm -f 2doy2.par
+
+echo $debut > caeronet.par
+echo $aaaai >> caeronet.par
+echo $fin >> caeronet.par
+echo $aaaaf >> caeronet.par
+echo $heure >> caeronet.par
+echo $delta >> caeronet.par
+echo `ls -1 *.cor | wc -l` >> caeronet.par
+echo `ls -1 *.cor` >> caeronet.par
+
+echo "Execution de caeronet..."
+caeronet < caeronet.par
+
+
+if [ -d results_aero2 ]
+   then 
+   echo "Moving existing pgm and xyt in results directory"
+   mv -f *pgm results_aero2
+   mv -f *xyt results_aero2
+else 
+   echo "Creating results directory"
+   mkdir results_aero2
+   echo "Moving existing pgm and xyt in results directory"
+   mv -f *pgm results_aero2
+   mv -f *xyt results_aero2
+fi
+#
+# creer une image dummy
+#
+echo "1" > dummy.xyt
+echo "0 0 65.534">> dummy.xyt
+echo "dummy" > bidon
+echo $pixsiz  >> bidon
+echo $lat0  >> bidon
+echo $lon0  >> bidon
+echo $nlat  >> bidon
+echo $nlon >> bidon
+echo "dummy"  >> bidon
+nohup xytto < bidon > /dev/null
+echo "Ajout du nombre de donnees aux fichiers xy"
+echo "Conversion des xyt vers pgm..."
+for fichier in *.xy
+do
+	sed '/1.E+09/d' $fichier > tttmp
+	mv -f tttmp $fichier
+        an=${fichier:0:4}
+        mo=${fichier:4:2}
+        jo=${fichier:6:2}
+        he=${fichier:8:2}
+        mi=${fichier:10:2}
+	se=0
+						
+	if [ -s $fichier ]
+	then
+		ajoun $fichier
+		mv $fichier $fichier"t"
+	
+	else
+		rm -f $fichier
+	fi
+# parametres de xytto
+     if [ -f $fichier"t" ]
+     then
+        point=`expr index "$fichier" .`
+        let 'point=point-1'
+        fipgm=${fichier:0:$point}	
+        echo $fipgm > bidon
+        echo $pixsiz  >> bidon
+        echo $lat0  >> bidon
+        echo $lon0  >> bidon
+        echo $nlat  >> bidon
+        echo $nlon >> bidon
+        echo $fipgm  >> bidon
+        nohup xytto < bidon > /dev/null  
+        sed  -e "s/0  0  0  1  1 1980/$he $mi $se $jo $mo $an/" $fipgm".pgm" > bidon
+        mv -f bidon $fipgm".pgm"
+     fi	
+done
+#
+#  section dediee a la conversion des pgm vers les 14 longueurs d'ondes
+#
+#
+
+targetw="380 470 550 860 940 1240 2130"
+sourcew="340 440 500 670 870 1020 1640"
+sourcea="340_440 440_870 500_870 500_870 500_870 500_870 500_870"
+n=0
+for nn in $targetw
+do let n=n+1
+        twave[$n]=$nn
+done
+n=0
+for nn in $sourcew
+do let n=n+1
+        swave[$n]=$nn
+done
+n=0
+for nn in $sourcea
+do let n=n+1
+        salph[$n]=$nn
+done
+n=0
+tgt=0
+while [ $tgt -lt 7 ]
+do let tgt=tgt+1
+echo "Extrapolating AOD to " ${twave[$tgt]} " nm (" $tgt "of 7)"
+chmod a-x *.pgm
+nd=0
+ng=0
+no=0
+i=0
+ls -1 * >liste.fichier
+
+liaod=`grep "aot"${swave[$tgt]}".pgm" liste.fichier | sed -e 's/.pgm//g'`
+liang=`grep "ang"${salph[$tgt]}".pgm" liste.fichier | sed -e 's/.pgm//g'`
+liout=`echo $liaod | sed -e "s/aot${swave[$tgt]}/aot${twave[$tgt]}/g"`
+
+for id in $liaod
+do let nd=nd+1
+        aodname[$nd]=$id
+done
+for ig in $liang
+do let ng=ng+1
+        angname[$ng]=$ig
+done
+for io in $liout
+do let no=no+1
+        outname[$no]=$io
+done
+while [ $i -lt $ng ]
+do let i=i+1
+
+        echo ${aodname[$i]} > aodalpha2aod.par
+        echo ${angname[$i]} >> aodalpha2aod.par
+        echo "0.01 0" >> aodalpha2aod.par
+        echo ${swave[$tgt]} >> aodalpha2aod.par
+        echo ${twave[$tgt]} >> aodalpha2aod.par
+        echo ${outname[$i]} >> aodalpha2aod.par
+        nohup aodal > /dev/null 
+if [ -f ${outname[$i]}".pgm" ]
+then
+	echo "."
+	# ne rien faire
+else
+	cp -f dummy.pgm ${outname[$i]}".pgm"
+fi
+done
+done
+echo "Suppression des fichiers temporaires"
+rm -f *.cor
+rm -f jourdelan
+rm -f pourfairelenom
+
+rm -f *ang*pgm
+rm -f dummy.*
+echo "Fin normale de aero2"
+

@@ -1,0 +1,76 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *                   Plot a x-y file                   *"
+echo " *                                                     *"
+echo " *                    Using GNUPLOT                    *"
+echo " *                                                     *"
+echo " *   Martin Aube 2003                                  *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+
+read typ file title xlabel ylabel autom minx maxx miny maxy mode < gplot.par
+
+if [ $mode -eq 0 ] 
+then draw="points"
+else
+  if [ $mode -eq 1 ] 
+  then draw="lines"
+  else    
+    draw="linespoints"
+  fi
+fi
+
+if [ $typ -eq 0 ]
+  then
+     sed -n '1p' $file".cxy" > toto.3 ; read don1 don2 < toto.3; grep -v $don1 $file".cxy" > gplot.in
+     if [ $autom -eq 0 ] 
+     then echo "plot 'gplot.in'; set data style "$draw" ; set title '"$title"' ; set xlabel '"$xlabel"' ; set ylabel '"$ylabel"' ; set xrange ["$minx":"$maxx"]; set yrange ["$miny":"$maxy"]; replot" > toto.1
+     else       
+         echo "plot 'gplot.in' ; set data style "$draw" ; set title '"$title"' ; set xlabel '"$xlabel"' ; set ylabel '"$ylabel"' ; replot" > toto.1
+     fi
+
+else
+     sed -n '1p' $file".xyt" > toto.3 
+     read don1 don2 < toto.3
+     grep -v $don1 $file".xyt" > gplot.in 
+     n=-1
+     nlin=`grep -c "" gplot.in`
+     echo "" > toto.6
+     while [ $n -le $nlin ]
+     do let n=n+1
+       echo "sed -n '"$n"p' gplot.in > toto.5" >toto.4 
+       bash toto.4
+       read lat lon tau < toto.5
+       echo $lon $lat $tau >> toto.6
+     done
+     cp -f toto.6 gplot.in
+
+
+     if [ $autom -eq 0 ] 
+     then echo "splot 'gplot.in';set data style "$draw";set title '"$title"' ; set xlabel 'longitude' ; set ylabel 'latitude' ; set zlabel 'AOD';set xrange ["$minx":"$maxx"]; set yrange ["$miny":"$maxy"]; replot" > toto.1
+     else
+       echo "splot 'gplot.in' ; set data style "$draw" ; set title '"$title"' ; set xlabel 'longitude' ; set ylabel 'latitude' ; set zlabel 'AOD';replot" > toto.1
+       
+     fi
+fi
+gnuplot -persist toto.1&
+
+rm -f toto.*
+
+if [ -f core ] 
+   then   echo "******** An error occured during execution of gplot! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of gplot." 
+fi 
+
+
+
+

@@ -1,0 +1,36 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                     2aod2                    *"
+echo "*                                              *"
+echo "*     Creation of an Angstrom coffficient      *"
+echo "*           image from 2 aod images            *"
+echo "*                                              *"
+echo "*     Martin Aube 2003                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+if [ -f 2aod2alpha.par ] 
+   then
+      echo " Reading parameter file."  
+   else
+      echo " No parameter file found!"
+      epar_2aod2
+fi 
+ln -s ~/AODSEM/Bin/2aod2alpha 2aod2alpha
+echo " Executing 2aod2alpha..."
+./2aod2alpha
+echo " Deleting temporary files in " $folder
+rm -f 2aod2alpha
+if [ -f core ] 
+   then   echo "******** An error occured during execution of 2aod2! ********"
+          rm -f core
+          echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+          read bidon
+else
+  echo " Normal end of 2aod2." 
+fi 
+

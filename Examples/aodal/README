@@ -1,0 +1,17 @@
+Nom de la fonction: aodal
+
+Commande d'edition de parametres: oui
+
+Utilite:  Extrapolation spectrale d'une image d'epaisseur optique 
+utilisant une image pgm du coefficient d'angstrom (pour le coefficient 
+d'angstrom le gain et l'offset doivent etre specifies dans le fichier 
+de paremetres.  Les images pgm sont codees de 0 a 255.  Un bon choix 
+serait de choisir un gain de 0.01 et un offset de 0 (i.e. alpha est 
+compris entre 0 et 2.54)
+
+Entree: fichier de parametres aodalpha2aod.par, fichier .pgm aod (ici 
+numvol_0001500_01.pgm), fichier .pgm de coefficient d'angstrom (ici 
+alpha.pgm, nous avons force un alpha constant de 1.3)
+
+Sortie: fichier .pgm d'epaisseur optique extrapolee (ici 
+numvol_0001540.pgm)

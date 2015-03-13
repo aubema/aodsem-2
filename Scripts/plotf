@@ -1,0 +1,40 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *                   Plot a x-y file                   *"
+echo " *                                                     *"
+echo " *          Using the Caltech pgplot libraries         *"
+echo " *                                                     *"
+echo " *   Copyright (c) 1983-1997 by the California         *"
+echo " *             Institute of Technology.                *"
+echo " *   Martin Aube 19-01-2000                            *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+ln -s ~/AODSEM/Bin/plotfile plotfile 
+
+echo " Executing plotfile..."
+ls *.cxy
+./plotfile
+convert -rotate 90 pgplot.ps plotfile.jpg
+display plotfile.jpg
+mv pgplot.ps plotfile.ps
+echo " Deleting temporary files in " $folder
+
+rm -f plotfile
+
+if [ -f core ] 
+   then   echo "******** An error occured during execution of plotf! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of plotf." 
+fi 
+
+
+
+

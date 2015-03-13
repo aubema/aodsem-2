@@ -1,0 +1,39 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *              Plot an AOD contour map                *"
+echo " *                                                     *"
+echo " *          Using the Caltech pgplot libraries         *"
+echo " *                                                     *"
+echo " *   Copyright (c) 1983-1997 by the California         *"
+echo " *             Institute of Technology.                *"
+echo " *   Martin Aube 2001                            *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+ln -s ~/AODSEM/Bin/contourplot contourplot
+
+echo " Executing contourplot..."
+ls *.pgm
+./contourplot
+convert -rotate 90 pgplot.ps contour.jpg
+display contour.jpg
+mv pgplot.ps contour.ps
+echo " Deleting temporary files in " $folder
+
+rm -f contourplot
+
+if [ -f core ] 
+   then   echo "******** An error occured during execution of conto! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of conto." 
+fi 
+
+
+

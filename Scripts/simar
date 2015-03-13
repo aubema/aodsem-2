@@ -1,0 +1,36 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                     simar                    *"
+echo "*                                              *"
+echo "*           Compute aritmetics on an           *"
+echo "*          aerosol optical depth map           *"
+echo "*                                              *"
+echo "*     Martin Aube 2000                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+if [ -f simplearit.par ] 
+   then
+      echo " Reading parameter file."  
+   else
+      echo " No parameter file found!"
+      epar_simar
+fi 
+ln -s ~/AODSEM/Bin/simplearit simplearit
+echo " Executing simplearit..."
+./simplearit
+echo " Deleting temporary files in " $folder
+rm -f simplearit
+if [ -f core ] 
+   then   echo "******** An error occured during execution of simar! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of simar." 
+fi 
+

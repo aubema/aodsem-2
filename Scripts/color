@@ -1,0 +1,69 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *                        color                        *"
+echo " *                                                     *"
+echo " *      Convert an aerosol optical depth pgm map       *"
+echo " *           to a color map with html file             *"
+echo " *                                                     *"
+echo " *   Martin Aube 2004                                  *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+if [ -f coloraod.par ] 
+   then   echo " Using existing input parameter file: coloraod.par"
+
+   else   epar_color   
+fi 
+echo " Experiment directory "$folder
+# cp ~/AODSEM/Bin/coloraod $folder
+ln -s ~/AODSEM/Bin/coloraod coloraod
+ln -s ~/AODSEM/Nesfiles/color-code.txt color-code.txt
+ln -s ~/AODSEM/Nesfiles/contour20.txt contour20.txt
+ln -s ~/AODSEM/Nesfiles/worldmask.pbm worldmask.pbm
+
+cp ~/AODSEM/Nesfiles/color-code.gif $folder
+#cp ~/AODSEM/Nesfiles/color-code.txt $folder
+cp ~/AODSEM/Nesfiles/contour20.gif $folder
+#cp ~/AODSEM/Nesfiles/contour20.txt $folder
+cp ~/AODSEM/Nesfiles/contour10.gif $folder
+#cp ~/AODSEM/Nesfiles/contour10.txt $folder
+#cp ~/AODSEM/Nesfiles/worldmask.pbm $folder
+echo " Executing coloraod..."
+./coloraod
+echo " Deleting temporary files in " $folder
+rm -f color-code.txt
+rm -f contour20.txt
+rm -f contour10.txt
+rm -f coloraod
+rm -f worldmask.pbm 
+echo " Converting ppm images to gif images..."
+convert coloraod.ppm temp.png
+convert temp.png coloraod.gif
+convert temp.png coloraod.png
+echo " Removing ppm images..."
+rm -f  *.ppm
+echo " Displaying output image."
+# netscape coloraod.html &
+display coloraod.png &
+echo "Save as (.gif will be add)?"
+read outf
+echo "sortie" $outf
+cp coloraod.gif $outf".gif"
+cp coloraod.png $outf".png"
+rm -f coloraod.gif
+rm -f temp.gif
+rm -f coloraod.png
+if [ -f core ] 
+   then   echo "******** An error occured during execution of color! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of color." 
+fi 
+
+
+

@@ -1,0 +1,7 @@
+AODSEM (Aerosol Optical Depth Spatiotemporal Evolution Model)
+
+version 2.0    03-2004
+
+copyright   Martin Aube
+
+Un upgrade majeur entre la version 1.x et 2.x est le fait que en 2.x l'aod est codee sur 16 bit au lieu du 8 bits de la version 1.x. En fait cela revient a un gain de 10 en resolution (0.001 a 65.533)

@@ -1,0 +1,38 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                     23dar                    *"
+echo "*                                              *"
+echo "*       Compute aritmetics on aerosol 3d       *"
+echo "*          distribution with operands          *"
+echo "*                store in pgm                  *"
+echo "*                                              *"
+echo "*     Jean-Denis Giguere 2004                  *"
+echo "*   on basis of Martin Aube script 3dari       *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+if [ -f 23dar.par ] 
+   then
+      echo " Reading parameter file."  
+   else
+      echo " No parameter file found!"
+      epar_23dar
+fi 
+ln -s ~/AODSEM/Bin/23dari 23dari
+echo " Executing 23dari..."
+./23dari
+echo " Deleting temporary files in " $folder
+rm -f 23dari
+if [ -f core ] 
+   then   echo "******** An error occured during execution of 3dari! ********"
+          rm -f core
+          echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+          read bidon
+else
+  echo " Normal end of 23dar." 
+fi 
+

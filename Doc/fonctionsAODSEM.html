@@ -1,0 +1,2373 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="StarOffice/5.2 (Linux)">
+	<META NAME="AUTHOR" CONTENT="Martin Aub&eacute;">
+	<META NAME="CREATED" CONTENT="20001002;23162300">
+	<META NAME="CHANGEDBY" CONTENT="Martin Aub&eacute;">
+	<META NAME="CHANGED" CONTENT="20001107;23243700">
+	<STYLE>
+	<!--
+		@page { size: 21.59cm 27.94cm; margin: 2cm }
+		P { margin-bottom: 0.21cm }
+		TD P { margin-bottom: 0.21cm }
+	-->
+	</STYLE>
+</HEAD>
+<BODY>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm; font-weight: medium"><BR>
+</P>
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0cm"><B>A-2.8 Description plus
+d&eacute;taill&eacute;e de fonctions</B></P>
+<H2><A NAME="Ainfo"></A><FONT FACE="Times, serif"><FONT SIZE=3>infor</FONT></FONT></H2>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3><B><I>A
+link to AODSEM documentation using netscape as a viewer.</I></B> </FONT></FONT>
+</P>
+<HR>
+<H2><A NAME="Amkpsd"></A><FONT FACE="Times, serif"><FONT SIZE=3>mkpsd</FONT></FONT></H2>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><B><I>Create a particle
+size distribution file (PSD).</I></B> </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>Sample file NAME.mie.psd: </FONT></FONT>
+</P>
+<PRE><FONT FACE="Times, serif"><FONT SIZE=3> <FONT SIZE=2><FONT FACE="Courier, monospace">3        ** size distribution type **</FONT></FONT></FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 0.15     ** dX constant increment (99999=variable) **</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 333      ** Number of bins **</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 1        ** Interpolation (0=terrasse, 1=linear, 9=discret **</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  0.5     ** Wavelength in microns **</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  0.150000006  0.00748402089 ** X, Psd **</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  0.300000012  0.026195416   ** X, Psd **</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  0.449999988  0.0453268057  ** X, Psd **</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  0.600000024  0.0615793337  ** X, Psd **</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  0.75  0.0744992284         ** X, Psd **</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  0.899999976  0.0844182061  ** X, Psd **</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  1.04999995  0.0918335254   ** X, Psd **</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  .</FONT></FONT></PRE><P>
+<FONT FACE="Times, serif"><FONT SIZE=3>X = the size parameter defined
+as 2 pi r / wavelength </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>r = the geometric radius of
+the particle. </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>Possible size distribution
+type are: </FONT></FONT>
+</P>
+<PRE><FONT FACE="Times, serif"><FONT SIZE=3> 1) MONODISPERSED          X</FONT></FONT>
+<FONT FACE="Times, serif"><FONT SIZE=3> 2) GATES-GAUDIN-SCHUMANN  X**(-A), A&gt;1</FONT></FONT>
+<FONT FACE="Times, serif"><FONT SIZE=3> 3) LOG-NORMAL             1/(SG*X*SQRT[2*pi])*EXP(-(LOG(X)-LOG(XM))**2/(2*SG**2))</FONT></FONT>
+<FONT FACE="Times, serif"><FONT SIZE=3> 4) GAMMA                  U**(U+1)/U!*(X**U/S**(U+1))*EXP(-U*X/S)</FONT></FONT>
+<FONT FACE="Times, serif"><FONT SIZE=3> 5) MODIFIED GAMMA         X**A*EXP(-B*X**G)</FONT></FONT>
+<FONT FACE="Times, serif"><FONT SIZE=3> 6) ROSIN-RAMMLER          X**(N-1)*EXP(-B*X**N)</FONT></FONT>
+<FONT FACE="Times, serif"><FONT SIZE=3> 7) INDEPENDANT SIZE-BINS</FONT></FONT></PRE><P>
+<FONT FACE="Times, serif"><FONT SIZE=3>Interpolation consist in how
+imies program will interpolate sub-bins values.</FONT></FONT></P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>Tthere are 3 options: </FONT></FONT>
+</P>
+<PRE><FONT FACE="Times, serif"><FONT SIZE=3> 0 = Constant value inside the bin (stepped)</FONT></FONT>
+<FONT FACE="Times, serif"><FONT SIZE=3> 1 = Linear interpolation</FONT></FONT>
+<FONT FACE="Times, serif"><FONT SIZE=3> 9 = Discret mode (non zero values for the begin. of the bin)</FONT></FONT></PRE><P STYLE="margin-bottom: 0cm">
+<FONT FACE="Times, serif"><FONT SIZE=3>It is important to note that
+for the log-normal distribution, the user is asked to enter the sigma
+value wich is subsequently converted by the program to SG=log(sigma).
+A typical value for sigma is 2.5 (SG=0.4).</FONT></FONT></P>
+<HR>
+<H2><A NAME="Acmbpsd"></A><FONT FACE="Times, serif"><FONT SIZE=3>cmbps</FONT></FONT></H2>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><B><I>Combine two particle
+size distribution file.</I></B> </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>(mkpsd output files) </FONT></FONT>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3>To
+combine more than two PSD, you can first combine first two and the
+re-run cmbps to combine this first result with a third PSD and so
+on... </FONT></FONT>
+</P>
+<HR>
+<H2><A NAME="Amkimies"></A><FONT FACE="Times, serif"><FONT SIZE=3>mkimi</FONT></FONT></H2>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3><B><I>Create
+an imies's input file.</I></B> </FONT></FONT>
+</P>
+<HR>
+<H2><A NAME="Aimies"></A><FONT FACE="Times, serif"><FONT SIZE=3>imies</FONT></FONT></H2>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><B><I>Interactive fine
+resolution Mie's computations.</I></B> </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>mkimi and mkpsd have to be
+executed first in order to produce input files for imies (file
+&laquo;&nbsp;NAME.mie&nbsp;&raquo; and &laquo;&nbsp;NAME.mie.psd&nbsp;&raquo;).
+</FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>imies is adapted from mie.f
+initially written at DREV by Blair Evans. The original program was
+restructured and some bugs were fixed. imies can only take into
+account for spherical shaped particles (including coated particles). </FONT></FONT>
+</P>
+<P><BR><BR>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><SPAN STYLE="font-weight: medium">Sample
+file: &laquo;&nbsp;NAME.mie&nbsp;&raquo;</SPAN><B> </B></FONT></FONT>
+</P>
+<PRE><FONT FACE="Courier, monospace"><FONT SIZE=2>  1                  ** 1 = VERBOSE **</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  1                  ** Aerosol shape**</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  0.00 180.00   1.00 ** i angle , f angle , delta **</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  3                  ** Polarisation state (1=//,2=_|_,3=random) **</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  1.50000 .00000E+00 ** Refractive index (a-ib) **</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  1                  ** 1 = VERBOSE **</FONT></FONT>
+</PRE><P>
+<FONT FACE="Times, serif"><FONT SIZE=3>Log of the mkmie execution
+used for the example below (user input in <FONT COLOR="#ff0000">red</FONT>):</FONT></FONT></P>
+<P><BR><BR>
+</P>
+<PRE>************************************************
+*                                              *
+*                     mkimi                    *
+*                                              *
+*         Edit input file for imies.f          *
+*                                              *
+*     Martin Aube 2000                         *
+*                                              *
+************************************************
+
+ Experiment directory /home/martin/AODSEM/Examples/imies
+ Executing MakeMieIn...
+ Root name of the imies input file ?
+<FONT COLOR="#ff0000">test</FONT>
+ Verbose imies mode? (1 = yes)
+<FONT COLOR="#ff0000">1</FONT>
+ WHICH PARTICLE TYPE:
+ 1)  SPHERE                    EXACT
+ 2)  COATED SPHERE             EXACT
+<FONT COLOR="#ff0000">1</FONT>
+ ENTER LOWEST,HIGHEST AND INCREMENT OF ANGLES IN PHASE   FUNCTION
+ INCREMENT MUST BE .01 OR GREATER
+<FONT COLOR="#ff0000">0 180 1</FONT>
+ WHICH POLARIZATION STATE ? 1) PARALLEL
+                            2) PERPENDICULAR
+                         OR 3) RANDOM
+ WITH RESPECT TO SCATTERING PLANE.
+
+<FONT COLOR="#ff0000">3</FONT>
+ INDEX OF REFRACTION m &amp; k (of m - ik) -&gt;
+
+<FONT COLOR="#ff0000">1.5 0</FONT>
+ Deleting temporary files in  /home/martin/AODSEM/Examples/imies
+ Normal end of mkimi.      
+</PRE><P>
+<FONT FACE="Times, serif"><FONT SIZE=3>Sample file NAME.mie.psd (see
+mkpsd) </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>Log of the mkpsd execution
+used for the example below (user input in <FONT COLOR="#ff0000">red</FONT>):</FONT></FONT></P>
+<PRE>************************************************
+*                                              *
+*                     mkpsd                    *
+*                                              *
+*        Create a PSD file for imies.f         *
+*                                              *
+*     Martin Aube 2000                         *
+*                                              *
+************************************************
+
+ Experiment directory /home/martin/AODSEM/Examples/imies
+ Executing MakePSD...
+ Root name of the PSD output file ?
+<FONT COLOR="#ff0000">test</FONT>
+ WHICH PARTICLE SIZE DISTRIBUTION:
+ 1) MONODISPERSED          X
+ 2) GATES-GAUDIN-SCHUMANN  X**(-A), A&gt;1
+ 3) LOG-NORMAL             1/(SG*X*SQRT[2*pi])*EXP(-(LOG(X)-LOG(XM))**2/(2*SG**2
+))
+ 4) GAMMA                  U**(U+1)/U!*(X**U/S**(U+1))*EXP(-U*X/S)
+ 5) MODIFIED GAMMA         X**A*EXP(-B*X**G)
+ 6) ROSIN-RAMMLER          X**(N-1)*EXP(-B*X**N)
+ 7) INDEPENDANT SIZE-BINS
+<FONT COLOR="#ff0000">3</FONT>
+ Interpolation type betwen PSD s values ?
+ 0 = Constant value inside the bin
+ 1 = Linear interpolation
+ 9 = Discret mode (non zero values for the begin. of the bin)
+<FONT COLOR="#ff0000">1</FONT>
+ CENTER WAVELENGTH OF THE SENSOR (MICRONS)?
+<FONT COLOR="#ff0000">.5</FONT>
+ INPUT INTEGRATION dX [d(SIZE PAR.)] OVER SIZE DIST.
+
+<FONT COLOR="#ff0000">.15</FONT>
+ LOWER AND UPPER LIMITS OF PSD (BETWEEN 0 AND    750.00)
+
+<FONT COLOR="#ff0000">0 200</FONT>
+ 3) LOG-NORMAL             1/(SG*X*SQRT[2*pi])*EXP(-(LOG(X)-LOG(XM))**2/(2*SG**2
+))
+ INPUT geometric mean radius (um) , sigma (um)
+
+<FONT COLOR="#ff0000">.5 2.5</FONT>
+ Deleting temporary files in  /home/martin/AODSEM/Examples/imies
+ Normal end of mkpsd.    
+
+</PRE><P>
+<FONT FACE="Times, serif"><FONT SIZE=3>Typical outbut files
+NAME.mie.out: </FONT></FONT>
+</P>
+<PRE><FONT FACE="Courier, monospace"><FONT SIZE=2> |--------|------------|</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> | ANGLE  |  PHASE FCT |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |--------|------------|</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>     0.00   1685.8    </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>     1.00   738.47    </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>     2.00   268.94    </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>      .        .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>      .        .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>      .        .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>   180.00  0.89045    </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |--------|------------|</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>0.500000     micron = Wavelength</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 2.24693     = Extinction efficiency (Q)</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 2.24693     = Scattering efficiency (Qs)</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 0.00000     = Absorption efficiency (Qa)</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 14.1123     = Lidar ratio</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 4.10201     micron^2 = &lt;b&gt; = Average surface area per particle</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 9.21694     microns^2 = Extinction cross section (C)</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 9.21694     microns^2 = Scattering cross section (Cs)</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 0.00000     microns^2 = Absorption cross section (Ca)</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |----------------------------------------------------|</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> | COMMENTAIRES:                                      |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |----------------------------------------------------|</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |   -Cross section / &lt;b&gt; should = efficiency         |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |    is independant of the normalisation of dN/dx    |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |   -The integral of the phase fct/4 pi over all     |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |    directions (solid angle) = 1.                   |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |   -The volume coefficient (k) is equal to C * N    |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |      = cross section * Number density              |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |      typical units: [um^2]*[particles/cm^3] =      |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |      [10^-3 km-1]                                  |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |      N = M/(d*4/3*pi*r^3) where d is the density   |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |      of particle, M is the mass per unit volume    |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |      and 4/3*pi*r^3 is the average volume  of a    |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |      particle.                                     |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |      typical units:  M -&gt; [ug/m^3], d -&gt; [g/cm^3]  |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |                      r -&gt; [um]                     |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |      Lidar ratio= 4 pi Qe / phase_fct(180)*Qs      |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |----------------------------------------------------|</FONT></FONT>
+
+</PRE><P>
+<FONT FACE="Times, serif"><FONT SIZE=3>Sample log for imies (user
+input in <FONT COLOR="#ff0000">red</FONT>):</FONT></FONT></P>
+<P><BR><BR>
+</P>
+<PRE>************************************************                                              *                                              *
+*                     imies                    *
+*                                              *
+*         Mie's calculations for any PSD       *
+*     definition, particle type, wavelength    *
+*            and relative humidity             *
+*                                              *
+*     Martin Aube 2000                         *
+*                                              *
+************************************************
+ Experiment directory /home/martin/AODSEM/Examples/imies
+ Executing intermie...
+ Root name for input-output files ?(MAX 40 CHAR):
+ Extensions .mie (input file), .mie.out (output file) and  .mie.psd (psd file)
+ will be add to the root name.
+<FONT COLOR="#ff0000">test</FONT>
+ Reading input file:test.mie.         ..
+ Opening output file:test.mie.out...
+ ... Termine.
+ Ouverture du fichier psd:test.mie.psd...
+ ...Done.
+ Reading psd file:test.mie.psd.      ..
+ ...Done.
+ In how many Sub-bins do you wish to split PSD? (MAX.   5000., MIN 1334)
+<FONT COLOR="#ff0000">1500</FONT>
+ Closing psd file.
+ Particle shape:
+ 1)  SPHERE                    EXACT
+ Defining size increment...
+ ...Done
+ Defining size distribution...
+ |----------------------------|
+ |      SIZE DISTRIBUTION     |
+ |-------------|--------------|
+ | SIZE PARAM. | PSD          |
+ |        0.267|      0.004722|
+ |        0.400|      0.012229|
+           .              .
+           .              .
+           .              .
+ |      199.950|      0.000002|
+ |----------------------------|
+ ...Done.
+ Optical computations...
+ Random polarization state
+ Indice de refraction= 1.500 -i .00000E+00
+ finished Mie computations for size parameter =     6.80
+ finished Mie computations for size parameter =    13.46
+ .
+ .
+ .
+ finished Mie computations for size parameter =   200.08
+ ...Done.
+ Closing input-output files...
+ ...Done.
+ Computation result in file: test.mie.out
+ ...end of mies !
+ Deleting temporary files in  /home/martin/AODSEM/Examples/imies
+ Normal end of imies.</PRE><P>
+<BR><BR>
+</P>
+<P>Phase function normalisation.</P>
+<P ALIGN=JUSTIFY>The phase function is defined as 4 pi times the
+probability of scattering per unit of solid angle (sterad) for a
+given scattering angle (theta=0 -&gt;forward scattering, theta=180 -&gt;
+back scattering).  The integration of the phase function over the
+sphere is equal to 4 pi.  It is important to consider that the phase
+function value for a given scattering angle is the same for any
+azimutal angle so that to get the total scattering contribution for a
+particular scattering angle (integration over phi), we have to
+multiply the phase function value by the equivalent solid angle
+dOMEGA corresponding to a ring defined by the angle increment dTHETA
+(see  fig below).  This solid angle is given by the equation:</P>
+<P ALIGN=CENTER><IMG SRC="Images/domega.gif" NAME="Objet1" ALIGN=ABSMIDDLE HSPACE=8 WIDTH=139
+HEIGHT=22></P> <P ALIGN=CENTER><IMG SRC="Images/phase-fct-norm.jpg" NAME="Image1" ALIGN=BOTTOM
+WIDTH=247 HEIGHT=331 BORDER=0></P> <P><BR><BR>
+</P>
+<P>Example of phase function integration:</P>
+<P><BR><BR>
+</P>
+<PRE>THETA	Phase fct.	dOMEGA	P(THETA)=Phase fct. * dOMEGA / 4 pi
+0	1685,8	0,0000	0
+1	738,47	0,0019	0,11
+2	268,94	0,0038	0,08
+3	126,45	0,0057	0,06
+4	69,42		0,0076	0,04
+5	42,47		0,0096	0,03
+6	28,23		0,0115	0,03
+7	20,04		0,0134	0,02
+8	15,04		0,0153	0,02
+9	11,81		0,0172	0,02
+10	9,64		0,0190	0,01
+11	8,11		0,0209	0,01
+12	7,01		0,0228	0,01
+13	6,18		0,0247	0,01
+14	5,55		0,0265	0,01
+15	5,05		0,0284	0,01
+16	4,64		0,0302	0,01
+17	4,3		0,0321	0,01
+18	4,03		0,0339	0,01
+19	3,76		0,0357	0,01
+20	3,53		0,0375	0,01
+21	3,34		0,0393	0,01
+22	3,18		0,0411	0,01
+23	3,02		0,0428	0,01
+24	2,88		0,0446	0,01
+25	2,74		0,0463	0,01
+26	2,61		0,0481	0,01
+27	2,49		0,0498	0,01
+28	2,37		0,0515	0,01
+29	2,27		0,0532	0,01
+30	2,16		0,0548	0,01
+31	2,07		0,0565	0,01
+32	1,98		0,0581	0,01
+33	1,89		0,0597	0,01
+34	1,8		0,0613	0,01
+35	1,72		0,0629	0,01
+36	1,65		0,0645	0,01
+37	1,57		0,0660	0,01
+38	1,5		0,0675	0,01
+39	1,43		0,0690	0,01
+40	1,37		0,0705	0,01
+41	1,31		0,0719	0,01
+42	1,25		0,0734	0,01
+43	1,19		0,0748	0,01
+44	1,14		0,0762	0,01
+45	1,08		0,0775	0,01
+46	1,04		0,0789	0,01
+47	0,99		0,0802	0,01
+48	0,94		0,0815	0,01
+49	0,9		0,0828	0,01
+50	0,85		0,0840	0,01
+51	0,82		0,0852	0,01
+52	0,78		0,0864	0,01
+53	0,74		0,0876	0,01
+54	0,71		0,0887	0
+55	0,67		0,0898	0
+.	.		.		.
+.	.		.		.
+.	.		.		.
+180	0,89		0,0000	0
+			
+				Sum=	0,97    -&gt; ~ 1.
+
+
+</PRE>
+<HR>
+<P><BR><BR>
+</P>
+<H2><A NAME="Ahum"></A><FONT FACE="Times, serif"><FONT SIZE=3>humgr</FONT></FONT></H2>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><B><I>Create an aerosol
+size hygroscopic growth file.</I></B> Output file named humout
+contain a table of how particle radius and density vary with respect
+to relative humidity. <BR>e.g. </FONT></FONT>
+</P>
+<PRE><FONT FACE="Times, serif"><FONT SIZE=3> <FONT SIZE=2><FONT FACE="Courier, monospace">5 13 12     * N types, N RH, N bins *</FONT></FONT></FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> SEASALT     </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 0.00000000  * RELATIVE HUMIDITY *</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> Bin Number, Radius Ratio, Final Density</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 1 1.00000000    2240.000000</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 2 1.00000000    2240.000000</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 3 1.00000000    2240.000000</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 4 1.00000000    2240.000000</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 5 1.00000000    2240.000000</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 6 1.00000000    2240.000000</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 7 1.00000000    2240.000000</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 8 1.00000000    2240.000000</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 9 1.00000000    2240.000000</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 10 1.00000000    2240.000000</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 11 1.00000000    2240.000000</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 12 1.00000000    2240.000000</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 10.00000000 * RELATIVE HUMIDITY *</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> Bin Number, Radius Ratio, Final Density</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 1 1.000000000 2240.000000</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 2 1.000000000 2240.000000</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> .</FONT></FONT></PRE>
+<HR>
+<H2><A NAME="Abmies"></A><FONT FACE="Times, serif"><FONT SIZE=3>bmies</FONT></FONT></H2>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><B><I>Mutiple size bins,
+wavelenght, relative humidity and aerosol species Mie's calculations.</I></B>
+</FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>Input files: </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>size bin definition file:
+NAME.bns.bmi </FONT></FONT>
+</P>
+<PRE><FONT FACE="Courier, monospace"><FONT SIZE=2>  10           * NUMBER OF SUB-SIZE-BIN DIVISIONS FOR CALCULATIONS *</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  0            *SUB-BIN PSD VALUES.</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  12           *NOMBRE DE BINS*</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  1 0.005 0.01 *BIN NO, RMIN(micron), RMAX*</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  2 0.01 0.02</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  3 0.02 0.04</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  4 0.04 0.08</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  5 0.08 0.16</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  6 0.16 0.32</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  7 0.32 0.64</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  8 0.64 1.28</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  9 1.28 2.56</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  10 2.56 5.12</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  11 5.12 10.24</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  12 10.24 20.48</FONT></FONT>
+<FONT FACE="Times, serif"><FONT SIZE=3> </FONT></FONT></PRE><P>
+<FONT FACE="Times, serif"><FONT SIZE=3>SUB-BIN PSD VALUES: </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>La valeur est passee a la
+routine mies qui l utilise pour definir la variation de la psd a l
+interieur du bin. </FONT></FONT>
+</P>
+<UL>
+	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3>0=valeur
+	constante sur tout le bin </FONT></FONT>
+	</P>
+	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3>1=distribution
+	lineaire entre la valeur du bin et la valeur du bin suivant. Cette
+	option n est pas utilisee dans bmies car nous ne considerons qu un
+	seul bin a la fois. </FONT></FONT>
+	</P>
+	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3>2=la
+	valeur de la psd suit une distribution log-normale caracterisant le
+	type de particule a partir du WCP-55 ou de Shettle et Fenn. </FONT></FONT>
+	</P>
+	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3>3=proprotionnel
+	a 1/X (moment 0) </FONT></FONT>
+	</P>
+	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3>4=proportionnel
+	a abs(log X)/X (moment 1) </FONT></FONT>
+	</P>
+	<LI><P><FONT FACE="Times, serif"><FONT SIZE=3>9=valeur non nul
+	uniquement pour la premiere partie du sous bin. (seulement pour
+	X=debut du bin) </FONT></FONT>
+	</P>
+</UL>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>Le programme considere que
+chaque bin est 2 fois plus grand que le precedent. Si tel n'est pas
+le cas, une legere erreur sera rencontree lors du calcul de la
+croissance hygrometrique des bornes de chaque bin car cet algorithme
+est optimise pour des tailles=largeur1*2^(NB-1) </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>refractive index definition
+file: NAME.ref.bmi </FONT></FONT>
+</P>
+<PRE><FONT FACE="Courier, monospace"><FONT SIZE=2>  4                     * NUMBER OF AEROSOL TYPES*</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  7                      * NUMBER OF WAVELENGTH*</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  SEASALT               * AEROSOL TYPE *</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  440 .44 1.5 2.544e-08 * WAVEL.ID,WAVEL.(um),R.REF.IND.,IMM.REF. IND.*</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  500 .50 1.5 1.55e-08</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  550 .55 1.5 1e-08</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  670 .67 1.49 1.0544e-07</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  860 .86 1.48 2.622e-05</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  940 .94 1.476 8.184e-05</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  1020 1.02 1.47 3.146e-04</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  SULFATE               * AEROSOL TYPE *</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  440 .44 1.53 5e-03    * WAVEL.ID,WAVEL.(um),R.REF.IND.,IMM.REF. IND.*</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  500 .50 1.53 5e-03</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  550 .55 1.53 6e-03</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>       .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>       .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>       .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  water</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  440 0.44      1.3373E+0       1.4702E-9</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  500 0.5       1.3345E+0       1.0765E-9</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  550 0.55      1.3330E+0       2.1141E-9</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  670 0.67      1.331422        2.3788E-8</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  860 0.86      1.329036        3.2360E-7</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  940 0.94      1.32783         1.8309E-6</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  1020 1.02     1.326615        3.3905E-6</FONT></FONT></PRE><P>
+<FONT FACE="Times, serif"><FONT SIZE=3>Typical output file:
+NAME.res.bmi </FONT></FONT>
+</P>
+<PRE><FONT FACE="Times, serif"><FONT SIZE=3> <FONT SIZE=2><FONT FACE="Courier, monospace">      4      13     7        12                    * # types         , # wavelength, # bins *</FONT></FONT></FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>            SULFATE</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 00   * Relative Humidity (%)*</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>   .44000   .15300E+01   .50000E-02              * Wavelength (um),  mr,  mi             *</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        1   .21166E-06   .90332E-08   .20263E-06 * Bin number     ,   C,  Cs, Ca (um^2)  *</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        2   .22412E-05   .58041E-06   .16608E-05  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        3   .52030E-04   .37510E-04   .14521E-04  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        4   .23650E-02   .22167E-02   .14828E-03  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        5   .73631E-01   .71808E-01   .18237E-02  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        6   .72733E+00   .70988E+00   .17444E-01  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        7   .17288E+01   .15865E+01   .14222E+00  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        8   .71431E+01   .62464E+01   .89671E+00  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        9   .26282E+02   .20850E+02   .54314E+01  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>       10   .10121E+03   .70094E+02   .31115E+02  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>       11   .39558E+03   .23758E+03   .15800E+03  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>       12   .15590E+04   .86697E+03   .69207E+03  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>   .50000   .15300E+01   .50000E-02              * Wavelength (um),  mr,  mi             *</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        1   .18340E-06   .54154E-08   .17798E-06 * Bin number     ,   C,  Cs, Ca (um^2)  *</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        2   .17987E-05   .34768E-06   .14510E-05  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        3   .34911E-04   .22453E-04   .12458E-04  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        4   .15129E-02   .13897E-02   .12317E-03  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        .   </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>       11   .40617E+03   .23058E+03   .17559E+03  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>       12   .15852E+04   .86517E+03   .72007E+03  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  1.02000   .15200E+01   .15975E-01              * Wavelength (um),  mr,  mi             *</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        1   .27979E-06   .30287E-09   .27949E-06 * Bin number     ,   C,  Cs, Ca (um^2)  *</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        2   .22655E-05   .19398E-07   .22461E-05  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        3   .19536E-04   .12448E-05   .18291E-04  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        4   .23663E-03   .80249E-04   .15638E-03  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        5   .64800E-02   .49535E-02   .15266E-02  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        6   .20477E+00   .18618E+00   .18580E-01  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        7   .25996E+01   .24276E+01   .17207E+00  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        8   .76533E+01   .63188E+01   .13345E+01  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        9   .28077E+02   .20365E+02   .77122E+01  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>       10   .10666E+03   .67208E+02   .39453E+02  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>       11   .40743E+03   .22910E+03   .17832E+03  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>       12   .15886E+04   .86477E+03   .72383E+03  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 10   * Relative Humidity (%)*</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>   .44000   .15300E+01   .50000E-02              * Wavelength (um),  mr,  mi             *</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        1   .21166E-06   .90332E-08   .20263E-06 * Bin number     ,   C,  Cs, Ca (um^2)  *</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        2   .22412E-05   .58041E-06   .16608E-05  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        3   .52030E-04   .37510E-04   .14521E-04  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        .    </FONT></FONT></PRE><P>
+<FONT FACE="Times, serif"><FONT SIZE=3><B><I>Recommandations for
+bmies optical calculations validation.</I></B> </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>The best way to validate
+the bmies results is to run imies for each bmies size-bin using a
+standard bi-modal log-normal PSD inside the bin as defined by Shettle
+and Fenn (1979). You can also use the uni-modal log-normal PSD
+parameters suggested below from table 4.5 of WCP-55. </FONT></FONT>
+</P>
+<CENTER>
+	<TABLE WIDTH=225 BORDER=1 CELLPADDING=2 CELLSPACING=3>
+		<COL WIDTH=115>
+		<COL WIDTH=45>
+		<COL WIDTH=39>
+		<TR>
+			<TD WIDTH=115>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>species</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=45>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>r (um)</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>sigma</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=115>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>Water soluble</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=45>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.0285</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>2.239</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=115>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>Dust-like</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=45>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.471</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>2.512</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=115>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>Soot</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=45>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.0118</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>2.00</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=115>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>75% H2SO4</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=45>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.0695</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>1.86</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=115>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>Volcanic ash</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=45>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.217</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>1.77</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=115>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>Desert dust storm</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=45>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>10.8</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>2.74</FONT></FONT></P>
+			</TD>
+		</TR>
+	</TABLE>
+</CENTER>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3>You
+have to compute the size parameters equivalent of the size bin
+limits. The size param. is define as <I>X=2 pi r / wavlen</I> where <I>r</I>
+is the particle radius in the same units than the wavelength. </FONT></FONT>
+</P>
+<HR>
+<H2><A NAME="Ainterp"></A><FONT FACE="Times, serif"><FONT SIZE=3>inter</FONT></FONT></H2>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><B><I>Interpolate a sparse
+aerosol optical depth map.</I></B> </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>Input file: a pgm ascII
+optical depth file. The numerical values (<I>NV</I>) have to be coded
+using the simple tansformation <I>NV=AOD*100</I>. The null pixels
+should take the following values (253, 254, 255). </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>The main interpolating
+algoritm is based on an weight 1/distance^2 fonction using values
+encontered inside a box size defined by the user. </FONT></FONT>
+</P>
+<P ALIGN=CENTER><FONT FACE="Times, serif"><FONT SIZE=3><IMG SRC="Images/interp.gif" NAME="Image5" ALIGN=BOTTOM WIDTH=117 HEIGHT=40 BORDER=0></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3>where
+</FONT></FONT>
+</P>
+<TABLE WIDTH=363 BORDER=0 CELLPADDING=2 CELLSPACING=0>
+	<COL WIDTH=359>
+	<TR>
+		<TD WIDTH=359>
+			<P><FONT FACE="Times, serif"><FONT SIZE=3><I>NV'</I> = output
+			numerical value,</FONT></FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=359>
+			<P><FONT FACE="Times, serif"><FONT SIZE=3><I>NV<SUB>n</SUB></I> =
+			input numerical value inside the interpolating box,</FONT></FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=359>
+			<P><FONT FACE="Times, serif"><FONT SIZE=3><I>r'</I> = position
+			vector of the output pixel, and</FONT></FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=359>
+			<P><FONT FACE="Times, serif"><FONT SIZE=3><I>r<SUB>n</SUB></I> =
+			position vector of each input pixels.</FONT></FONT></P>
+		</TD>
+	</TR>
+</TABLE>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>The user can also use the
+following interpolating functions: </FONT></FONT>
+</P>
+<PRE><FONT FACE="Times, serif"><FONT SIZE=3>    nearest neighbour ... 0</FONT></FONT>
+<FONT FACE="Times, serif"><FONT SIZE=3>    linear .............. 1</FONT></FONT>
+<FONT FACE="Times, serif"><FONT SIZE=3>    cubic ............... 2</FONT></FONT>
+<FONT FACE="Times, serif"><FONT SIZE=3>    mean ................ 3</FONT></FONT>
+<FONT FACE="Times, serif"><FONT SIZE=3>    minimum ............. 4</FONT></FONT>
+<FONT FACE="Times, serif"><FONT SIZE=3>    maximum ............. 5</FONT></FONT></PRE><P>
+<FONT FACE="Times, serif"><FONT SIZE=3>In order to implement optimal
+interpolation for functions 1 and 2 of inter, the pixel weight is not
+only determined by the distance. The weight is also inversely related
+to the number plus one of immediate non null neighbours. This avoid
+overestimates coming from non uniform distribution of pixels. <BR>In
+the example below, we present an extreme case where the proximity of
+pixels A and B result in an over estimate of pixel P value if optimal
+interpolation is not implemented. If we consider pixel A=100=B and
+C=50 we get an interpolated value of 83 for pixel P. With optimal
+interpolation, we obtain (100/2+100/2+50/1)/(1/2+1/2+1/1) = 75 which
+is clearly more realistic. </FONT></FONT>
+</P>
+<PRE><FONT FACE="Courier, monospace"><FONT SIZE=3>0 0 0 0 0 0 0 0</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=3>0 0 0 0 0 0 0 0</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=3>0 0 0 0 0 0 0 0</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=3>0 A 0 P 0 C 0 0</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=3>0 B 0 0 0 0 0 0</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=3>0 0 0 0 0 0 0 0</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=3>0 0 0 0 0 0 0 0</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=3>0 0 0 0 0 0 0 0</FONT></FONT></PRE><P>
+<FONT FACE="Times, serif"><FONT SIZE=3>There is two main mode for
+inter. In the manual mode, the user have to fix the size of the
+sliding box. If there are important gaps in the initial optical depth
+map this may result in gaps in the output map. In the automatic mode,
+interp choose the sliding box in order to remove all gaps in the
+output file. </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>The output may have
+resolution and lower left corner pixel central coordinates different
+from the input map. </FONT></FONT>
+</P>
+<P ALIGN=LEFT STYLE="font-style: normal"><FONT FACE="Times, serif"><FONT SIZE=3><B>Examples
+of interpolated images:</B> </FONT></FONT>
+</P>
+<P ALIGN=CENTER><FONT FACE="Times, serif"><FONT SIZE=3><IMG SRC="Images/interp1.gif" NAME="Image6" ALIGN=BOTTOM WIDTH=147 HEIGHT=150 BORDER=0>
+Original image </FONT></FONT>
+</P>
+<P ALIGN=CENTER><FONT FACE="Times, serif"><FONT SIZE=3><IMG SRC="Images/interp2.gif" NAME="Image7" ALIGN=BOTTOM WIDTH=150 HEIGHT=150 BORDER=0>
+sliding box too small 
+<IMG SRC="Images/interp4.gif" NAME="Image8" ALIGN=BOTTOM WIDTH=150 HEIGHT=150 BORDER=0>
+automatic mode </FONT></FONT>
+</P>
+<P ALIGN=CENTER><FONT FACE="Times, serif"><FONT SIZE=3><IMG SRC="Images/globule.gif" NAME="Image9" ALIGN=BOTTOM WIDTH=150 HEIGHT=150 BORDER=0>
+Orginal image 
+<IMG SRC="Images/globule_1.gif" NAME="Image10" ALIGN=BOTTOM WIDTH=150 HEIGHT=150 BORDER=0>
+degraded image </FONT></FONT>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3><IMG SRC="Images/globule_2.gif" NAME="Image11" ALIGN=BOTTOM WIDTH=150 HEIGHT=150 BORDER=0>
+first interpolation </FONT></FONT>
+</P>
+<HR>
+<H2><A NAME="Acomposite"></A><FONT FACE="Times, serif"><FONT SIZE=3>compo</FONT></FONT></H2>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><B><I>Create an aerosol
+optical depth time composite map from many maps.</I></B> </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>This fonction read the
+values of N input files (of same size and coordinates of course) and
+take the mean for each pixel. Is is possible to wisely combine data
+from various sources since the associated error of each data source
+can be considered. The mean is then taken by according a wheight
+proportional to the inverse of the associated error. Pixel value of
+0. , 253, 254 and 255 are not taken into account. If there is no data
+corresponding to a particular pixel position, the value 254 will be
+written in the output file. compo can also be used to add images </FONT></FONT>
+</P>
+<P STYLE="font-style: normal"><FONT FACE="Times, serif"><FONT SIZE=3><B>Example:</B></FONT></FONT></P>
+<P ALIGN=CENTER><FONT FACE="Times, serif"><FONT SIZE=3><BR><FONT COLOR="#000000"><FONT COLOR="#000000"><IMG SRC="Images/compos_1.gif" NAME="Image12" ALIGN=BOTTOM WIDTH=190 HEIGHT=105 BORDER=1></FONT></FONT>
+<FONT COLOR="#000000">
+<FONT COLOR="#000000"><IMG SRC="Images/compos_2.gif" NAME="Image13" ALIGN=BOTTOM WIDTH=190 HEIGHT=105 BORDER=1></FONT></FONT>
+<FONT COLOR="#000000">
+<FONT COLOR="#000000"><IMG SRC="Images/compos_3.gif" NAME="Image14" ALIGN=BOTTOM WIDTH=190 HEIGHT=105 BORDER=1></FONT></FONT><BR>Original
+images </FONT></FONT>
+</P>
+<P ALIGN=CENTER><FONT FACE="Times, serif"><FONT SIZE=3><FONT COLOR="#000000"><FONT COLOR="#000000"><IMG SRC="Images/compos.gif" NAME="Image15" ALIGN=BOTTOM WIDTH=580 HEIGHT=320 BORDER=1></FONT></FONT>
+<BR>Composite image </FONT></FONT>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3><FONT COLOR="#000000"><FONT COLOR="#000000"><IMG SRC="Images/compos+interp.gif" NAME="Image16" ALIGN=BOTTOM WIDTH=580 HEIGHT=320 BORDER=1></FONT></FONT>
+<BR>Interpolation of the above composite image using inter with a 1
+by 1 degree box. </FONT></FONT>
+</P>
+<HR>
+<H2><A NAME="Adrawaod"></A><FONT FACE="Times, serif"><FONT SIZE=3>drawa</FONT></FONT></H2>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><B><I>Create a latitude
+longitude points files to draw shapes on an aerosol optical depth
+map.</I></B> </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>That file may be use as
+input for writa. It is useful if you want to locate an particular
+geographical point or to draw a trajectory path. 6 kind of shape are
+supported: </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>points<BR>lines
+<BR>squares<BR>rectangles<BR>circles<BR>targets</FONT></FONT></P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>All the above shapes are
+drawn with a one pixel width line. </FONT></FONT>
+</P>
+<P STYLE="font-style: normal; font-weight: medium"><FONT FACE="Times, serif"><FONT SIZE=3>Sample
+output file: </FONT></FONT>
+</P>
+<PRE><FONT FACE="Times, serif"><FONT SIZE=3> <FONT SIZE=2><FONT FACE="Courier, monospace">136</FONT></FONT></FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 52.32696152 268.2687988 2.55</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 52.35370636 268.2651367 2.55</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 52.38002014 268.2591248 2.55</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 52.40568161 268.2507629 2.55</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 52.43048859 268.2401428 2.55</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>   .                          .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>   .                          .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>   .                          .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 53.63126373 271.3260193 2.55</FONT></FONT></PRE><P>
+<FONT FACE="Times, serif"><FONT SIZE=3>The shape could be &laquo;&nbsp;print&nbsp;&raquo;
+on an aerosol map by using the writa function.</FONT></FONT></P>
+<HR>
+<H2><A NAME="Awriteaod"></A><FONT FACE="Times, serif"><FONT SIZE=3>writa</FONT></FONT></H2>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3><B><I>Write
+AOD value on an aerosol optical depth map from a lat-long-AOD file.</I></B>
+</FONT></FONT>
+</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3>Example
+of inputs: -&gt; drawa output file (in the case below aod values come
+from the drawa function). Values equal to 255 are converted into
+white by color function.</FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium"><FONT FACE="Times, serif"><FONT SIZE=3><B>Example
+of output*:</B> </FONT></FONT>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><FONT COLOR="#000000"><FONT FACE="Times, serif"><FONT SIZE=3><FONT COLOR="#000000"><IMG SRC="Images/draw.gif" NAME="Image17" ALIGN=BOTTOM WIDTH=387 HEIGHT=346 BORDER=1></FONT></FONT></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3>*
+This image was colored using color</FONT></FONT></P>
+<HR>
+<H2><A NAME="Areadaod"></A><FONT FACE="Times, serif"><FONT SIZE=3>reada</FONT></FONT></H2>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><B><I>Read aerosol optical
+depth values and compute simple statistics around some particular
+locations.</I></B> </FONT></FONT>
+</P>
+<P STYLE="font-style: normal; font-weight: medium"><FONT FACE="Times, serif"><FONT SIZE=3>Example
+of outputs:</FONT></FONT></P>
+<PRE><FONT FACE="Times, serif"><FONT SIZE=3>  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> ----------------------------------------------</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>                        RESULTS</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> AOD*100 around site # 1</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>   3   8  17  20  18   6  13  12   7</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>   8   5   3   6  10  10   6   4   3</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>   9   8   4   3   3   5   8   5   6</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>   7  11   8   5   5   7   8   6  12</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>   6  14  17   8   6  12   7   4  13</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>   7  12  13  12  13   3   9   7   5</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  20  20  15  14  17  23  18  11   9</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  26  21  13  12  12  26 254  45  30</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  14  11   6  13  10   9 254 254  37</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> Site # 1</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> Central pixel value = 6</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> Mean over 3x3 box   = 8</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> Mean over 5x5 box   = 10</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> Mean over 7x7 box   = 11</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> Mean over 9x9 box   = 11</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> Min = 3 Max = 45</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> Stdv (3x3 box)  =  3.41384244</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> Histogram for the 9x9 box</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  5.10  *****************************</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  9.30  *****************</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 13.50  *****************</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 17.70  *****</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 21.90  *****</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 26.10  **</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 30.30  *</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 34.50  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 38.70  *</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 42.90  ****</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> AOD*100 for site # 2= no data</FONT></FONT></PRE><P ALIGN=CENTER STYLE="margin-bottom: 0cm">
+<BR>
+</P>
+<HR>
+<H2 ALIGN=LEFT><A NAME="Acoloraod"></A><FONT FACE="Times, serif"><FONT SIZE=3>color</FONT></FONT></H2>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><B><I>Create a color coded
+aerosol optical depth map.</I></B> </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>For an horizontal map, a
+gray geographical mask could be add. The user may choose a white
+border width to illustrate the buffer zone used in AODSEM.</FONT></FONT></P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>For all type of maps, if
+the 255 value is encontered (usually generated by writa), color will
+put a white pixel,otherwise the color will be define by using the
+color code illustrated below, where an aerosol optical depth of 1.
+correspond to the red color and an aod of 0. corresdond to a black
+pixel. The near white color (R=254,G=254,B=254) will be assigned if
+the aod is greater than 1. </FONT></FONT>
+</P>
+<P STYLE="font-style: normal"><FONT FACE="Times, serif"><FONT SIZE=3><B>Color
+code:</B></FONT></FONT></P>
+<P ALIGN=CENTER><FONT FACE="Times, serif"><FONT SIZE=3><BR><IMG SRC="Images/color-code.gif" NAME="Image18" ALIGN=BOTTOM WIDTH=525 HEIGHT=65 BORDER=0>
+</FONT></FONT>
+</P>
+<P STYLE="font-style: normal; font-weight: medium"><FONT FACE="Times, serif"><FONT SIZE=3><B>Examples
+of input and output files:</B> </FONT></FONT>
+</P>
+<P ALIGN=CENTER><FONT FACE="Times, serif"><FONT SIZE=3><B><I>horizontal
+map</I></B> <BR><IMG SRC="Images/coloraodpgm.gif" NAME="Image19" ALIGN=BOTTOM WIDTH=250 HEIGHT=250 BORDER=0>
+input 
+<IMG SRC="Images/coloraodppm.gif" NAME="Image20" ALIGN=BOTTOM WIDTH=250 HEIGHT=250 BORDER=0>
+output </FONT></FONT>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3><B><I>vertical
+map</I></B> <BR><IMG SRC="Images/coloraodpgmv.gif" NAME="Image21" ALIGN=BOTTOM WIDTH=250 HEIGHT=89 BORDER=0>
+input 
+<IMG SRC="Images/coloraodppmv.gif" NAME="Image22" ALIGN=BOTTOM WIDTH=250 HEIGHT=89 BORDER=0>
+output </FONT></FONT>
+</P>
+<HR>
+<H2><A NAME="patmo"></A><FONT FACE="Times, serif"><FONT SIZE=3>patmo</FONT></FONT></H2>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3><B><I>Convert
+a &laquo;&nbsp;</I><SPAN STYLE="font-style: normal">.out&nbsp;&raquo;
+</SPAN><I>patmos-2 aerosol optical depth output file into a &laquo;&nbsp;</I><SPAN STYLE="font-style: normal">.pgm</SPAN><I>&nbsp;&raquo;
+AODSEM AOD file. </I></B></FONT></FONT>
+</P>
+<HR>
+<H2><A NAME="angst"></A><FONT FACE="Times, serif"><FONT SIZE=3>angst</FONT></FONT></H2>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3><I><B>Convert
+an aerosol optical depth map for wavelenght 1 to an AOD map for
+wavelenght 2 using an Angstrom spectral exponent of 1.3. </B></I></FONT></FONT>
+</P>
+<HR>
+<H2><A NAME="speci"></A><FONT FACE="Times, serif"><FONT SIZE=3>speci</FONT></FONT></H2>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3><I><B>Create
+an aerosol optical depth map for wavelenght 2 by
+interpolating-extrapolating from two initial aod maps (wavelength 0
+and wavelength 1) using the angstrom law. </B></I></FONT></FONT>
+</P>
+<HR>
+<H2><A NAME="simar"></A><FONT FACE="Times, serif"><FONT SIZE=3>simar</FONT></FONT></H2>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3><I><B>Perform
+simple aritmetics on a AOD map.</B></I></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3><SPAN STYLE="font-weight: medium"><SPAN STYLE="font-style: normal">This
+function allow image aritmetic operation (+, -, /, *) </SPAN></SPAN>with
+an uniform numerical value (e.g. Image1 / 3.).</FONT></FONT></P>
+<HR>
+<H2><A NAME="aodar"></A><FONT FACE="Times, serif"><FONT SIZE=3>aodar</FONT></FONT></H2>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3><I><B>Perform
+aritmetics with two AOD maps.</B></I></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm; font-style: normal; font-weight: medium">
+<FONT FACE="Times, serif"><FONT SIZE=3>This function allow images
+aritmetics operations (+, -, /, *). RMS error can also be computed.
+The RMS value is written in the header of the .pgm output file.</FONT></FONT></P>
+<HR>
+<H2><A NAME="diffu"></A><FONT FACE="Times, serif"><FONT SIZE=3>diffu</FONT></FONT></H2>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3><I><B>Create
+a diffusiogram from two AOD maps.</B></I></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<HR>
+<H2><A NAME="corco"></A><FONT FACE="Times, serif"><FONT SIZE=3>corco</FONT></FONT></H2>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3><I><B>Compute
+the correlation coefficient from a two colunm ascII file.</B></I></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<HR>
+<H2><A NAME="norma"></A><FONT FACE="Times, serif"><FONT SIZE=3>calib</FONT></FONT></H2>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><I><B>Calibrate an aerosol
+optical depth map with more reliable ponctual AOD measurements taken
+by sunphotometers. </B></I></FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>This function first produce
+a scatterogram (map vs ponctual) and then fit a function to those
+data. Finally, a corrected map is computed using the fitted function.
+Typical sunphotometer file: </FONT></FONT>
+</P>
+<PRE><FONT FACE="Times, serif"><FONT SIZE=3> 3</FONT></FONT>
+<FONT FACE="Times, serif"><FONT SIZE=3> 35.  270. .55</FONT></FONT>
+<FONT FACE="Times, serif"><FONT SIZE=3> 46.  290. .35</FONT></FONT>
+<FONT FACE="Times, serif"><FONT SIZE=3> 47.  271. .55</FONT></FONT></PRE><P STYLE="margin-bottom: 0cm">
+<FONT FACE="Times, serif"><FONT SIZE=3>The first line contain the
+number of sites, and the following represent each data i.e. Latitude,
+longitude, AOD. </FONT></FONT>
+</P>
+<PRE><FONT FACE="Times, serif"><FONT SIZE=3>output fit parameter file: &laquo;<B>demo_nor.fit</B>&raquo;:</FONT></FONT>
+
+<FONT FACE="Times, serif"><FONT SIZE=3> <FONT SIZE=2><FONT FACE="Courier, monospace">ODimage ODref   ODfit</FONT></FONT></FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  0.189999998  0.550000012  0.550000012</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  0.150000006  0.349999994  0.434210569</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  0.189999998  0.550000012  0.550000012</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> AOD corrected=  0.+  2.89473701* AOD+  0.* AOD^2</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> ChiSquare=  0.0101306019</FONT></FONT></PRE><P STYLE="margin-bottom: 0cm">
+<BR>
+</P>
+<HR>
+<H2><A NAME="nodat"></A><FONT FACE="Times, serif"><FONT SIZE=3>nodat</FONT></FONT></H2>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><I><B>Create an empty AOD
+map . </B></I></FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><SPAN STYLE="text-decoration: none"><SPAN STYLE="font-weight: medium"><SPAN STYLE="font-style: normal">All
+values are set to 255 wich correspond to the AODSEM no data code.</SPAN></SPAN></SPAN>
+</FONT></FONT>
+</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<HR>
+<H2><A NAME="xytto"></A><FONT FACE="Times, serif"><FONT SIZE=3>xytto</FONT></FONT></H2>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><I><B>Create an AOD map
+from a lat-lon-AOD file . </B></I></FONT></FONT>
+</P>
+<P STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+<FONT FACE="Times, serif"><FONT SIZE=3>This function have been
+specially designed to allow a quick AOD map creation from data stored
+in another geographical projection than the lat-lon one used in
+AODSEM.</FONT></FONT></P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><SPAN STYLE="text-decoration: none"><SPAN STYLE="font-weight: medium"><SPAN STYLE="font-style: normal">Sample
+lat-lon-AOD file</SPAN></SPAN></SPAN> :</FONT></FONT></P>
+<PRE><FONT FACE="Courier, monospace"><FONT SIZE=2>4</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>36 270 1.00</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>36.2 271 1.</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>45 280 2.00</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>45.7 280 2</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>The first line contain the number of data points.  The next lines contain the data in the following format:</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>Latitude Longitude AOD. </FONT></FONT></PRE>
+<HR>
+<H2><A NAME="stati"></A><FONT FACE="Times, serif"><FONT SIZE=3>stati</FONT></FONT></H2>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3><I><B>Perform
+basic statistics on AOD maps.</B></I></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<HR>
+<H2><A NAME="plotf"></A><FONT FACE="Times, serif"><FONT SIZE=3>plotf</FONT></FONT></H2>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3><I><B>Plot
+a x-y file using the PGPLOT library.</B></I></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<HR>
+<H2><A NAME="histo"></A><FONT FACE="Times, serif"><FONT SIZE=3>histo</FONT></FONT></H2>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3><I><B>Compute
+and plot and histogram of an x-y file or a pgm image.</B></I></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<HR>
+<H2><A NAME="Aaodto3d"></A><FONT FACE="Times, serif"><FONT SIZE=3>aodto</FONT></FONT></H2>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><I><B>Create a aerosol
+number density 3-d distribution from an aerosol optical depth map , a
+vertical profile model and Shettle and Fenn's (1979) aerosol models. </B></I></FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><IMG SRC="Images/aodto.jpg" NAME="Image48" ALIGN=BOTTOM WIDTH=665 HEIGHT=522 BORDER=0></FONT></FONT></P>
+<H3 STYLE="font-weight: medium"><FONT FACE="Times, serif"><FONT SIZE=3>Input
+files:</FONT></FONT></H3>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>The main input file is an
+aerosol optical depth image of arbitrary statial resolution. </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>The user should also create
+a crossection database file &laquo;&nbsp;.res.bmi&nbsp;&raquo;
+typically generated by the bmies function. The &laquo;&nbsp;.res.bmi&nbsp;&raquo;
+should look like this: </FONT></FONT>
+</P>
+<PRE><FONT FACE="Courier, monospace"><FONT SIZE=2>        4        13         7        12          #types,#R.H.,#wlength,#bins</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>            SULFATE</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 00   Relative Humidity (%)</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>   .44000   .15300E+01   .50000E-02               Wavelength (um),  mr,  mi</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        1   .18050E-06   .69545E-08   .17355E-06 Bin number     ,   C,  Cs, Ca (um^2)</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        2   .18184E-05   .42967E-06   .13887E-05  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        3   .36318E-04   .24972E-04   .11346E-04  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        4   .91238E-03   .83273E-03   .79650E-04  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        5   .84302E-01   .82258E-01   .20437E-02  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        6   .71795E+00   .70078E+00   .17160E-01  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        7   .16891E+01   .15535E+01   .13561E+00  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        8   .68555E+01   .60061E+01   .84942E+00  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        9   .24999E+02   .19899E+02   .50994E+01  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>       10   .95941E+02   .66806E+02   .29134E+02  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>       11   .37380E+03   .22560E+03   .14821E+03  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>       12   .14699E+04   .81874E+03   .65113E+03  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>   .50000   .15300E+01   .50000E-02               Wavelength (um),  mr,  mi</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        1   .15705E-06   .41888E-08   .15286E-06 Bin number     ,   C,  Cs, Ca (um^2)</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        2   .14806E-05   .25990E-06   .12207E-05  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        3   .25355E-04   .15423E-04   .99318E-05  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        4   .61680E-03   .54598E-03   .70820E-04  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        .       .             .            .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        .       .             .            .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        .       .             .            .</FONT></FONT></PRE><P>
+<FONT FACE="Times, serif"><FONT SIZE=3>Finally, the user should
+provide a relative humidity 3D distribution as described below. </FONT></FONT>
+</P>
+<H3><FONT FACE="Times, serif"><FONT SIZE=3>Supported wavelenght:</FONT></FONT></H3>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>Only seven wavelenght are
+supported by aodto3d (440 nm, 500 nm, 550 nm, 670 nm, 860 nm, 940 nm,
+1020 nm). Those key wavelenght was choosen to fit the more common
+satellite and ground based detectors. If the initial optical depth
+map wavelenght dont fit with one of the above wavelenght, the user
+may use angst or speci functions in order to convert AOD values to
+another wavelength. This conversion is based on a pixel by pixel
+Angstrom coefficient interpolation. </FONT></FONT>
+</P>
+<P ALIGN=CENTER><FONT FACE="Times, serif"><FONT SIZE=3><IMG SRC="Images/Angstrom.gif" NAME="Image23" ALIGN=BOTTOM WIDTH=90 HEIGHT=30 BORDER=0></FONT></FONT></P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>If the user dont have AOD
+maps for two different wavelength , the conversion is done by
+assuming a constant Angstrom coefficient value of 1.3 (function
+angst). </FONT></FONT>
+</P>
+<H3><FONT FACE="Times, serif"><FONT SIZE=3>Vertical profile:</FONT></FONT></H3>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>Considering the level of
+uncertainties in aerosol models and the variability in vertical
+profiles, it is recommanded to use simplistic vertical profiles.
+There are three possible vertical profiles functions. </FONT></FONT>
+</P>
+<OL>
+	<LI><P><FONT FACE="Times, serif"><FONT SIZE=3>The simplest is an
+	exponential profile with a 2 km scale height as used in the Second
+	Simulation of the Satellite Signal in the Solar Spectrum (6S)
+	(Vermote <I>et al.,</I> 1997).</FONT></FONT></P>
+	<P ALIGN=CENTER><FONT FACE="Times, serif"><FONT SIZE=3><IMG SRC="Images/profile-exp.gif" NAME="Image24" ALIGN=BOTTOM WIDTH=115 HEIGHT=53 BORDER=0></FONT></FONT></P>
+	<P><FONT SIZE=3><FONT FACE="Times, serif"><I>N<SUB>s</SUB></I>,
+	which vary accordingly to the aerosol model and the size bin, is
+	obtained from the normalization of the profile so that the total
+	integrated optical depth over all size, particle species and <I>z</I>,
+	is equal to the optical depth of the corresponding pixel on the
+	original AOD image. This calculation take into account the relative
+	humidity (<I>RH</I>) effect on aerosol optical properties. Those
+	propreties have to be pre-computed using </FONT></FONT><A HREF="#Abmies"><FONT SIZE=3><FONT FACE="Times, serif">bmies</FONT></FONT></A><FONT SIZE=3><FONT FACE="Times, serif">
+	function. The 3D <I>RH</I> file should come from meteorological
+	observations, forecast, or analyses. In the absence of 3D data, the
+	user may create a <I>RH</I> file with a constant representative <I>RH</I>
+	value. It is simply done by considering the <I>RH</I> 3D
+	distribution as one huge cell like this: </FONT></FONT>
+	</P>
+	<PRE><FONT FACE="Courier, monospace"><FONT SIZE=2># Relative humidity 3-d file for AODSEM</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>12 00 00 15 04 1999   TU (hh mm ss), Date (jj mm yyyy)</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 1                 Number of X cells</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 50.               Largeur de la cellule en degres selon x </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 1                 Number of Y cells</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 50.               largeur de la cellule en degres selon y </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 1                 Number of Z cells</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 50000.            largeur de la couche (m)</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 25. 25. 0.        Position du centre de la cellule inferieure gauche (lat,lon,alt)</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>DATA</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2># Level: 1</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>60 </FONT></FONT></PRE><P>
+	<FONT FACE="Times, serif"><FONT SIZE=3>In the above case, the
+	overall <I>RH</I> value is set to 60. Note that the horizontal
+	extent of the original aerosol optical depth map have to be inside
+	the limits defined by the latitude (X) and longitude (Y) width (here
+	50.) and the lower left cell center position (e.g. 0. to 50. along
+	each axis). </FONT></FONT>
+	</P>
+	<LI><P><FONT FACE="Times, serif"><FONT SIZE=3>The Sturm's (1981)
+	fits to the McClatchey vertical profile data can also be used. This
+	parametrization is separated into 3 vertical zones: a) sea level to
+	<I>L<SUB>1</SUB></I>, b) <I>L<SUB>1</SUB></I> to <I>L<SUB>2</SUB></I>,
+	and c) <I>L<SUB>2</SUB></I> to TO<SPAN STYLE="font-weight: medium">A</SPAN>.
+	Here <I>L<SUB>1</SUB></I>=5.5 km, <I>L<SUB>2</SUB></I>=18 km. </FONT></FONT>
+	</P>
+	<P ALIGN=CENTER><FONT FACE="Times, serif"><FONT SIZE=3><IMG SRC="Images/Sturm.gif" NAME="Image25" ALIGN=BOTTOM WIDTH=237 HEIGHT=73 BORDER=0>.
+	</FONT></FONT>
+	</P>
+	<P><FONT FACE="Times, serif"><FONT SIZE=3>In the Sturm - McClatchey
+	case, <I>H<SUB>2</SUB></I> take the 3.77 km value, and <I>H<SUB>1 </SUB></I>is
+	obtained from a lookup table which link <I>H<SUB>1 </SUB></I>to the
+	total aerosol optical depth. </FONT></FONT>
+	</P>
+	<P><FONT FACE="Times, serif"><FONT SIZE=3>The two values of <I>H<SUB>1
+	</SUB></I>for 23 km and 5 km visibilities reported by McClatchey,
+	fitted by a linear expression give the simple relation: </FONT></FONT>
+	</P>
+	<P ALIGN=CENTER><FONT FACE="Times, serif"><FONT SIZE=3><IMG SRC="Images/H1vsVis.gif" NAME="Image26" ALIGN=BOTTOM WIDTH=129 HEIGHT=13 BORDER=0>,
+	</FONT></FONT>
+	</P>
+	<P><FONT FACE="Times, serif"><FONT SIZE=3>Assuming a constant value
+	for the extinction cross section, the optical depth may be
+	integrated over the vertical profile. </FONT></FONT>
+	</P>
+	<P ALIGN=CENTER><FONT FACE="Times, serif"><FONT SIZE=3><IMG SRC="Images/tauinf_def.gif" NAME="Image27" ALIGN=BOTTOM WIDTH=129 HEIGHT=25 BORDER=0>
+	</FONT></FONT>
+	</P>
+	<P ALIGN=CENTER><FONT FACE="Times, serif"><FONT SIZE=3><IMG SRC="Images/tauinf_a.gif" NAME="Image28" ALIGN=BOTTOM WIDTH=345 HEIGHT=19 BORDER=0>
+	</FONT></FONT>
+	</P>
+	<P><FONT FACE="Times, serif"><FONT SIZE=3>where </FONT></FONT>
+	</P>
+	<P ALIGN=CENTER><FONT FACE="Times, serif"><FONT SIZE=3><IMG SRC="Images/N(0).gif" NAME="Image29" ALIGN=BOTTOM WIDTH=148 HEIGHT=29 BORDER=0></FONT></FONT></P>
+	<P><FONT FACE="Times, serif"><FONT SIZE=3>so that </FONT></FONT>
+	</P>
+	<P ALIGN=CENTER><FONT FACE="Times, serif"><FONT SIZE=3><IMG SRC="Images/tauinf_b.gif" NAME="Image30" ALIGN=BOTTOM WIDTH=312 HEIGHT=19 BORDER=0>.</FONT></FONT></P>
+	<P><FONT FACE="Times, serif"><FONT SIZE=3>The Koschmeider's relation
+	(<I>k<SUB>a</SUB>(0)</I>) give the extinction coefficient for <I>z</I>=0
+	at 550 nm: </FONT></FONT>
+	</P>
+	<P ALIGN=CENTER><FONT FACE="Times, serif"><FONT SIZE=3><IMG SRC="Images/ka(0).gif" NAME="Image31" ALIGN=BOTTOM WIDTH=183 HEIGHT=29 BORDER=0></FONT></FONT></P>
+	<P><FONT FACE="Times, serif"><FONT SIZE=3>where we have included an
+	Angstrom coefficient extrapolation with a=1.3 as done by O'Neill and
+	Freemantle (1995). </FONT></FONT>
+	</P>
+	<P><FONT FACE="Times, serif"><FONT SIZE=3>We finally obtain the TOA
+	aerosol optical depth as a function of the visibility: </FONT></FONT>
+	</P>
+	<P ALIGN=CENTER><FONT FACE="Times, serif"><FONT SIZE=3><IMG SRC="Images/tauinfvsVis.gif" NAME="Image32" ALIGN=BOTTOM WIDTH=696 HEIGHT=29 BORDER=0></FONT></FONT></P>
+	<P><FONT FACE="Times, serif"><FONT SIZE=3>We can then compute values
+	of <I>H<SUB>1 </SUB></I>and the TOA aerosol optical depth by varying
+	the visibility value (<I>Vis</I>) to create the look-up table shown
+	below. </FONT></FONT>
+	</P>
+	<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-style: normal; line-height: 200%">
+	<FONT FACE="Times, serif"><FONT SIZE=3><B>From the original lookup
+	table &laquo;&nbsp;AODSEM/Nesfiles/tau-H1.txt&nbsp;&raquo;:</B></FONT></FONT></P>
+	<CENTER>
+		<TABLE WIDTH=127 BORDER=1 CELLPADDING=2 CELLSPACING=3>
+			<COL WIDTH=74>
+			<COL WIDTH=34>
+			<TR>
+				<TD WIDTH=74>
+					<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>tau inf </FONT></FONT>
+					</P>
+				</TD>
+				<TD WIDTH=34>
+					<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>H1</FONT></FONT></P>
+				</TD>
+			</TR>
+			<TR>
+				<TD WIDTH=74>
+					<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>1.019665 </FONT></FONT>
+					</P>
+				</TD>
+				<TD WIDTH=34>
+					<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.95 </FONT></FONT>
+					</P>
+				</TD>
+			</TR>
+			<TR>
+				<TD WIDTH=74>
+					<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.302904 </FONT></FONT>
+					</P>
+				</TD>
+				<TD WIDTH=34>
+					<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>1.15 </FONT></FONT>
+					</P>
+				</TD>
+			</TR>
+			<TR>
+				<TD WIDTH=74>
+					<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.206892 </FONT></FONT>
+					</P>
+				</TD>
+				<TD WIDTH=34>
+					<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>1.35 </FONT></FONT>
+					</P>
+				</TD>
+			</TR>
+			<TR>
+				<TD WIDTH=74>
+					<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.170069 </FONT></FONT>
+					</P>
+				</TD>
+				<TD WIDTH=34>
+					<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>1.55 </FONT></FONT>
+					</P>
+				</TD>
+			</TR>
+			<TR>
+				<TD WIDTH=74>
+					<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.150605 </FONT></FONT>
+					</P>
+				</TD>
+				<TD WIDTH=34>
+					<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>1.75 </FONT></FONT>
+					</P>
+				</TD>
+			</TR>
+			<TR>
+				<TD WIDTH=74>
+					<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.138115 </FONT></FONT>
+					</P>
+				</TD>
+				<TD WIDTH=34>
+					<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>1.95 </FONT></FONT>
+					</P>
+				</TD>
+			</TR>
+			<TR>
+				<TD WIDTH=74>
+					<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.128856 </FONT></FONT>
+					</P>
+				</TD>
+				<TD WIDTH=34>
+					<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>2.15 </FONT></FONT>
+					</P>
+				</TD>
+			</TR>
+			<TR>
+				<TD WIDTH=74>
+					<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.121207 </FONT></FONT>
+					</P>
+				</TD>
+				<TD WIDTH=34>
+					<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>2.35 </FONT></FONT>
+					</P>
+				</TD>
+			</TR>
+			<TR>
+				<TD WIDTH=74>
+					<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.114395 </FONT></FONT>
+					</P>
+				</TD>
+				<TD WIDTH=34>
+					<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>2.55 </FONT></FONT>
+					</P>
+				</TD>
+			</TR>
+			<TR>
+				<TD WIDTH=74>
+					<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.108027 </FONT></FONT>
+					</P>
+				</TD>
+				<TD WIDTH=34>
+					<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>2.75 </FONT></FONT>
+					</P>
+				</TD>
+			</TR>
+			<TR>
+				<TD WIDTH=74>
+					<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.101902 </FONT></FONT>
+					</P>
+				</TD>
+				<TD WIDTH=34>
+					<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>2.95 </FONT></FONT>
+					</P>
+				</TD>
+			</TR>
+			<TR>
+				<TD WIDTH=74>
+					<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.0959141 </FONT></FONT>
+					</P>
+				</TD>
+				<TD WIDTH=34>
+					<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>3.15 </FONT></FONT>
+					</P>
+				</TD>
+			</TR>
+			<TR>
+				<TD WIDTH=74>
+					<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.09001 </FONT></FONT>
+					</P>
+				</TD>
+				<TD WIDTH=34>
+					<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>3.35 </FONT></FONT>
+					</P>
+				</TD>
+			</TR>
+			<TR>
+				<TD WIDTH=74>
+					<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.0841649 </FONT></FONT>
+					</P>
+				</TD>
+				<TD WIDTH=34>
+					<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>3.55 </FONT></FONT>
+					</P>
+				</TD>
+			</TR>
+		</TABLE>
+	</CENTER>
+	<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>Note: The
+	number density assigned to each vertical level of the model is set
+	to a constant value which correspond to the mean number density of
+	the level. </FONT></FONT>
+	</P>
+	<LI><P><FONT FACE="Times, serif"><FONT SIZE=3>The third and highly
+	suggested profile was inspired by the simple model described in the
+	Standard Radiative Atmosphere report (SRA 1982). </FONT></FONT>
+	</P>
+	<P><FONT FACE="Times, serif"><FONT SIZE=3>In the Planetary Boundary
+	Layer (PBL) from 0 to 2 km altitude we use an exponential profile
+	divided into 8 discrete levels. The next level from 2 km to 12 km
+	have a constant number densite so that the aerosol optical depth of
+	that level for rural model under normal atmospheric conditions is 8
+	time smaller than the PBL aerosol optical depth. </FONT></FONT>
+	</P>
+</OL>
+<P ALIGN=CENTER><FONT FACE="Times, serif"><FONT SIZE=3><IMG SRC="Images/comparaison-profil.jpg" NAME="Image33" ALIGN=BOTTOM WIDTH=316 HEIGHT=495 BORDER=0></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm; font-style: normal"><FONT FACE="Times, serif"><FONT SIZE=3><B>Vertical
+levels of the model:</B> </FONT></FONT>
+</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<CENTER>
+	<TABLE WIDTH=300 BORDER=1 CELLPADDING=3 CELLSPACING=3 BGCOLOR="#ffffff">
+		<COL WIDTH=38>
+		<COL WIDTH=70>
+		<COL WIDTH=79>
+		<COL WIDTH=72>
+		<TR>
+			<TD WIDTH=38>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>Level</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=70>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>Height limit </FONT></FONT>
+				</P>
+			</TD>
+			<TD WIDTH=79>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>Mean height </FONT></FONT>
+				</P>
+			</TD>
+			<TD WIDTH=72>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>Level width</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=38>
+				<P><BR>
+				</P>
+			</TD>
+			<TD WIDTH=70>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>(km)</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=79>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>(km)</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=72>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>(km)</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=38>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=70>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=79>
+				<P><BR>
+				</P>
+			</TD>
+			<TD WIDTH=72>
+				<P><BR>
+				</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=38>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>1</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=70>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.165</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=79>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.0825</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=72>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.165</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=38>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>2</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=70>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.345</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=79>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.255</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=72>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.180</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=38>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>3</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=70>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.542</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=79>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.4435</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=72>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.197</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=38>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>4</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=70>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.760</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=79>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.651</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=72>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.218</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=38>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>5</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=70>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>1.006</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=79>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.883</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=72>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.246</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=38>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>6</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=70>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>1.286</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=79>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>1.146</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=72>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.280</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=38>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>7</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=70>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>1.611</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=79>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>1.4485 </FONT></FONT>
+				</P>
+			</TD>
+			<TD WIDTH=72>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.325</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=38>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>8</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=70>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>2.000</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=79>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>1.8055</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=72>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.389</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=38>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>9</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=70>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>12.000</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=79>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>7.000</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=72>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>10.000</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=38>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>10</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=70>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>30.000</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=79>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>21.000</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=72>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>18.000</FONT></FONT></P>
+			</TD>
+		</TR>
+	</TABLE>
+</CENTER>
+<H3><FONT FACE="Times, serif"><FONT SIZE=3>The local aerosol model</FONT></FONT></H3>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>The local aerosol model is
+choosen from a combination of three initial Shettle and Fenn's (1979)
+basic models (rural, urban, oceanic) themself obtained from a mix of
+the 4 original particle type: 1- SULFATE (<I>SU</I>), 2-BLACKCARBON
+(<I>BC</I>), 3- SOILDUST (<I>SD</I>), 4- SEASALT (<I>SS</I>). </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>In order to determine the
+particle type ratios (<I>R<SUB>S</SUB></I>) wich define the particle
+species relative contribution to the aerosol number density, let us
+introduce the land ratio (<I>R<SUB>l</SUB></I>) and the urban ratio
+(<I>R<SUB>u</SUB></I>) wich represent respectively the fraction of
+the aerosol model from land origin (rural or urban) and the fraction
+of the land aerosol model that come from urban origin. </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>The <I>SS</I> contribution
+is then obtained from the equation below: </FONT></FONT>
+</P>
+<P ALIGN=CENTER><FONT FACE="Times, serif"><FONT SIZE=3><IMG SRC="Images/RSS.gif" NAME="Image34" ALIGN=BOTTOM WIDTH=81 HEIGHT=13 BORDER=0>,</FONT></FONT></P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>and for the three other one
+species: </FONT></FONT>
+</P>
+<P ALIGN=CENTER><FONT FACE="Times, serif"><FONT SIZE=3><IMG SRC="Images/RS.gif" NAME="Image35" ALIGN=BOTTOM WIDTH=206 HEIGHT=14 BORDER=0>,</FONT></FONT></P>
+<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>where <I>T</I>
+may take the value <I>SU</I>, <I>BC</I>, or <I>SD</I>. <I>R<SUB>Surban</SUB></I>
+or <I>R<SUB>Srural </SUB></I>is the <I>R<SUB>S</SUB></I> values that
+is given in the table below for the corresponding model. </FONT></FONT>
+</P>
+<P STYLE="margin-bottom: 0cm; font-style: normal"><FONT FACE="Times, serif"><FONT SIZE=3><B>Shettle
+and Fenn's model caracteristics for 0% relative humidity</B> :</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
+</P>
+<TABLE WIDTH=761 BORDER=1 CELLPADDING=2 CELLSPACING=3>
+	<COL WIDTH=112>
+	<COL WIDTH=62>
+	<COL WIDTH=64>
+	<COL WIDTH=63>
+	<COL WIDTH=60>
+	<COL WIDTH=61>
+	<COL WIDTH=42>
+	<COL WIDTH=57>
+	<COL WIDTH=61>
+	<COL WIDTH=40>
+	<COL WIDTH=57>
+	<TR>
+		<TD WIDTH=112>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>Model name</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=62>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>SU ratio
+			(<I>R<SUB>SU</SUB></I>)</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=64>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>BC ratio
+			(<I>R<SUB>BC</SUB></I>)</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=63>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>SD ratio
+			(<I>R<SUB>SD</SUB></I>)</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=60>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>SS ratio
+			(<I>R<SUB>SS</SUB></I>)</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=61>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3><I>N<SUB>1</SUB></I></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=42>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3><I>r<SUB>1</SUB>
+			</I>(um)</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=57>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3><I>log(sig<SUB>1</SUB>)</I></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=61>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3><I>N<SUB>2</SUB></I></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=40>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3><I>r<SUB>2
+			</SUB></I>(um)</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=57>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3><I>log(sig<SUB>2</SUB>)</I></FONT></FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=112>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>RURAL</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=62>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.7</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=64>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.0</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=63>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.3</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=60>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.0</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=61>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.999875</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=42>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.027</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=57>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.35</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=61>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.000125</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=40>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.43</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=57>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.4</FONT></FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=112>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>URBAN</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=62>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.56</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=64>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.2</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=63>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.24</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=60>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.0</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=61>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.999875</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=42>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.025</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=57>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.35</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=61>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.000125</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=40>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.4</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=57>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.4</FONT></FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=112>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>MARITIME</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=62>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.0</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=64>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.0</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=63>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.0</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=60>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>1.0</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=61>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>1.0</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=42>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.16</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=57>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.4</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=61>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.0</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=40>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>-</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=57>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>-</FONT></FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=112>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>Troposphere
+			(z&gt;2km)</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=62>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.7</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=64>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.0</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=63>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.3</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=60>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.0</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=61>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.0</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=42>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>1.0</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=57>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.027</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=61>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>0.35</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=40>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>-</FONT></FONT></P>
+		</TD>
+		<TD WIDTH=57>
+			<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>-</FONT></FONT></P>
+		</TD>
+	</TR>
+</TABLE>
+<P ALIGN=LEFT><FONT FACE="Times, serif"><FONT SIZE=3>From tables 1
+and 2 of Shettle and Fenn (1979). </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>A urban mask derived from
+GEIA fossil fuel back carbon emission inventory is used to determine
+<I>R<SUB>u</SUB></I>. </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><B><SPAN STYLE="font-style: normal">GEIA
+intentory: Fossil fuel black carbon emissions (tonnes/1 x 1 deg)</SPAN>:</B></FONT></FONT></P>
+<P ALIGN=CENTER><FONT FACE="Times, serif"><FONT SIZE=3><IMG SRC="Images/FFbc.gif" NAME="Image36" ALIGN=BOTTOM WIDTH=700 HEIGHT=441 BORDER=0>
+</FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>We have chosen 4 urban
+categories (100% urban (<I>R<SUB>u</SUB></I>=1.), 66% urban
+(<I>R<SUB>u</SUB></I>=0.66), 22% urban (<I>R<SUB>u</SUB></I>=0.22)
+and 0% urban (<I>R<SUB>u</SUB></I>=0.)) in order to minimise
+discontinuities. The 100% case correspond to an annual fossil fuel
+emission rate greater or equal to 3000 tons/1 x1 deg. The 66% and 22%
+cases prevail for respective emission rate values ranging between
+1000-3000 tons/1 x1 deg. and 300-1000 tons/1 x1 deg.. Finally the 0%
+case correspond to all emissions rates below 300 tons/1 x1 deg.. </FONT></FONT>
+</P>
+<P STYLE="font-style: normal"><FONT FACE="Times, serif"><FONT SIZE=3><B>1
+x1 degrees urban mask used by aodto3d:</B></FONT></FONT></P>
+<P ALIGN=CENTER><FONT FACE="Times, serif"><FONT SIZE=3><IMG SRC="Images/urbanmask.gif" NAME="Image37" ALIGN=BOTTOM WIDTH=600 HEIGHT=300 BORDER=0>
+</FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>Similarly, the <I>R<SUB>l</SUB></I>
+value is extracted from the land-sea mask shown below. This map is
+derived from a 1 x 1 degree world map gradually changing from land
+model to sea model over 3 degrees (100% land (<I>R<SUB>l</SUB></I>=1.),
+66% land 34% sea (<I>R<SUB>l</SUB></I>=0.66), 34% land 66% (<I>R<SUB>l</SUB></I>=0.34),
+0% land (<I>R<SUB>l</SUB></I>=0.)). Aerosols could rarely stay in the
+atmosphere more than a few days since they are likely removed by dry
+or wet deposition The latter process occur when waterdrops capture
+aerosols (in-cloud and under cloud). The 3 degree mixed zone
+correspond approximatly to a 2 days stay at about 10 km/h wind speed.
+</FONT></FONT>
+</P>
+<P STYLE="font-style: normal"><FONT FACE="Times, serif"><FONT SIZE=3><B>Land
+sea mask used by Aaodto3d:</B></FONT></FONT></P>
+<P ALIGN=CENTER><FONT FACE="Times, serif"><FONT SIZE=3><IMG SRC="Images/land-sea.gif" NAME="Image38" ALIGN=BOTTOM WIDTH=600 HEIGHT=300 BORDER=0>
+</FONT></FONT>
+</P>
+<H3><FONT FACE="Times, serif"><FONT SIZE=3>Shettle and Fenn's aerosol
+model particle size distribution (PSD)</FONT></FONT></H3>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>As Shettle and Fenn (1979),
+we used a bi-modal log normal size distribution: </FONT></FONT>
+</P>
+<P ALIGN=CENTER><FONT FACE="Times, serif"><FONT SIZE=3><IMG SRC="Images/lognorm_eqn.gif" NAME="Image39" ALIGN=BOTTOM WIDTH=357 HEIGHT=39 BORDER=0></FONT></FONT></P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><I>r</I> is the geometric
+radius, <BR><I>r<SUB>i </SUB></I>is the geometric mean radius <BR><I>sigma</I>
+is the geometric standard deviation </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>following usual
+conventions, log is the logarithm to the base 10 and ln the logarithm
+to the base e. </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>In AODSEM, we have choosen
+12 size bins which are the same as those adopted for NARCM. Radius
+limits are shown in table below. In order to put the size
+distribution information into the output 3D distribution, we compute
+the size distribution value for the center radius of each bin x the
+bin width and apply this result to define the number density fraction
+for each bins (<I>R<SUB>b</SUB></I>) giving the total number density
+fraction of each particle species for each size bins. </FONT></FONT>
+</P>
+<P ALIGN=CENTER><FONT FACE="Times, serif"><FONT SIZE=3><IMG SRC="Images/Rb.gif" NAME="Image40" ALIGN=BOTTOM WIDTH=123 HEIGHT=32 BORDER=0></FONT></FONT></P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>where 
+<IMG SRC="Images/rmoyenb.gif" NAME="Image41" ALIGN=BOTTOM WIDTH=75 HEIGHT=25 BORDER=0>
+and 
+<IMG SRC="Images/deltarb.gif" NAME="Image42" ALIGN=BOTTOM WIDTH=81 HEIGHT=13 BORDER=0>.
+</FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>This fraction is applied to
+the previously defined particle type fractions <I>R<SUB>S</SUB></I>
+giving the global ratio <I>R<SUB>G</SUB></I>. </FONT></FONT>
+</P>
+<P ALIGN=CENTER><FONT FACE="Times, serif"><FONT SIZE=3><IMG SRC="Images/RG.gif" NAME="Image43" ALIGN=BOTTOM WIDTH=78 HEIGHT=13 BORDER=0></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm; font-style: normal"><FONT FACE="Times, serif"><FONT SIZE=3><B>Size
+bins definition:</B></FONT></FONT></P>
+<CENTER>
+	<TABLE WIDTH=402 BORDER=1 CELLPADDING=2 CELLSPACING=3>
+		<COL WIDTH=98>
+		<COL WIDTH=130>
+		<COL WIDTH=148>
+		<TR>
+			<TD WIDTH=98>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>Bin number (<I>b</I>)</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=130>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>minimum radius (<I>r<SUB>b</SUB></I>)</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=148>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>maximum radius (<I>r<SUB>b+1</SUB></I>)</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=98>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>(units)</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=130>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>(micons)</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=148>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>(microns)</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=98>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>1</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=130>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.005</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=148>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.01</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=98>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>2</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=130>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.01</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=148>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.02</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=98>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>3</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=130>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.02</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=148>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.04</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=98>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>4</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=130>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.04</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=148>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.08</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=98>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>5</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=130>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.08</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=148>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.16</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=98>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>6</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=130>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.16</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=148>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.32</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=98>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>7</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=130>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.32</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=148>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.64</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=98>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>8</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=130>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.64</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=148>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>1.28</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=98>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>9</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=130>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>1.28</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=148>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>2.56</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=98>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>10</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=130>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>2.56</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=148>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>5.12</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=98>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>11</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=130>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>5.12</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=148>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>10.24</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=98>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>12</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=130>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>10.24</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=148>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>20.48</FONT></FONT></P>
+			</TD>
+		</TR>
+	</TABLE>
+</CENTER>
+<P><BR><BR>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><B>Example of output 3-D
+file: </B></FONT></FONT>
+</P>
+<PRE><FONT FACE="Times, serif"><FONT SIZE=2> <FONT FACE="Courier, monospace">3-d aerosol distribution file for AODSEM from aodto3d.f</FONT></FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> Units of 1.e+4 part/m^3</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 0 0 0 1 1 2000TU (hh mm ss), Date (jj mm yyyy)</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 12  Number of size bins</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 1  0.00499999989  0.00999999978</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 2  0.00999999978  0.0199999996</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 3  0.0199999996  0.0399999991</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 4  0.0399999991  0.0799999982</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 5  0.0799999982  0.159999996</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 6  0.159999996  0.319999993</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 7  0.319999993  0.639999986</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 8  0.639999986  1.27999997</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 9  1.27999997  2.55999994</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 10  2.55999994  5.11999989</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 11  5.11999989  10.2399998</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 12  10.2399998  20.4799995</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 6  Number of X cells</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  4.  Size of X cell</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 11  Number of Y cells</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  4.  Size of Y cell</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 10  Number of Z cells</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  165.</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  180.</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  197.</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  218.</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  246.</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  280.</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  325.</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  389.</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  10000.</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  18000.</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  33.  267.  0.  X0, Y0, Z0</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 4  Number of aerosol types</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> SULFATE        </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> BLACKCARBON    </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> SOILDUST       </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> SEASALT        </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> DATA</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2># AEROSOL TYPE: SULFATE   SIZE BIN:  1 VERTICAL LEVEL:  1</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 46478 46478 56263 314 51371 41586 36693 46478 36693 236 0 80726 85116 64482</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 54165 36693 36693 41586 1276 0 662 173 100295 95403 66048 47320 72225 56263</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 1182 2884 454 0 0 110080 105188 56263 47320 42339 198 0 0 0 0 0 100295 80726</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 61156 41586 520 0 0 0 0 0 0 90510 70941 61156 1466 0 0 0 0 0 0 0</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2># AEROSOL TYPE: SULFATE   SIZE BIN:  1 VERTICAL LEVEL:  2</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> # AEROSOL TYPE: SEASALT   SIZE BIN: 12 VERTICAL LEVEL: 10</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 11 6 1000000</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0</FONT></FONT></PRE>
+<HR>
+<H2><A NAME="Aderes"></A><FONT FACE="Times, serif"><FONT SIZE=3>deres</FONT></FONT></H2>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><B><I>Reduce the horizontal
+resolution of a 3D aerosol distribution.</I></B> </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>The user select the size of
+the number density averaging box (2x2 to 10x10). The vertical
+resolution is not modified. </FONT></FONT>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3><B><I>Aerosol
+optical depth from full resolution 3D distribution and 6 x 6 cells
+averaging box.</I></B> </FONT></FONT>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3><IMG SRC="Images/demo_1.gif" NAME="Image44" ALIGN=BOTTOM WIDTH=250 HEIGHT=250 BORDER=0>
+<IMG SRC="Images/demo_6.gif" NAME="Image45" ALIGN=BOTTOM WIDTH=250 HEIGHT=250 BORDER=0></FONT></FONT></P>
+<HR>
+<H2 ALIGN=JUSTIFY STYLE="margin-top: 0cm; margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3>matin</FONT></FONT></H2>
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3><B><I>AOD
+Spatio-temporal linear interpolator.</I></B></FONT></FONT></P>
+<HR>
+<H2><A NAME="Aatmo"></A><FONT FACE="Times, serif"><FONT SIZE=3>dynam</FONT></FONT></H2>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3>
+<B><I>Semi-Lagrangian-Eularian aerosol transport model.</I></B></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3>Wind
+drag, buoyancy and gravitational forces condition TM dynamics.
+Important meteorological variables are analysed winds, geopotential
+height, dew point depression, and temperature. This dataset was
+acquired from the Canadian meteorological centre Global Environmental
+Multi-scale model (GEM) [4]. Vertical winds and relative humidity
+fields are computed from GEM variables. Relative humidity is
+particularly important since it affects aerosol mechanical and
+optical properties (hygroscopic growth). In the TM, each particle
+size for each particle type (black carbon, sulphate, sea salt and
+soil dust) is considered as a particular tracer for each model grid
+point (12 size bins 0.005-20.24 mm are used to define the size
+distribution). One important tracer property is the number of
+particles inside the initial grid cell. The results of the dynamical
+computations used to transport the tracers in 3D space defined a new
+spreading of tracers that are resampled onto the initial model grid
+after each time step. This process results in time variations of the
+particle number density tracer property. During each time step, dry
+removal, wet scavenging (in-cloud and under cloud) effects and
+emission inputs are computed and applied to the particle budget in
+each grid cell. Dynam account for aerosol emissions of sulfate and
+black carbon (based on the Global Emission Inventory activity (GEIA)
+and sea salt emission rates given by surface winds as parametrized by
+Mohahan <I>et al</I>., 1986.  Domain frontiers are filled  using the
+Global Aerosol Data Set (GADS) aerosol background.</FONT></FONT></P>
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3><IMG SRC="Images/circul2.jpg" NAME="Image47" ALIGN=BOTTOM WIDTH=665 HEIGHT=416 BORDER=0></FONT></FONT></P>
+<HR>
+<H2><A NAME="A3dtoaod"></A><FONT FACE="Times, serif"><FONT SIZE=3>3dtoa</FONT></FONT></H2>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><B><I>Make an optical depth
+map and simulate sunphotometer optical depth observation from a 3-D
+aerosol distribution.</I></B> </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><B>Inputs:</B> </FONT></FONT>
+</P>
+<OL>
+	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3>&laquo;&nbsp;NAME1.res.bmi&nbsp;&raquo;
+	is an optical extinciton cross section file produce by function
+	bmies. </FONT></FONT>
+	</P>
+	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3>&laquo;&nbsp;NAME2.dat&nbsp;&raquo;
+	is a 3-D aerosol distribution generated by aodto, deres, or dynam
+	functions. </FONT></FONT>
+	</P>
+	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3>&laquo;&nbsp;NAME2.rhu&nbsp;&raquo;
+	is a 3-D relative humidity file. </FONT></FONT>
+	</P>
+	<LI><P><FONT FACE="Times, serif"><FONT SIZE=3>&laquo;&nbsp;NAME2.vis&nbsp;&raquo;
+	is an observing output definition file. </FONT></FONT>
+	</P>
+	<P><FONT FACE="Times, serif"><FONT SIZE=3><B>ex.:</B> </FONT></FONT>
+	</P>
+	<PRE><FONT FACE="Courier, monospace"><FONT SIZE=2> 1      Number of sights</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 90.    ANGLE ELEVATION PHOTOMETRE</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 0.     ANGLE AZIMUT PHOTOMETRE</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 33.    Lattitude PHOTOMETRE (degres)</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 267.   Longitude PHOTOMETRE (degres)</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 0.     Z PHOTOMETRE (metre)</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 1      Number of slices</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 3      Integration Axis(1=lat,2=lon,3=height)</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 1      from line/column/level #</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 10     to</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 45.    ANGLE ELEVATION SOLEIL</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 0.     ANGLE AZIMUT SOLEIL</FONT></FONT></PRE>
+</OL>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><B>outputs:</B></FONT></FONT></P>
+<OL>
+	<LI><P><FONT FACE="Times, serif"><FONT SIZE=3>&laquo;&nbsp;NAME2.pho&nbsp;&raquo;
+	is a file describing instrumental observation simulations like
+	sunphotometer position and viewing angle and integrated optical
+	depth along observing direction for all key wavelength. </FONT></FONT>
+	</P>
+	<P><FONT FACE="Times, serif"><FONT SIZE=3>ex.: </FONT></FONT>
+	</P>
+	<PRE><FONT FACE="Courier, monospace"><FONT SIZE=2>  33.  267.  photometer position (lat,long)</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  0.  photometer height (meter)</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  90.  0.  elevation, Azimut sight</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> tau(400       nm):  0.266147971</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> tau(500       nm):  0.231571108</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> tau(550       nm):  0.20745036</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> tau(670       nm):  0.165138707</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> tau(860       nm):  0.117821559</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> tau(940       nm):  0.104450308</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> tau(1020      nm):  0.0925710052</FONT></FONT>
+<FONT FACE="Times, serif"><FONT SIZE=3> </FONT></FONT></PRE>
+	<LI><P><FONT FACE="Times, serif"><FONT SIZE=3>&laquo;&nbsp;NAME2XXX_NN.pgm&nbsp;&raquo;
+	are AOD images for slice number NN at wavelength XXX (in nanometer).
+	</FONT></FONT>
+	</P>
+</OL>
+<HR>
+<H2><A NAME="inspect"></A><FONT FACE="Times, serif"><FONT SIZE=3>inspe</FONT></FONT></H2>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3><B><I>Inspect
+3-D aerosol number density file slice by slice and generate a
+&laquo;&nbsp;</I><SPAN STYLE="font-style: normal">.pgm</SPAN><I>&nbsp;&raquo;
+image for each desired vertical level, particle type ,and size bin.</I></B>
+</FONT></FONT>
+</P>
+<HR>
+<H2><A NAME="gemto"></A><FONT FACE="Times, serif"><FONT SIZE=3>gemto</FONT></FONT></H2>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><I><B>Convert GEM CMC
+meteorological variables output lat-lon files into AODSEM compatible
+meteorological file. </B></I></FONT></FONT>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3>Conversion
+incluide (i) the computation of Relative humidity files from original
+GEM ES (dew point depression) and TT (temperature), and (ii) the
+computation of vertical velocity from pressure field (from GZ,
+geopotential height), horizontal wind speed fields (VV and UU) and
+time derivative of pressure field. </FONT></FONT>
+</P>
+<HR>
+<H2><A NAME="prind"></A><FONT FACE="Times, serif"><FONT SIZE=3>prind</FONT></FONT></H2>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3><B><I>Create
+a precipitation index file &laquo;&nbsp;</I><SPAN STYLE="font-style: normal">precip.index</SPAN><I>&nbsp;&raquo;
+for AODSEM function </I><SPAN STYLE="font-style: normal">dynam</SPAN><I>.</I></B>
+</FONT></FONT>
+</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3>ex.:</FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3>3
+number of files</FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3>03
+00 00 23 06 1997 1997062303.PR</FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3>09
+00 00 23 06 1997 1997062309.PR</FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3>15
+00 00 23 06 1997 1997062315.PR</FONT></FONT></P>
+<HR>
+<H2><A NAME="rhuin"></A><FONT FACE="Times, serif"><FONT SIZE=3>rhuin</FONT></FONT></H2>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3><B><I>Create
+a relative humidity index file &laquo;&nbsp;</I><SPAN STYLE="font-style: normal">relhum.index</SPAN><I>&nbsp;&raquo;
+for AODSEM function </I><SPAN STYLE="font-style: normal">dynam</SPAN><I>.</I></B>
+</FONT></FONT>
+</P>
+<HR>
+<H2><A NAME="wspin"></A><FONT FACE="Times, serif"><FONT SIZE=3>wspin</FONT></FONT></H2>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3><B><I>Create
+a wind speed index file &laquo;&nbsp;</I><SPAN STYLE="font-style: normal">wspeed.index</SPAN><I>&nbsp;&raquo;
+for AODSEM function </I><SPAN STYLE="font-style: normal">dynam</SPAN><I>.</I></B>
+</FONT></FONT>
+</P>
+<HR>
+<H2><A NAME="datas"></A><FONT FACE="Times, serif"><FONT SIZE=3>datas</FONT></FONT></H2>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><B><I>Data assimilation
+system.</I></B> </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>In order to ensure that the
+model follow realistic AOD spatio-temporal evolution, we implemented
+a data assimilation system into AODSEM. Data assimilation is a method
+of producing gridded analyses products from raw observations and a
+prior knowledge of the evolving atmospheric state given by a model.
+Figure 1 shows the conceptual data assimilation process. As a
+preliminary step, the first dataset is resampled to obtain a complete
+but crude AOD model initialisation map. Those AOD values are
+converted into a 3D size-type segregated aerosol number density
+distribution. This is done by employing the AODSEM optical module
+that uses simple aerosol models [5] and a specific vertical profile
+[6]. The TM transforms this initial distribution into physically
+significant distributions at each time step. The <FONT COLOR="#000000">incremental
+</FONT>AOD <FONT COLOR="#000000">for each layer</FONT> of these
+distributions are vertically <FONT COLOR="#000000">summed</FONT> to
+yield AOD background fields. The background field acts as a first
+guess AOD map for the next observation time and is substracted from
+the observations to produce the observation increment field. The
+observation increment field is interpolated on the analysis grid to
+give the analysis increment field. The output AOD analysis field for
+each time step are finally obtained by equally distributing the
+analysis increment onto the background fields at all intermediate
+time steps. The proper redistribution fraction for each intermediate
+time step is given by the ratio of the time elapsed since the first
+observation over the total time between the two observations. The
+data assimilation process is run again and again using the previous
+analysis as a new initialisation over the whole experimental period. </FONT></FONT>
+</P>
+<P ALIGN=CENTER><BR><BR>
+</P>
+<P ALIGN=CENTER><FONT FACE="Times, serif"><FONT SIZE=3><IMG SRC="Images/assimil.jpg" NAME="Image46" ALIGN=BOTTOM WIDTH=800 HEIGHT=492 BORDER=0><BR>Conceptual
+representation of the AOD data Assimilation Process</FONT></FONT></P>
+<P ALIGN=CENTER><BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><BR>
+</P>
+</BODY>
+</HTML>

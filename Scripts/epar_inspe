@@ -1,0 +1,43 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *              Edit parameter for inspe               *"
+echo " *                                                     *"
+echo " *          Inspect an aerosol 3D distribution         *"
+echo " *                                                     *"
+echo " *     Martin Aube 2000                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f inspect3d.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more inspect3d.par
+fi 
+ls *.dat
+echo " "
+echo " New parameters:"
+echo " "
+echo "Root name of the file (.dat will be added) ?"  
+read nom
+echo "Level to extract?"
+read level
+echo "Aerosol type (1=Sulf,2=BlkCarb.,3=SoilDust,4=SeaSalt,5=org.carbon)?"
+read type
+echo "Size bin to extract (1-12)?"
+read bin
+echo "Scaling factor (1-100)?"
+read scale
+
+
+echo $nom "   Root name of the file"  > inspect3d.par
+echo $level "   Level">> inspect3d.par
+echo $type "   Aerosol type">> inspect3d.par
+echo $bin "   Size bin">> inspect3d.par
+echo $scale "    scaling factor">> inspect3d.par
+
+
+echo "Done"

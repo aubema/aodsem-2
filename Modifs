@@ -1,0 +1,88 @@
+Modifications depuis la version 1.0
+
+- 19-04-2002 Change le device de sortie de pgplot de gif vert /VPS (vertical 
+postscript)
+pour les fonctions plotf et conto et histo ces scripts creeront ensuite
+un fichier jpg a partir du ps pour le benefice de l'usager.  Pour recompiler 
+un code
+utilisant pgplot (ici plotfile.f) il faut faire:
+g77 Source/plotfile.f -L /usr/local/pgplot -lpgplot -L /usr/X11R6/lib -lX11 -o 
+Bin/plotfile
+
+- 19-04-2002 Remplace kghostview par gv comme application de visualisation 
+appelee par le 
+file browser pour les fichiers .ps et .pdf
+
+- 05-2002 Le programme hum initialement compile a partir de filzro.f hum.f et 
+aeroprop.f est
+remplace par uniquement hum.f auquel nous avons ajoute les organic carbon 
+(OMCARBON).  Le facteur
+de croissance hygrometrique est pris identique aux sulfates (en accord avec 
+Lessins auteur de
+AEROPROP.F).  
+
+- 09-2002 Calcul des sections efficaces avec bmies en considerant les 
+changements a hum.f
+et en portant une correction importante aux indices de refractions du sulfates 
+qui
+etaient confondus dans la version 1.0 avec les WaterSoluble.  Dorenavant 
+l'indice de refraction 
+des sulfates correspond au sulfates de OPAC et les organic carbon sont 
+consideres  comme
+les water soluble de OPAC (tel que suggere par Lessins 2002, communication 
+personnelle).
+Ces donnees optiques sont disponibles dans le repertoire 
+AODSEM1.01/Examples/bmies sous le fichier
+newdemo.*.bmi  Les fichiers resultats .res.bmi et .pfc.bmi correspondent a un 
+calcul de Mie 
+ou l'intervalle de taille est subdivise en un nombre de sous intervalle en 
+sommant avec une 
+ponderation constante sur chaque intervalle.  Il est possible de faire le meme 
+genre de calcul
+a partir d'une ponderation moment 0 et moment 1 en log(r) (fichiers 
+newmnt0.*.bmi et newmnt1.*.bmi).
+ En modifiant le code numerique de la deuxieme ligne du fichier .bns.bmi  De 
+plus 7 nouvelle 
+longueur d'ondes ont ete ajoutees pour satisfaire aux specifications du 
+systeme 
+NOMAD (O'Neill et al, 2002)
+
+- 09-2002 Ajout de la fonction ls au debut du script bmies
+
+- 09-2002 Ajout de la fonction op2na et du programme opt2narcm.f qui convertit 
+les 
+fichiers .res.bmi en format .dat de NARCM
+
+- 09-2002 ajout d'un programme de cross-correlation nomme cross et son editeur 
+de 
+parametres epar_cross.  cross appelle crosscorrelation.f pour le calcul.
+
+- 09-2002 ajout de randm et epar_randm commandant randommask.f un programme 
+permettant 
+de masquer un pourcentage de la surface d'une image d'aod par une selection 
+aleatoire 
+de pixels
+
+-09-2002 L'integration des 14 longueurs d'ondes et des 5 types d'aerosols a ete
+terminee.  Une nouvelle base de donnee d'exemples sera produite dans le 
+repertoire
+AODSEM1.01/Examples.  Il y a une sous-repertoire pour chaque fonction du 
+modele. 
+Certaines fonctions ne se pretent pas tres bien a ce genre d'exemples mais dans
+dans chaque repertoire il y aura minimalement un fichier README qui decrit 
+brievement la fonction (a terminer).
+
+-11-2002 remplacement de la copie locale des executables et des fichiers 
+necessaires
+a l'execution par un ln -s qui permet d'accelerer le processus.
+
+-11-2002 Integration des fonctions narcmaod2aodsem, geia2pgm et cmbgeiapgm 
+(narca, geia2, cmbge) dans le modele.
+
+-11-2002 Ajout du cloud scheme pour introduire la matrice cloudfraction(x,y,z)
+ et la matrice cloud(x,y).  Change la detection du bas et haut du nuage a l'aide
+de cloudfraction. Ajout du lien symbolique vers le fichier land-sea.txt dans dynam.
+
+-12-2002 Ajout du script makeAODSEM qui compile automatiquement le progiciel
+
+-12-2002 remplace la compression .Z par la compression gzip

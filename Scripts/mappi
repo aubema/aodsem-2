@@ -1,0 +1,69 @@
+#!/bin/bash
+clear
+echo "      Aerosol mapping functions"
+PS3="Select an function: "
+select function in Exit Help epar_inter inter epar_compo compo drawa epar_reada reada epar_writa writa epar_color color patmo epar_calib calib epar_angst angst epar_speci speci epar_simar simar epar_aodar aodar epar_diffu diffu epar_stati stati epar_corco corco nodat xytto epar_buffe buffe matin epar_filte filte epar_aodal aodal epar_timse timse epar_tidif tidif conto toms2 epar_compc compc 2doy2 echel fanet epar_randm randm epar_cross cross epar_narca narca epar_2aod2 2aod2
+do   case "$function" in 
+   Exit) clear;echo "AODSEM CONTROL CENTER";exit;;
+   Help) infor;;      
+   epar_inter) epar_inter;;    
+   inter) inter;;
+   epar_compo) epar_compo;;
+   compo) compo;;
+   drawa) drawa;;
+   epar_reada) epar_reada;;
+   read) reada;;   
+   epar_writa) epar_writa;;
+   writa) writa;;
+   epar_color) epar_color;;
+   color) color;;
+   patmo) patmo;;
+   epar_calib) epar_calib;;
+   calib) calib;;
+   epar_angst) epar_angst;;
+   angst) angst;;
+   epar_speci) epar_speci;;
+   speci) speci;; 
+   epar_simar) epar_simar;;
+   simar) simar;;
+   epar_aodar) epar_aodar;;
+   aodar) aodar;;
+   epar_diffu) epar_diffu;;
+   diffu) diffu;;
+   epar_stati) epar_stati;;
+   stati) stati;;
+   epar_corco) epar_corco;;
+   corco) corco;;
+   nodat) nodat;;
+   xytto) xytto;;
+   epar_buffe) epar_buffe;;
+   buffe) buffe;;
+   matin) matin;;
+   epar_filte) epar_filte;;
+   filte) filte;;  
+   epar_aodal) epar_aodal;;
+   aodal) aodal;;
+   epar_timse) epar_timse;;
+   timse) timse;;
+   epar_tidif) epar_tidif;;
+   tidif) tidif;;
+   conto) conto;;
+   toms2) toms2;;
+   epar_compc) epar_compc;;
+   compc) compc;;
+   2doy2) 2doy2;;
+   echel) echel;;
+   fanet) fanet;;
+   epar_randm) epar_randm;;
+   randm) randm;;
+   epar_cross) epar_cross;;
+   cross) cross;;
+   epar_narca) epar_narca;;
+   narca) narca;;
+   epar_2aod2) epar_2aod2;;
+   2aod2) 2aod2;;
+esac
+done
+
+
+

@@ -1,0 +1,34 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *              Edit parameter for buffe               *"
+echo " *                                                     *"
+echo " *                 Apply a buffer mask                 *"
+echo " *                                                     *"
+echo " *     Martin Aube 2000                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f mkbuffer.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more mkbuffer.par
+fi 
+echo " "
+echo " New parameters:"
+echo " "
+ls *.pgm
+echo "Root name of the AOD file (.pgm will be added)?"  
+read nom
+echo "Buffer width in pixels?"
+read buffer
+
+
+
+echo $nom "   Root name of the file"  > mkbuffer.par
+echo $buffer "   Buffer width in pixels" >> mkbuffer.par
+
+echo "Done"

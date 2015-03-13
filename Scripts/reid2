@@ -1,0 +1,40 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                   reid2                      *"
+echo "*                                              *"
+echo "*      Convert Jeff Reid ABBA files into       *"
+echo "*            Elaine Prins ABBA format          *"
+echo "*                                              *"
+echo "*     Martin Aube 2003                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+ls *.pgm
+if [ -f reid2abba.par ] 
+   then
+      echo " Reading parameter file."  
+   else
+      echo " No parameter file found!"
+      epar_reid2
+fi 
+echo " Preparing input files..."
+ln -s ~/AODSEM/Bin/readaod reid2abba 
+echo " Executing reid2abba..."
+./reid2abba
+
+echo " Deleting temporary files in " $folder
+rm -f reid2abba
+
+if [ -f core ] 
+   then   echo "******** An error occured during execution of reid2! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of reid2." 
+fi
+

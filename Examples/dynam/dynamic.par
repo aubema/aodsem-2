@@ -1,0 +1,8 @@
+demo   Root name of the 1st init. distribution
+0 0 0 2 1 2000    Time of the output (hh mm ss dd mm yyyy)
+180   Dynamical time step in minute
+1   Emission inventory (0=no, 1=yes)
+1  Activate wet removal (1=y,0=n) 
+2     buffer width in pixels
+
+

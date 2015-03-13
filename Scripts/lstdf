@@ -1,0 +1,95 @@
+#!/bin/bash
+#
+# pour creer un fichier index des fichier pgm aodsem presents dans le repertoire
+#
+prevfile=toto
+echo "Name of dataset?"
+read name
+rm -fr $name.sorted
+mkdir $name.sorted
+echo "Year?"
+read year
+echo "Wavelength (nm)?"
+echo "340 380 440 470 500 550 670 860 870 940 1020 1240 1640 2130"
+read wavel
+ndat=0
+list=`ls -1 *pgm`
+nfiles=`ls -1 *$wavel*.pgm | grep -c ""`
+echo "nfiles" > $name.tmp
+for i in $list
+do grep "date" $i > lstdf1.tmp
+  sed -e 's/ 00/ 0/g' lstdf1.tmp > lstdf2.tmp 
+  sed -e 's/ 01/ 1/g' lstdf2.tmp > lstdf1.tmp
+  sed -e 's/ 02/ 2/g' lstdf1.tmp > lstdf2.tmp 
+  sed -e 's/ 03/ 3/g' lstdf2.tmp > lstdf1.tmp
+  sed -e 's/ 04/ 4/g' lstdf1.tmp > lstdf2.tmp 
+  sed -e 's/ 05/ 5/g' lstdf2.tmp > lstdf1.tmp
+  sed -e 's/ 06/ 6/g' lstdf1.tmp > lstdf2.tmp 
+  sed -e 's/ 07/ 7/g' lstdf2.tmp > lstdf1.tmp
+  sed -e 's/ 08/ 8/g' lstdf1.tmp > lstdf2.tmp 
+  sed -e 's/ 09/ 9/g' lstdf2.tmp >lstdf.tmp
+
+  read bidon1 bidon2 he mi se jo mo an < lstdf.tmp
+  let "nombre=se+60*(mi+60*(he+24*day))"
+  lheure="00 03 06 09 12 15 18 21"
+  vheure="0 3 6 9 12 15 18 21"
+  if [ $bidon1 == "#" ]
+     then
+     if [ $bidon2 == "date" ]
+         then
+         if [ $year == $an ]
+            then
+
+              for ii in $vheure
+
+               do let "dt2=(ii*3600-se-mi*60-he*3600)**2"
+                 if [ $dt2 -le 3240000 ]
+                    then  
+                    
+
+                    if [ $ii -le 9 ]
+                       then ii=0$ii
+                    fi
+                    if [ $mo -le 9 ]
+                       then mo=0$mo
+                    fi
+                    if [ $jo -le 9 ]
+                       then jo=0$jo
+                    fi
+                    he=$ii
+                    mi=00
+                    se=00
+  file=$an$mo$jo$he$mi$se
+       if ! [ $prevfile == $file ] 
+            then
+                    let "ndat=ndat+1"
+               cp $i $name.sorted/$an$mo$jo$he$mi$se.pgm
+               echo $he $mi $se $jo $mo $an $i >> $name.tmp
+  echo $he $mi $se $jo $mo $an >> $name.sorted/$name.rdata
+
+  echo $file  >> $name.sorted/$name.rdata
+  prevfile=$file
+       fi
+                  fi
+                done
+         fi
+     fi
+  fi
+done
+#list2=`ls -1 $name.sorted/*pgm`
+nfiles=`ls -1 $name.sorted/*.pgm | grep -c ""`
+#rm -f $name.sorted/$name.rdata
+#for j in $list2
+#   do grep "date" $j > lstdf.tmp
+#  read bidon1 bidon2 he mi se jo mo an < lstdf.tmp
+#  echo $he $mi $se $jo $mo $an >> $name.sorted/$name.rdata 
+#  echo $j > lstdf.tmp
+#  sed -e "s/$name.sorted\///g" lstdf.tmp > lstdf2.tmp
+#  sed -e "s/\.pgm//g" lstdf2.tmp  >> $name.sorted/$name.rdata
+#done
+
+echo $nfiles "valid pgm files identified"
+echo $nfiles "valid pgm files identified" > $name.sorted/$name.nfiles
+echo "Creating index file:" $name.index
+sed -e "s/nfiles/$ndat/" $name.tmp > $name.index
+rm -f *.tmp

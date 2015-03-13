@@ -1,0 +1,68 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *             Edit parameter for composite            *"
+echo " *                                                     *"
+echo " *        Combine PGM images by taking the mean        *"
+echo " *                                                     *"
+echo " *     Martin Aube 2000                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+error=1
+echo " Experiment directory "$folder
+echo " "
+if [ -f composite.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more composite.par
+fi 
+ls *.pgm
+echo " "
+echo " Number of pgm images files to combine??"
+read nimg
+echo " "
+echo " Choose an operation:"
+  
+echo "    1 ..... Composite from same instrumental source"
+echo "    2 ..... Composite from different instrumental sources"
+echo "    3 ..... Add"
+read oper
+echo " Output root file name (.pgm will be added)?"
+read output
+echo " Compositing period ?"
+echo "  "
+echo "    1 ....... hour"
+echo "    2 ....... day"
+echo "    3 ....... week"
+echo "    4 ....... month"
+echo "    5 ....... year"
+echo "    6 ....... other"
+read period
+echo $nimg > composite.par
+echo $oper >> composite.par
+echo $output >> composite.par
+echo $period >> composite.par
+
+
+i=1
+while [ $i -le $nimg ]
+do
+echo " Root name of file #" $i "(.pgm will be added)?"
+read inname
+if [ $oper -eq 2 ] 
+  then
+  echo " Error associated with this dataset?"  
+  read error
+fi
+ 
+echo $inname $error >> composite.par
+let i=i+1
+done
+
+
+
+
+
+echo "Done"

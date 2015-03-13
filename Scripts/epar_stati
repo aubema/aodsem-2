@@ -1,0 +1,35 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *           Edit parameter for statistique            *"
+echo " *                                                     *"
+echo " *          compute statistics on an aerosol           *"
+echo " *                 optical depth map                   *"
+echo " *                                                     *"
+echo " *     Martin Aube 2000                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f statistique.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more statistique.par
+fi 
+ls *.pgm
+echo " "
+echo " Root name of the file (.pgm will be added)?"
+read img
+
+  
+
+echo $img > statistique.par
+
+
+
+
+
+
+echo "Done"

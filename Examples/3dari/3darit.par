@@ -1,0 +1,6 @@
+numvol_0001    dat file #1
+numvol_0002    dat file #2
+1    Operation
+numvol_0001+0002    Output root file name 
+1    Set negative output to 0 (1=yes, 0=no)
+

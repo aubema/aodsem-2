@@ -1,0 +1,12 @@
+analyse_04_i   Root name of the file
+1    Pixel size in degrees
+2    Center latitude of the south-west pixel in degrees
+2    Center longitude of the south-west pixel in degrees
+1    Interpolating window size in degrees
+3   Interpolating function
+0   Activate interpolating box size optimization (no=0, yes=1)
+1    Size of output cell in degrees
+8    Number of cells along N-S axis
+8    Number of cells along E-W axis
+2    Center latitude of the south-west cell
+2    Center longitude of the south-west cell

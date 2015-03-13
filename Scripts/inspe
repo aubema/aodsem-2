@@ -1,0 +1,41 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                    inspe                     *"
+echo "*                                              *"
+echo "*         Inspecting aerosol 3-D file          *"
+echo "*                                              *"
+echo "*     Martin Aube 2000                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+if [ -f inspect3d.par ] 
+   then   echo " Using existing input parameter file: 3dtoaod.par"
+
+   else   epar_inspe   
+fi 
+ls *.dat
+ln -s ~/AODSEM/Bin/inspect3d inspect3d
+echo " Executing inspect3d..."
+./inspect3d
+echo " Deleting temporary files in " $folder
+rm -f inspect3d
+display inspect3d.pgm &
+
+ echo "Save as (extension will be added)?"
+          read outfile
+          mv inspect3d.pgm $outfile".pgm"
+         
+
+if [ -f core ] 
+   then   echo "******** An error occured during execution of inspe! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of inspe." 
+fi 
+

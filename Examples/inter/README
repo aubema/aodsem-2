@@ -1,0 +1,12 @@
+interp DEMO
+
+Input files:
+
+polder.pgm
+
+
+output files:
+
+polder.aot.pgm          --> 1st exec
+polder.aot.aot.pgm      --> 2nd exec
+polder.aot.aot.aot.pgm  --> 3nd exec

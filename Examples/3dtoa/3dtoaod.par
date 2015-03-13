@@ -1,0 +1,4 @@
+numvol_0001    Root name of the files (ext .dat and .vis will be added)
+newdemo    Root name of the cross section data base file (extension 
+.res.bmi will be added)
+

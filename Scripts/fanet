@@ -1,0 +1,36 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                     fanet                    *"
+echo "*                                              *"
+echo "*         Filter AERONET data .cxy file        *"
+echo "*                                              *"
+echo "*     Martin Aube 2001                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+#if [ -f 3darit.par ] 
+#   then
+#      echo " Reading parameter file."  
+#   else
+#      echo " No parameter file found!"
+#      epar_3dari
+#fi 
+ln -s ~/AODSEM/Bin/filteraeronet filteraeronet
+echo " Executing filteraeronet..."
+ls *.cxy
+./filteraeronet
+echo " Deleting temporary files in " $folder
+rm -f filteraeronet
+if [ -f core ] 
+   then   echo "******** An error occured during execution of fanet! ********"
+          rm -f core
+          echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+          read bidon
+else
+  echo " Normal end of fanet." 
+fi 
+

@@ -1,0 +1,13 @@
+Nom de la fonction: 3dari
+
+Commande d'edition de parametres: oui
+
+Utilite:   Compute aritmetics on two initial aerosol 3D 
+distributions
+
+Entree: Au clavier dans le terminal, fichier 3darit.par, fichiers .dat 
+(ici numvol_0001.dat et numvol_0002.dat)
+
+Sortie: Fichier resultat .dat (ici numvol_0001+0002.dat qui correspond 
+a la somme des fichiers initiaux), Fichier .vis accompagnant le .dat 
+(ici numvol_0001+0002.vis)

@@ -1,0 +1,3 @@
+#!/bin/bash
+datas < part1
+datas < part2

@@ -1,0 +1,201 @@
+#!/bin/bash
+echo "mkcli == ************************************************"
+echo "mkcli == *                                              *"
+echo "mkcli == *                    mkcli                     *"
+echo "mkcli == *                                              *"
+echo "mkcli == *        create a 3d dist for setting          *"
+echo "mkcli == *        densities in the AODSEM buffer        *"
+echo "mkcli == *                                              *"
+echo "mkcli == *     Martin Aube 2000                         *"
+echo "mkcli == *                                              *"
+echo "mkcli == ************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo "mkcli == Experiment directory "$folder
+if [ -f newmnt1.res.bmi ] 
+   then   echo "mkcli == Skipping .res.bmi files download"
+   else   echo "mkcli == Downloading .res.bmi files"
+          ln -s $HOME/AODSEM/Nesfiles/*res.bmi .
+fi 
+cp ~/AODSEM/Nesfiles/gads*.pgm $folder
+ln -s ~/AODSEM/Nesfiles/climato.rhu climato.rhu
+echo "mkcli == AODSEM run general properties"
+echo "mkcli == Choose the season (1=winter, 2=summer)"
+read season
+if [ $season -eq 1 ]
+   then  climato1="gads500-70_w"
+         climato2="gads900-70_w"
+         echo "Winter case"
+         mm="02"
+         dd="07"
+   else  climato1="gads500-70_s"
+         climato2="gads900-70_s"
+         echo "Summer case"
+         mm="08"
+         dd="07"
+fi
+echo " "
+if [ -f domain.par ] 
+   then
+      echo "mkcli ==  Domain parameter file (domain.par) exist. Using the following values!"
+      echo  
+      read pixs ncellx ncelly lat0 lon0 < domain.par
+      echo "mkcli == ==================================="
+      echo "mkcli == Domain properties:"
+      echo "mkcli == Number of N-S pixels= " $ncellx
+      echo "mkcli == Number of E-W pixels= " $ncelly
+      echo "mkcli == Pixel size in degrees= " $pixs
+      echo "mkcli == Center latitude of the south-west pixel in degrees= " $lat0
+      echo "mkcli == Center longitude of the south-west pixel in degrees= " $lon0
+      echo "mkcli == ==================================="
+      echo
+   else
+      echo "mkcli == No domain parameter file found!"
+      echo
+      echo "mkcli == Domain properties:"
+      echo "mkcli == Number of N-S pixels?"
+      read ncellx
+      echo "mkcli == Number of E-W pixels?"
+      read ncelly
+      echo "mkcli == Pixel size in 1/100th degrees?"
+      read pixs
+      echo "mkcli == Center latitude of the south-west pixel in degrees?"
+      read lat0
+      echo "mkcli == Center longitude of the south-west pixel in degrees?"
+      read lon0
+      echo $pixs $ncellx $ncelly $lat0 $lon0 > domain.par       
+fi
+#  charger les valeurs de domain.par dans les variables concernees    
+read pixs ncellx ncelly lat0 lon0 < domain.par
+#  convertir les 1/100th deg. en decimale
+let "ndegr=pixs/100"
+let "ndeci=(pixs-ndegr*100)/10"
+let "ncent=pixs-ndegr*100-ndeci*10"
+pixsiz=$ndegr"."$ndeci$ncent
+
+echo " "
+echo "mkcli == Optical property"
+echo "mkcli == Wavelength of the aod map?"
+echo " "
+echo "mkcli == 1 ..... 0.34 um"
+echo "mkcli == 2 ..... 0.38 um"
+echo "mkcli == 3 ..... 0.44 um"
+echo "mkcli == 4 ..... 0.47 um"
+echo "mkcli == 5 ..... 0.50 um"
+echo "mkcli == 6 ..... 0.55 um"
+echo "mkcli == 7 ..... 0.67 um"
+echo "mkcli == 8 ..... 0.86 um"
+echo "mkcli == 9 ..... 0.87 um"
+echo "mkcli == 10 .... 0.94 um"
+echo "mkcli == 11 .... 1.02 um"
+echo "mkcli == 12 .... 1.24 um"
+echo "mkcli == 13 .... 1.64 um"
+echo "mkcli == 14 .... 2.13 um"
+read nwave
+if [ $nwave -eq 1 ] 
+   then wave="340"
+fi
+if [ $nwave -eq 2 ] 
+   then wave="380"
+fi
+if [ $nwave -eq 3 ] 
+   then wave="440"
+fi
+if [ $nwave -eq 4 ] 
+   then wave="470"
+fi
+if [ $nwave -eq 5 ] 
+   then wave="500"
+fi
+if [ $nwave -eq 6 ] 
+   then wave="550"
+fi
+if [ $nwave -eq 7 ]
+   then wave="670"
+fi
+if [ $nwave -eq 8 ]
+   then wave="860"
+fi
+if [ $nwave -eq 9 ]
+   then wave="870"
+fi
+if [ $nwave -eq 10 ]
+   then wave="940"
+fi
+if [ $nwave -eq 11 ]
+   then wave="1020"
+fi
+if [ $nwave -eq 12 ]
+   then wave="1240"
+fi
+if [ $nwave -eq 13 ]
+   then wave="1640"
+fi
+if [ $nwave -eq 14 ]
+   then wave="2130"
+fi
+ls *.res.bmi
+echo "mkcli == Root name of the cross section data base file (extension .res.bmi will be added)?"
+read crofile
+#
+#  interpolating to the experiment wavelenght
+#
+echo $climato1 > specint.par
+echo "500" >> specint.par
+echo $climato2 >> specint.par
+echo "900" >> specint.par
+echo "climato" >> specint.par
+echo $wave >> specint.par
+speci
+#
+#  resampling aerosol climatology
+#
+echo "climato   Root name of the file"  > interp.par
+echo "5   Pixel size in degrees">> interp.par
+echo "-87.5   Center latitude of the south-west pixel in degrees">> interp.par
+echo "182.5   Center longitude of the south-west pixel in degrees">> interp.par
+echo "5   Interpolating window size in degrees">> interp.par
+echo "0   Interpolating function">> interp.par
+echo "1   Activate interpolating box size optimization (no=0, yes=1)">> interp.par
+echo $pixsiz "   Size of output cell in degrees">> interp.par
+echo $ncellx "   Number of cells along N-S axis">> interp.par
+echo $ncelly "   Number of cells along E-W axis">> interp.par
+echo $lat0 "   Center latitude of the south-west cell">> interp.par
+echo $lon0 "   Center longitude of the south-west cell">> interp.par
+echo "65534   default value" >> interp.par
+inter
+#
+mv climato_i.pgm climato.pgm
+
+#
+#   convert in number density
+#
+echo "climato   Root name of the files"  > aodto3d.par
+echo $nwave "   Wavelength of the aod map">> aodto3d.par
+echo "12 00 00 " $dd $mm " 1980   Time of the distribution (hh mm ss dd mm yyyy)">> aodto3d.par
+echo "1   vertical profile">> aodto3d.par
+echo $crofile "   Root name of the cross section data base file">> aodto3d.par
+aodto
+echo "mkcli == 1980"$mm$dd"12.dat"
+mv climato.dat "1980"$mm$dd"12.dat"
+mv climato.vis "1980"$mm$dd"12.vis"
+cp climato.rhu "1980"$mm$dd"12.rhu"
+mv climato.pgm "1980"$mm$dd"12.pgm"
+rm -f climato.rhu
+
+# fabrication du fichier buffer.index
+echo "1   number of files" > buffer.index
+echo "12 00 00 "$dd" "$mm" 1980  1980"$mm$dd"12.dat"  >> buffer.index
+
+echo "mkcli == Deleting temporary files in " $folder
+rm -f gads*.pgm
+if [ -f core ] 
+   then   echo "mkcli == ******** An error occured during execution of mkcli! ********"
+   rm -f core
+   echo "mkcli == Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo "mkcli == Normal end of mkcli." 
+fi 
+exit 0

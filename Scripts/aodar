@@ -1,0 +1,36 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                     aodar                    *"
+echo "*                                              *"
+echo "*       Compute aritmetics on two initial      *"
+echo "*          aerosol optical depth maps          *"
+echo "*                                              *"
+echo "*     Martin Aube 2000                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+if [ -f aodarit.par ] 
+   then
+      echo " Reading parameter file."  
+   else
+      echo " No parameter file found!"
+      epar_aodar
+fi 
+ln -s ~/AODSEM/Bin/aodarit aodarit
+echo " Executing aodarit..."
+./aodarit
+echo " Deleting temporary files in " $folder
+rm -f aodarit
+if [ -f core ] 
+   then   echo "******** An error occured during execution of aodar! ********"
+          rm -f core
+          echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+          read bidon
+else
+  echo " Normal end of aodar." 
+fi 
+

@@ -1,0 +1,72 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                     xytto                    *"
+echo "*                                              *"
+echo "*         Convert an lat lon aod file          *"
+echo "*              into a pgm aod map              *"
+echo "*                                              *"
+echo "*     Martin Aube 2000                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+ln -s ~/AODSEM/Nesfiles/vide.pgm vide.pgm
+echo " AOD map name (.pgm will be added)?"
+read name
+echo " Cell size (deg.)?"
+read size
+echo " Lower left cell latitude?"
+read lat0
+echo " Lower left cell longitude?"
+read lon0
+echo " Number of cells along N-S axis?"
+read nx
+echo " Number of cells along E-W axis?"
+read ny
+# ecriture du fichier de parametres 
+echo "vide" > interp.par
+echo "180" >> interp.par
+echo "0" >> interp.par
+echo "90" >> interp.par
+echo "180" >> interp.par
+echo "0" >> interp.par
+echo "0" >> interp.par
+echo $size >> interp.par
+echo $nx >> interp.par
+echo $ny >> interp.par
+echo $lat0 >> interp.par
+echo $lon0 >> interp.par
+echo "65534" >> interp.par
+
+ln -s ~/AODSEM/Bin/interp interp 
+echo " Executing interp..."
+./interp
+mv vide_i.pgm $name".pgm"
+
+
+echo " Root name of AOD data file name (.xyt will be added)? "
+read data
+echo $name "   map name" > writeaod.par
+echo $data "   aod data file" >> writeaod.par
+writa
+
+
+
+mv $name"_ed.pgm" $name".pgm"
+echo " Deleting temporary files in " $folder
+rm -f interp
+rm -f writeaod
+rm -f vide*.pgm
+
+if [ -f core ] 
+   then   echo "******** An error occured during execution of xytto! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of xytto." 
+fi 
+

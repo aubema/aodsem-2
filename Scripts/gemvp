@@ -1,0 +1,35 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *                        gemvp                        *"
+echo " *                                                     *"
+echo " *        Extract a vertical meteo profile for         *"
+echo " *    a particular location from GEM ASCII format      *"
+echo " *                                                     *"
+echo " *   Martin Aube 2000                                  *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+if [ -f gem2vertpro.par ] 
+   then   echo " Using existing input parameter file: gem2vertpro.par"
+
+   else   epar_gemvp   
+fi 
+ln -s ~/AODSEM/Bin/gem2vertpro gem2vertpro
+echo " Executing gem2vertpro..."
+./gem2vertpro
+echo " Deleting temporary files in " $folder
+rm -f gem2vertpro
+if [ -f core ] 
+   then   echo "******** An error occured during execution of gemvp! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of gemvp." 
+fi 
+
+

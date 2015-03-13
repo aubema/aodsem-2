@@ -1,0 +1,30 @@
+#!/bin/bash
+echo "wspin == ************************************************"
+echo "wspin == *                                              *"
+echo "wspin == *                     wspin                    *"
+echo "wspin == *                                              *"
+echo "wspin == *  Create a wind speed index file for AODSEM   *"
+echo "wspin == *                                              *"
+echo "wspin == *     Martin Aube 2000                         *"
+echo "wspin == *                                              *"
+echo "wspin == ************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo "wspin == Experiment directory "$folder
+ln -s ~/AODSEM/Bin/wspindex wspindex 
+ls -1 *.wsp > wsptemp
+echo "wspin == Executing wspindex..."
+./wspindex
+echo "wspin == Deleting temporary files in " $folder
+rm -f wspindex
+rm -f wsptemp
+if [ -f core ] 
+   then   echo "wspin == ******** An error occured during execution of wspin! ********"
+   rm -f core
+   echo "wspin == Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo "wspin == Normal end of wspin." 
+fi 
+

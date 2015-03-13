@@ -1,0 +1,65 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *            Edit parameter for atsrlavoue            *"
+echo " *                                                     *"
+echo " *         Combine ATSR fire counts files and          *"
+echo " *          Lavoue et al. emission database            *"
+echo " *                into AODSEM 3ds format               *"
+echo " *                                                     *"
+echo " *     Martin Aube, Stéphanie Dumaine-Allard  2004     *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f atsrlavoue.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more atsrlavoue.par
+fi 
+
+echo " "
+echo " New parameters:"
+echo " "
+echo "Current ATSR files available:"
+ls *.FIRE
+if [ -f atsrlist ]
+  then echo "Do you want to create a new ATSR file list (0=no, 1=yes)?"
+  read rep
+  if [ $rep -eq 1 ]
+   then echo "Creating atsr file list..."
+   chmod u-x *.FIRE
+   ls -1 *.FIRE > bidon.1
+   grep -c FIRE bidon.1 > atsrlist
+   cat bidon.1 >> atsrlist
+  fi
+else echo "Creating atsr file list..."
+   chmod u-x *.FIRE
+   ls -1 *.FIRE > bidon.1
+   grep -c FIRE bidon.1 > atsrlist
+   cat bidon.1 >> atsrlist
+fi
+rm -f bidon.1
+echo "Output file name (.3ds will be added)?"
+read nom
+echo "Initial date (DD MM YYYY)?"
+read DD1 MM1 YYYY1
+echo "Final date (DD MM YYYY)?"
+read DD2 MM2 YYYY2
+echo "Couverture nuageuse moyenne climatique pour ce mois (0 a 1)?"
+read cldf
+
+
+echo $nom".3ds   Output root file name" > atsrlavoue.par
+echo $YYYY1 $MM1 $DD1 "  Initial date " >> atsrlavoue.par
+if [ $MM2 -le 9 ]
+   then echo $YYYY2 "0"$MM2 $DD2 "  Final date " >> atsrlavoue.par
+   else echo $YYYY2 $MM2 $DD2 "  Final date " >> atsrlavoue.par
+fi
+echo $cldf " couverture nuageuse">> atsrlavoue.par
+echo "Done"
+
+
+

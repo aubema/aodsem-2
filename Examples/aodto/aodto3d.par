@@ -1,0 +1,5 @@
+aod_0001    Root name of the files
+5    Wavelength of the aod map
+0 0 0 1 1 2000    Time of the distribution (hh mm ss dd mm yyyy)
+1    vertical profile
+newdemo    Root name of the cross section data base file

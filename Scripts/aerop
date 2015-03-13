@@ -1,0 +1,19 @@
+#!/bin/bash
+clear
+echo "   Aerosol microphysical properties functions"
+PS3="Select an function: "
+select function in Exit Help mkpsd cmbps mkimi imies humgr bmies op2na  
+do  
+case "$function" in  
+   Exit) clear;echo "      AODSEM CONTROL CENTER";exit;;
+   Help) infor;;
+   mkpsd) mkpsd;;
+   cmbps) cmbps;;
+   mkimi) mkimi;;
+   imies) imies;;
+   humgr) humgr;;
+   bmies) bmies;; 
+   op2na) op2na;;
+esac
+done
+

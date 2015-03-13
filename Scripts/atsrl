@@ -1,0 +1,47 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *                       atsrl                         *"
+echo " *                                                     *"
+echo " *         Combine ATSR fire counts files and          *"
+echo " *          Lavoue et al. emission database            *"
+echo " *                into AODSEM 3ds format               *"
+echo " *                                                     *"
+echo " *     Martin Aube, Stéphanie Dumaine-Allard  2004     *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+
+rm -f core
+echo " Experiment directory "$folder
+ln -s ~/AODSEM/Bin/atsrlavoue atsrlavoue
+cd $HOME/AODSEM/Nesfiles/
+l3ds=`ls -1 *.3ds |sed 's/@/ /g' | sed 's/*/ /g'`
+cd $folder
+for i in $l3ds
+do if [ -f $i ]
+   then echo "Skipping download of file: " $i
+   else  echo "Downloading " $i
+         ln -s $HOME/AODSEM/Nesfiles/$i .
+   fi
+done
+echo " Executing atsrlavoue..."
+
+./atsrlavoue
+echo " Deleting temporary files in " $folder
+rm -f atsrlavoue
+sed -n '3p' atsrlavoue.par > bidon.2
+read an m toto < bidon.2
+mv Moyennefeux.pgm "ATSR-"$an$m".pgm"
+
+rm -f bidon.2
+
+if [ -f core ] 
+   then   echo "******** An error occured during execution of atsrl! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of atsrl." 
+fi 

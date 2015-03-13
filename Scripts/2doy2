@@ -1,0 +1,29 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                     2doy2                    *"
+echo "*                                              *"
+echo "*           Day of Year -> Time Date           *"
+echo "*           Time Date -> Day of Year           *"
+echo "*                                              *"
+echo "*     Martin Aube 2001                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+ln -s ~/AODSEM/Bin/2doy2fort 2doy2fort
+echo " Executing 2doy2fort..."
+./2doy2fort
+echo " Deleting temporary files in " $folder
+rm -f 2doy2fort
+if [ -f core ] 
+   then   echo "******** An error occured during execution of 2doy2! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of 2doy2." 
+fi 
+

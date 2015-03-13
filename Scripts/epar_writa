@@ -1,0 +1,37 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *             Edit parameter for writeaod             *"
+echo " *                                                     *"
+echo " *       Write aerosol optical depth map values        *"
+echo " *            for some particular locations            *"
+echo " *                                                     *"
+echo " *     Martin Aube 2000                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f writeaod.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more writeaod.par
+fi 
+ls *.pgm
+echo " "
+echo " Root name of the aod image?"
+read img
+ls *.xyt
+echo " "
+echo " Root name of the .xyt file (.xyt will be added)?"
+read xy
+
+
+
+
+
+echo $img "   Image file" > writeaod.par
+echo $xy "   Data file" >> writeaod.par
+
+echo "Done"

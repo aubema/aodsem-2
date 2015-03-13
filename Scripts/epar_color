@@ -1,0 +1,56 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *             Edit parameter for coloraod             *"
+echo " *                                                     *"
+echo " *      Convert an aerosol optical depth pgm map       *"
+echo " *           to a color map with html file             *"
+echo " *                                                     *"
+echo " *     Martin Aube 2000                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f coloraod.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more coloraod.par
+fi 
+ls *.pgm
+echo " "
+echo " New parameters:"
+echo " "
+echo "Root name of the file (ext .pgm be added) ?"  
+read nom
+echo "Type of aerosol map ?"
+echo "   "
+echo "   1 .......... horizontal map"
+echo "   2 .......... vertical profile"
+read maptyp 
+echo "Buffer width in pixels?"
+read bufw
+echo "Color code (0=spectrum, 1= 10 level contour, 2= 20 level contour)?"
+read colorcode
+echo "Do you want to scale the values?"
+echo "(0=no, 1=yes)"
+read multip
+if [ $multip -eq 1 ] 
+   then   echo "By witch factor?"
+          read scale
+   else   scale=1    
+fi
+if [ $maptyp -eq 1 ] 
+   then    echo "Add a gray geographical mask? (0=no, 1=yes)"
+           read geomsk
+   else    geomsk=0
+fi
+echo $nom "   Root name of the file (ext .pgm be add)"> coloraod.par
+echo $maptyp "   Type of aerosol map">> coloraod.par
+echo $bufw "   Buffer width">> coloraod.par
+echo $colorcode "   colorcode (0=spectrum, 1= 20 level contour)">>coloraod.par
+echo $multip "   scale the values (0=no, 1=yes)">> coloraod.par
+echo $scale "   scaling factor">> coloraod.par
+echo $geomsk "   geographical mask (0=no, 1=yes)">> coloraod.par
+echo "Done"

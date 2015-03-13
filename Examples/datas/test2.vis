@@ -1,0 +1,13 @@
+ Observation definition file for AODSEM
+ 1    Number of sights
+ 90.    ANGLE ELEVATION PHOTOMETRE
+ 0.    ANGLE AZIMUT PHOTOMETRE
+  2.  X PHOTOMETRE degres
+  2.  Y PHOTOMETRE degres
+  0.  Z PHOTOMETRE
+ 1    Number of slices
+ 3    Integration Axis(1=lat,2=lon,3=height)
+ 1    from
+ 10    to
+ 45.    ANGLE ELEVATION SOLEIL
+ 0.    ANGLE AZIMUT SOLEIL

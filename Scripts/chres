@@ -1,0 +1,37 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                   chres                      *"
+echo "*                                              *"
+echo "*  Changing resolution of a aerosol 3D dist.   *"
+echo "*                                              *"
+echo "*                                              *"
+echo "*     Martin Aube 2003                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+if [ -f chresol.par ] 
+   then
+      echo " Reading parameter file."  
+   else
+      echo " No parameter file found!"
+      epar_chres
+fi 
+echo " Preparing input files..."
+ln -s ~/AODSEM/Bin/chresol chresol
+echo " Executing chresol..."
+./chresol
+echo " Deleting temporary files in " $folder
+rm -f chresol
+if [ -f core ] 
+   then   echo "******** An error occured during execution of chres! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of chres." 
+fi 
+

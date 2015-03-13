@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Script:  cleanlinks
+# Author: Rick Saunders
+# Date:    Aug 2, 2003
+
+# This script will go through a directory and clean out any links that
+# don't point to anywhere anymore.
+
+FILES=`ls -l | grep lrw | gawk '{ print $9"|"$11 }'`
+
+for FILE in $FILES
+do
+   TFILE=`echo $FILE | gawk -F"|" '{ print $1 }'`
+   TLINK=`echo $FILE | gawk -F"|" '{ print $2 }'`
+       
+   if [ ! -f $TLINK ]
+   then
+	  if [ ! -d $TLINK ]
+    then
+          rm -f $TFILE
+   fi
+   fi
+done

@@ -1,0 +1,31 @@
+#!/bin/bash
+echo "rhuin == ************************************************"
+echo "rhuin == *                                              *"
+echo "rhuin == *                     rhuin                    *"
+echo "rhuin == *                                              *"
+echo "rhuin == *  Create a relative humidity index file for   *"
+echo "rhuin == *                     AODSEM                   *"
+echo "rhuin == *                                              *"
+echo "rhuin == *     Martin Aube 2000                         *"
+echo "rhuin == *                                              *"
+echo "rhuin == ************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo "rhuin == Experiment directory "$folder
+ln -s ~/AODSEM/Bin/rhuindex rhuindex
+ls -1 *.rhu > rhutemp
+echo "rhuin == Executing rhuindex..."
+./rhuindex
+echo "rhuin == Deleting temporary files in " $folder
+rm -f rhuindex
+rm -f rhutemp
+if [ -f core ] 
+   then   echo "rhuin == ******** An error occured during execution of rhuin! ********"
+   rm -f core
+   echo "rhuin == Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo "rhuin == Normal end of rhuin." 
+fi 
+

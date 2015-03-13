@@ -1,0 +1,47 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *               Edit parameter for speci              *"
+echo " *                                                     *"
+echo " *         Aerosol optical depth map spectral          *"
+echo " *        interpolation from 2 initial aod maps        *"
+echo " *                                                     *"
+echo " *     Martin Aube 2000                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f specint.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more specint.par
+fi 
+ls *.pgm
+echo " "
+echo " Root name of the 1st file (.pgm will be added)?"
+read file1
+echo " Wavelength in nm?"
+read wave1
+echo " Root name of the 2nd file (.pgm will be added)?"
+read file2
+echo " Wavelength in nm?"
+read wave2
+echo "Root name of the target file (.pgm will be added) ?"
+read output
+echo " Target wavelength in nm?"
+read wave3
+echo $file1 > specint.par
+echo $wave1 >> specint.par
+echo $file2 >> specint.par
+echo $wave2 >> specint.par
+echo $output >> specint.par
+echo $wave3 >> specint.par
+
+
+
+
+
+
+echo "Done"

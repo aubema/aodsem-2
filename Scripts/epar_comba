@@ -1,0 +1,62 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *              Edit parameter for comba               *"
+echo " *                                                     *"
+echo " *   Combine and interpolate multiple aerosol optical  *"
+echo " *          images with an inverse square error        *"
+echo " *                      correction                     *"
+echo " *                                                     *"
+echo " *     Martin Aube 2003                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f combaod.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more combaod.par
+fi 
+ls *.pgm
+echo " "
+echo " New parameters:"
+echo " "
+echo "Root name of the file (.pgm will be added) ?"  
+read nom
+echo "Sliding interpolation window size in pixel?"
+read intbox
+echo " Choose an interpolating function:"
+echo "      nearest neighbour ... 0"
+echo "      linear .............. 1"
+echo "      2nd order ........... 2"
+echo "      mean ................ 3"
+echo "      minimum ............. 4"
+echo "      maximum ............. 5"
+read function
+echo "Activate interpolating box size optimization? (no=0, yes=1)"
+read optimiz
+echo "Default numerical value (nodata=65534)?"
+read defval
+echo "Number of data source?"
+read ndat
+echo $nom "   Root name of the file"  > combaod.par
+echo $intbox "   interpolating window size in pixel">> combaod.par
+echo $function "   interpolating function">> combaod.par
+echo $optimiz "   Activate interpolating box size optimization (no=0, yes=1)">> combaod.par
+echo $defval "   Default numerical value (nodata=65534)">> combaod.par
+echo $ndat "   number of data source" >>combaod.par
+n=1
+while test $n -le $ndat
+do
+   echo "Enter file name #"$n
+   read nom
+   echo "Associated error? (err=offset+gain*AOD)"
+   echo "offset gain"
+   read offset gain
+   echo $nom "    file name #"$n >>  combaod.par
+   echo $gain $offset "    error (gain offset) #"$n >>combaod.par
+   let "n=n+1"
+done
+echo "Done"

@@ -1,0 +1,7 @@
+analyse_04_i_i   Root name of the file (ext .pgm be add)
+1   Type of aerosol map
+2   buffer width
+0   colorcode 
+0   scale the values (0=no, 1=yes)
+1   scaling factor
+0   geographical mask (0=no, 1=yes)

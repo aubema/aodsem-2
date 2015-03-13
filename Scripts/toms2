@@ -1,0 +1,71 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                    toms2                     *"
+echo "*                                              *"
+echo "*    Convert TOMS Aerosol Index file into      *"
+echo "*          AODSEM compatible pgm file          *"
+echo "*                                              *"
+echo "*     Martin Aube 2001                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+ls *.ep*
+echo " Preparing input files..."
+ln -s ~/AODSEM/Bin/toms2xyz toms2xyz
+echo " Input TOMS file name?"
+read nom
+cp $nom toms_ai_tmp
+echo " Executing toms2xyz..."
+./toms2xyz
+echo " AOD map name (.pgm will be added)?"
+read name
+echo " Cell size (deg.)?"
+read size
+echo " Lower left cell latitude?"
+read lat0
+echo " Lower left cell longitude?"
+read lon0
+echo " Number of cells along N-S axis?"
+read nx
+echo " Number of cells along E-W axis?"
+read ny
+mv toms_ai_tmp.xyz toms_ai_tmp.xyt
+echo $name > toms_ai_in_tmp
+echo $size >> toms_ai_in_tmp
+echo $lat0 >> toms_ai_in_tmp
+echo $lon0 >> toms_ai_in_tmp
+echo $nx >> toms_ai_in_tmp
+echo $ny >> toms_ai_in_tmp
+echo "toms_ai_tmp" >> toms_ai_in_tmp
+xytto < toms_ai_in_tmp
+#  interpoler sur la grille nearest neibourg
+echo $name > interp.par
+echo $size "   Pixel size in degrees">> interp.par
+echo $lat0 "   Center latitude of the south-west pixel in degrees">> interp.par
+echo $lon0 "   Center longitude of the south-west pixel in degrees">> interp.par
+echo "2   Interpolating window size in degrees">> interp.par
+echo "0   Interpolating function">> interp.par
+echo "0   Activate interpolating box size optimization (no=0, yes=1)">> interp.par
+echo $size "   Size of output cell in degrees">> interp.par
+echo $nx "   Number of cells along N-S axis">> interp.par
+echo $ny "   Number of cells along E-W axis">> interp.par
+echo $lat0 "   Center latitude of the south-west cell">> interp.par
+echo $lon0 "   Center longitude of the south-west cell">> interp.par
+echo "65534   Default numerical value (nodata=65534)">> interp.par
+inter
+mv $name"_i.pgm" $name".pgm"
+echo " Deleting temporary files in " $folder
+rm -f toms2xyz
+rm -f toms*_tmp*
+if [ -f core ] 
+   then   echo "******** An error occured during execution of toms2! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of toms2." 
+fi

@@ -1,0 +1,35 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *            Edit parameter for filteraod             *"
+echo " *                                                     *"
+echo " *            Apply a maximum limit to an              *"
+echo " *             aerosol optical depth maps              *"
+echo " *                                                     *"
+echo " *     Martin Aube 2000                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f filteraod.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more filteraod.par
+fi 
+ls *.pgm
+echo " "
+echo " New parameters:"
+echo " "
+echo "Root file name (.pgm will be added)?"
+read nom
+echo "AOD threshold x 100 (e.g. for AOD=0.5, enter 50)?"
+read value
+
+
+
+echo $nom "   Root file name " > filteraod.par
+echo $value "   AOD threshold value" >> filteraod.par
+
+echo "Done"

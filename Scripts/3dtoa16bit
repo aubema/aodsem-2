@@ -1,0 +1,39 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *                    3dtoa16bit                       *"
+echo " *                                                     *"
+echo " *     Creating aerosol optical depth maps from 3-D    *"
+echo " *             aerosol distribution model.             *"
+echo " *                                                     *"
+echo " *     Martin Aube 2004                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+if [ -f newmnt1.res.bmi ] 
+   then   echo "Skipping .res.bmi files download"
+   else   echo "Downloading .res.bmi files"
+          ln -s $HOME/AODSEM/Nesfiles/*res.bmi .
+fi 
+if [ -f 3dtoaod.par ] 
+   then   echo " Using existing input parameter file: 3dtoaod.par"
+
+   else   epar_3dtoa   
+fi 
+ln -s ~/AODSEM/Bin/3dtoaod16bit 3dtoaod16bit
+echo " Executing 3dtoaod16bit..."
+./3dtoaod16bit
+echo " Deleting temporary files in " $folder
+rm -f 3dtoaod16bit
+if [ -f core ] 
+   then   echo "******** An error occured during execution of 3dtoa16bit! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of 3dtoa16bit." 
+fi
+

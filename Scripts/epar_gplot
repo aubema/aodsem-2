@@ -1,0 +1,50 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *         Edit parameters to Plot a x-y file          *"
+echo " *                                                     *"
+echo " *              Using the gnuplot package              *"
+echo " *                                                     *"
+echo " *   Martin Aube 19-01-2000                            *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+
+if [ -f gplot.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more gplot.par
+fi 
+ls *.cxy *.xyt
+          echo "Input file type (0=cxy, 1=xyt)?"
+          read typ
+          echo "Root file name (.cxy or .xyt will be added) ?"
+          read file
+          echo "Graph title?"
+          read title
+          echo "X label?"
+          read xlabel
+          echo "Y label?"
+          read ylabel
+          echo "Automatic scale (1=yes,0=no)?"
+          read autom
+          if [ $autom -eq 0 ]
+             then
+             echo "min max x values?"
+             read minx maxx
+             echo "min max y values?"
+             read miny maxy
+          else 
+             minx=0
+             maxx=0
+             miny=0
+             maxy=0
+          fi
+          echo "Drawing mode (0=points, 1=lines, 2=both)?"
+          read mode
+echo $typ $file $title $xlabel $ylabel $autom $minx $maxx $miny $maxy $mode > gplot.par
+
+echo "Done"
+

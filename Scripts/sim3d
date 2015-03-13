@@ -1,0 +1,36 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                     sim3d                    *"
+echo "*                                              *"
+echo "*           Compute aritmetics on an           *"
+echo "*          aerosol 3D distribution             *"
+echo "*                                              *"
+echo "*     Martin Aube 2001                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+if [ -f simarit3d.par ] 
+   then
+      echo " Reading parameter file."  
+   else
+      echo " No parameter file found!"
+      epar_sim3d
+fi 
+ln -s ~/AODSEM/Bin/simarit3d simarit3d 
+echo " Executing simarit3d..."
+./simarit3d
+echo " Deleting temporary files in " $folder
+rm -f simarit3d
+if [ -f core ] 
+   then   echo "******** An error occured during execution of sim3d! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of sim3d." 
+fi 
+

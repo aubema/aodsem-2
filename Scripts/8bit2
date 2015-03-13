@@ -1,0 +1,62 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                     8bit2                    *"
+echo "*                                              *"
+echo "*       Conversion du format pgm 8 bit en      *"
+echo "*               format pgm 16 bit              *"
+echo "*                                              *"
+echo "*     Martin Aube 2004                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+if [ -f 8bit2.par ] 
+   then
+      echo " Reading parameter file."  
+   else
+      echo " No parameter file found!"
+      epar_8bit2
+fi 
+read nom < 8bit2.par
+echo " Converting file..."
+cp -f $nom".pgm" bidon.2
+echo "" > bidon.5
+liste=`grep -A  100000000 "255" bidon.2`
+n=0
+for i in $liste
+do let n=n+1
+   if [ $n -ne 1 ]
+   then 
+          let j=i*10
+    echo $j >> bidon.5
+   fi
+ 
+done 
+list2=`cat bidon.5`
+echo $list2 > bidon.4
+grep -B 100 "255" bidon.2> bidon.3
+sed -e 's/2540/65534/g' bidon.4 > bidon.1
+sed -e 's/2550/65535/g' bidon.1 > bidon.4
+sed -e 's/2530/65533/g' bidon.4 > bidon.1
+mv -f bidon.1 content.tmp
+sed -e 's/255/65535/g' bidon.3 > bidon.1
+sed -e 's/100=aod/1000=aod/g' bidon.1 > header.tmp
+echo " Writing " $nom"_16.pgm  file..."
+rm -f $nom"_16.pgm"
+cat header.tmp content.tmp > $nom"_16.pgm"
+
+echo " Deleting temporary files in " $folder
+rm -f bidon.*
+
+if [ -f core ] 
+   then   echo "******** An error occured during execution of 8bit2! ********"
+          rm -f core
+          echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+          read bidon
+else
+  echo " Normal end of 8bit2." 
+fi 
+

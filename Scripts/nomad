@@ -1,0 +1,328 @@
+folder=`pwd`
+#
+# dates debut fin
+#
+t0="0 0 0 1 6 1998"
+tf="0 0 0 31 8 1998"
+echo $t0 >bidon.1
+read he0 mi0 se0 jo0 mo0 an0 < bidon.1
+echo $tf > bidon.2
+read hef mif sef jof mof anf < bidon.2
+if [ $an0 -ne $anf ]
+   then
+   echo "L'annee de départ ("$an0") est différente de l'année finale ("$anf")!"
+   exit 0
+fi   
+#
+# repertoire des sources non standard 
+#
+srcdir1="/homedata/level3/nonprot/AODSEMinput/sources/"$an0
+#
+# noms des fichiers sources a utiliser.
+# mettre nosrc.3ds si aucun fichier ne doit etre associe au nom de variable
+#
+srcfil1="atsr061998.3ds"
+srcfil2="atsr071998.3ds"
+srcfil3="Lavoue_lowbc.3ds"
+srcfil4="Lavoue_lowoc.3ds"
+srcfil5="geia_lowsu.3ds"
+srcfil6="geia_higsu.3ds"
+srcfil7="atsr081998.3ds"
+srcfil8="nosrc.3ds"
+#
+# repertoires de donnees a assimiler
+#
+datadir1="/homedata/level3/nonprot/AODSEMinput/modis+aeronet/"$an0
+datadir2="/homedata/level3/nonprot/AODSEMinput/modis/"$an0
+datadir3="/homedata/level3/nonprot/AODSEMinput/aeronet/"$an0
+#
+# ete=2 hiver=1
+#
+saison=1
+let mmoy=(mo0+mof)/2
+if [ $mmoy -ge 4 ]
+   then
+   if [ $mmoy -le 9 ]
+      then
+      saison=2
+   fi
+fi
+#
+# repertoire de fichiers meteo
+#
+meteodir="/homedata/level3/nonprot/met/"$an0
+#
+# wavelength 
+#
+wave=6
+#
+# donnees optiques
+#
+opto="newmnt0"
+#
+# creation de sources vides
+#
+#
+###################################################
+#
+# Debut de l'execution
+#
+# nettoyage du repertoire
+#
+rm -f *asc* 
+rm -f *.par 
+rm -f *.pgm 
+rm -f *.dat 
+rm -f *PR 
+rm -f *3ds 
+rm -fr buffer 
+rm -fr coarse 
+rm -f *.index 
+rm -f *vis 
+rm -f *.in 
+rm -f *rhu 
+rm -fr fine
+rm -f *.gif 
+rm -f *pho 
+rm -f *bmi
+#
+# creation de sources vides
+#
+echo "1" >nosrc.3ds
+echo "1 1 2000 1 1 2000 0 0 0 0 0 0 0 0" >> nosrc.3ds
+#
+# grille du domaine coarse
+#
+echo "100" > bidon.1
+echo "60" >> bidon.1
+echo "120" >> bidon.1
+echo "25" >> bidon.1
+echo "-165" >> bidon.1
+domai < bidon.1
+#
+# enlever les fichiers meteo existants et mise a jour
+#
+rm -f *asc*
+rm -f *PR
+ln -s $meteodir/*wsp . 
+ln -s $meteodir/*rhu . 
+ln -s $meteodir/*PR . 
+ln -s $meteodir/*tt .
+#
+# creation des index meteo
+#
+prind 
+wspin 
+ttind 
+rhuin
+#
+# creer la climatologie
+#
+echo $saison >bidon.1
+echo $wave >>bidon.1
+echo $opto >> bidon.1
+mkcli < bidon.1
+#rm -f bidon.1
+#
+# Creation des sources coarse
+#
+ln -s $srcdir1/*3ds . 
+echo $t0 "    begining date" >makesource.par
+echo $tf "    ending date" >>makesource.par
+echo "60    Number of N-S pixels" >>makesource.par
+echo "120    Number of E-W pixels" >>makesource.par
+echo "1.0    Pixel size in degrees" >>makesource.par
+echo "25   Center latitude of the south-west pixel in degrees" >>makesource.par
+echo "-165 Center longitude of the south-west pixel in degrees" >>makesource.par
+echo "8    Number of 3ds source database files" >>makesource.par
+echo $srcfil1 "    File name #  1" >>makesource.par
+echo $srcfil2 "    File name #  2" >>makesource.par
+echo $srcfil3 "    File name #  3" >>makesource.par
+echo $srcfil4 "    File name #  4" >>makesource.par
+echo $srcfil5 "    File name #  5" >>makesource.par
+echo $srcfil6 "    File name #  6" >>makesource.par
+echo $srcfil7 "    File name #  7" >>makesource.par
+echo $srcfil8 "    File name #  8" >>makesource.par
+echo "1    Activate dynamical seasalt emission (1=yes, 0=no)" >>makesource.par
+mksrc
+
+#
+# executer freem en coarse
+#
+echo "1" > coarse.in
+echo $t0  >> coarse.in
+echo $tf >> coarse.in
+echo "360" >> coarse.in
+echo "4" >> coarse.in
+echo "1" >> coarse.in
+echo "6" >> coarse.in
+echo "2" >> coarse.in
+echo $opto  >> coarse.in
+echo "2" >> coarse.in
+echo "1" >> coarse.in
+echo "0" >> coarse.in
+freem <coarse.in
+#
+# grille du domaine fine
+#
+echo "40" > bidon.1
+echo "125" >> bidon.1
+echo "275" >> bidon.1
+echo "30" >> bidon.1
+echo "-160" >> bidon.1
+domai < bidon.1
+rm bidon.1
+#
+# inventaire des sources fine
+#
+echo $t0 "    begining date" >makesource.par
+echo $tf "    ending date" >>makesource.par
+echo "125    Number of N-S pixels" >>makesource.par
+echo "275    Number of E-W pixels" >>makesource.par
+echo "0.4    Pixel size in degrees" >>makesource.par
+echo "30    Center latitude of the south-west pixel in degrees" >>makesource.par
+echo "-160  Center longitude of the south-west degrees" >>makesource.par
+echo "8    Number of 3ds source database files" >>makesource.par
+echo $srcfil1 "    File name #  1" >>makesource.par
+echo $srcfil2 "    File name #  2" >>makesource.par
+echo $srcfil3 "    File name #  3" >>makesource.par
+echo $srcfil4 "    File name #  4" >>makesource.par
+echo $srcfil5 "    File name #  5" >>makesource.par
+echo $srcfil6 "    File name #  6" >>makesource.par
+echo $srcfil7 "    File name #  7" >>makesource.par
+echo $srcfil8 "    File name #  8" >>makesource.par
+
+echo "1    Activate dynamical seasalt emission (1=yes, 0=no)" >>makesource.par
+mksrc
+#
+# changer la resolution du coarse pour fabriquer le nouveau buffer
+#
+gzip -v -d bgf*.dat.gz
+chmod a-x bg*
+list=`ls -1 bgf-*.dat | sed 's/.dat//'`
+for i in $list
+do echo $i > chresol.par
+   echo "30" >> chresol.par 
+   echo "-160" >> chresol.par 
+   echo "0.4" >> chresol.par 
+   echo "125" >> chresol.par 
+   echo "275" >> chresol.par 
+   chres 
+done
+#
+# deplacer le nouveaux fichiers et archiver le coarse
+#
+rm -fr buffer 
+rm -fr coarse 
+mkdir buffer 
+mv bgf-*_c.* buffer 
+mkdir coarse 
+mv bgf-* coarse 
+mv cld-* coarse
+#
+# faire le fichier index du buffer et lier le buffer dans le repertoire de travail
+#
+cd buffer
+echo "bgf-" >bidon.1
+bufin <bidon.1
+cd ..
+rm -f buffer.index
+ln -s buffer/*_c* . 
+ln -s buffer/buffer.index .
+#
+# executer freem en fine
+#
+echo "1" > fine.in
+echo $t0 >> fine.in
+echo $tf >> fine.in
+echo "180" >> fine.in
+echo "5" >> fine.in
+echo "1" >> fine.in
+echo "6" >> fine.in
+echo "0.8" >> fine.in
+echo $opto >> fine.in
+echo "2" >> fine.in
+echo "1001" >> fine.in
+echo "0" >> fine.in
+freem <fine.in
+#
+# archiver le fine
+#
+rm -fr fine 
+rm -f bgf*_c* 
+mkdir fine 
+mv bgf-* fine 
+mv cld-* fine
+#
+# creer les AOD a toutes les longueurs d'ondes
+#
+cd fine 
+ln -s ../*rhu . 
+ln -s ../relhum.index . 
+gzip -v -d bgf*.dat.gz
+gzip -v -d bgf*.vis.gz 
+chmod a-x bgf*
+list=`ls -1 bgf-*.dat | sed 's/.dat//'`
+for i in $list
+do echo $i > 3dtoaod.par
+   echo "newmnt0" >> 3dtoaod.par 
+   3dtoa 
+done
+cd ..
+cd coarse 
+ln -s ../*rhu . 
+ln -s ../relhum.index . 
+gzip -v -d bgf*.dat.gz
+gzip -v -d bgf*.vis.gz  
+chmod a-x bgf* 
+list=`ls -1 bgf-*.dat | sed 's/.dat//'`
+for i in $list
+do echo $i > 3dtoaod.par
+   echo "newmnt0" >> 3dtoaod.par 
+   3dtoa 
+done
+echo "Fin de nomad freem"
+#
+#section rdata pour l'assimilation de donnees (pour l'instant mode interactif)
+#assimilation aeronet seulement
+#
+# creer l'index des fichiers aeronet
+#
+cd $datadir3
+echo "aeronet" > anet.tmp
+lstdf < anet.tmp
+cd $folder
+ln -s $datadir3/*.pgm .
+ln -s $datadir3/aeronet.index .
+ln -s 
+make_rdata
+
+
+epar_rdata
+rdata
+mkdir aeronet 
+mv ana-* aeronet 
+rm -f *pgm
+#
+# creer l'index des fichiers modis
+#
+cd $datadir2
+echo "modis" > modis.tmp
+lstdf < modis.tmp
+cd $folder
+ln -s $datadir2/*.pgm .
+ln -s $datadir2/modis.index .
+
+
+epar_rdata
+rdata
+mkdir modis 
+mv ana-* modis
+rm -f *pgm
+ln -s $datadir1/*.pgm .
+epar_rdata 
+rdata
+mkdir modis+aeronet 
+mv ana-* modis+aeronet
+rm -f *pgm
+

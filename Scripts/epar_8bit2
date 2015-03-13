@@ -1,0 +1,30 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *              Edit parameter for  8bit2              *"
+echo " *                                                     *"
+echo " *          Conversion du format pgm 8 bit en          *"
+echo "*                   format pgm 16 bit                  *"
+echo " *                                                     *"
+echo " *     Martin Aube 2004                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f 8bit2.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more 8bit2.par
+fi 
+ls *.pgm
+echo " "
+echo " New parameters:"
+echo " "
+echo " AOD file root name (.pgm will be added)?"
+read nom1
+
+echo $nom1  > 8bit2.par
+
+echo "Done"

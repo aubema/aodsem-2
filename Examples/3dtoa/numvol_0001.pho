@@ -1,0 +1,17 @@
+  2.  2.  photometer position (lat,long)
+  0.  photometer height (meter)
+  90.  0.  elevation, Azimut sight
+ tau(340       nm):  0.
+ tau(380       nm):  0.
+ tau(440       nm):  0.
+ tau(470       nm):  0.
+ tau(500       nm):  0.
+ tau(550       nm):  0.
+ tau(670       nm):  0.
+ tau(860       nm):  0.
+ tau(870       nm):  0.
+ tau(940       nm):  0.
+ tau(1020      nm):  0.
+ tau(1240      nm):  0.
+ tau(1640      nm):  0.
+ tau(2130      nm):  1.46902549

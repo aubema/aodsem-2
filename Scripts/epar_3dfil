@@ -1,0 +1,32 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *              Edit parameter for 3dfil               *"
+echo " *                                                     *"
+echo " *     Filling empty column with nearest neighbour     *"
+echo " *       value from the original aerosol 3D dist.      *"
+echo " *                                                     *"
+echo " *     Martin Aube, Jean-Denis Giguere 2004            *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f 3dfillzero.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more 3dfillzero.par
+fi 
+ls *.dat
+echo " "
+echo " New parameters:"
+echo " "
+echo "Root name of the file (.dat will be added) ?"  
+read nom
+
+
+
+echo $nom "   Root name of the file"  > 3dfillzero.par
+
+echo "Done"

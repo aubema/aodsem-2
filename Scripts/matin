@@ -1,0 +1,199 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *                        matin                        *"
+echo " *                                                     *"
+echo " *     Simple linear spatio-temporal interpolator      *"
+echo " *                                                     *"
+echo " *     Martin Aube 2000                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+
+echo "log file for matin" >logfile
+
+
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+ls *.pgm
+echo " First AOD map (.pgm will be added)?"
+read file1
+echo " Second AOD map (.pgm will be added)?"
+read file2
+echo " Number of N-S pixels?"
+read nx
+echo " Number of E-W pixels?"
+read ny
+
+echo " Number of output time steps?"
+read ntime
+#
+#  Interpolation spatiale des images initiales
+#
+echo $file1 "   Root name of the file"  > interp.par
+echo "1   Pixel size in degrees">> interp.par
+echo "0   Center latitude of the south-west pixel in degrees">> interp.par
+echo "0   Center longitude of the south-west pixel in degrees">> interp.par
+echo "2   Interpolating window size in degrees">> interp.par
+echo "2   Interpolating function">> interp.par
+echo "1   Activate interpolating box size optimization (no=0, yes=1)">> interp.par
+echo "1   Size of output cell in degrees">> interp.par
+echo $nx "   Number of cells along N-S axis">> interp.par
+echo $ny "   Number of cells along E-W axis">> interp.par
+echo "0   Center latitude of the south-west cell">> interp.par
+echo "0   Center longitude of the south-west cell">> interp.par
+echo "65534   Default numerical value (nodata=65534)">> interp.par
+inter
+mv $file1"_i.pgm" matin1.pgm
+echo $file2 "   Root name of the file"  > interp.par
+echo "1   Pixel size in degrees">> interp.par
+echo "0   Center latitude of the south-west pixel in degrees">> interp.par
+echo "0   Center longitude of the south-west pixel in degrees">> interp.par
+echo "2   Interpolating window size in degrees">> interp.par
+echo "2   Interpolating function">> interp.par
+echo "1   Activate interpolating box size optimization (no=0, yes=1)">> interp.par
+echo "1   Size of output cell in degrees">> interp.par
+echo $nx "   Number of cells along N-S axis">> interp.par
+echo $ny "   Number of cells along E-W axis">> interp.par
+echo "0   Center latitude of the south-west cell">> interp.par
+echo "0   Center longitude of the south-west cell">> interp.par
+echo "65534   Default numerical value (nodata=65534)">> interp.par
+inter
+mv $file2"_i.pgm" matin2.pgm
+cp matin1.pgm matin-00.pgm
+if [ $ntime -lt 10 ]
+   then
+      cp matin2.pgm "matin-0"$ntime".pgm"
+   else
+      cp matin2.pgm "matin-"$ntime".pgm"  
+fi   
+
+#
+#   interpolation temporelle
+#
+let "i=ntime-1"
+n=1
+while test $n -le $i
+do
+#
+#
+#
+if [ $n -lt 10 ]
+   then
+      output="matin-0"$n
+   else
+      output="matin-"$n 
+fi   
+
+#
+#   compute  for time step n
+# 
+let "f2=n*1000/ntime"
+let "f1=(ntime-n)*1000/ntime"
+let "dn=ntime-n"
+if [ $n -lt 10 ]
+   then
+   factor1="0."$f1
+else
+   if [ $n -lt 100 ]
+      then
+      factor1="0.0"$f1
+   else
+      factor1="0.00"$f1
+   fi
+fi 
+if [ $dn -lt 10 ]
+   then
+   factor2="0."$f2
+else
+   if [ $dn -lt 100 ]
+      then
+      factor2="0.0"$f2 
+   else
+      factor2="0.00"$f2 
+   fi
+fi 
+echo "3   Operation" > simplearit.par
+echo "matin_1_"$n "   Output root file name .pgm will be added" >> simplearit.par
+echo "matin1   Root name of file #1 .pgm will be added" >> simplearit.par
+echo $factor1 "   Numerical value" >> simplearit.par
+echo "0   1 -> negative set to 0" >> simplearit.par
+echo "65533   limit" >> simplearit.par
+echo $factor1 >> logfile
+
+#
+#   execute simar
+#
+simar
+#
+echo "3   Operation" > simplearit.par
+echo "matin_2_"$n "   Output root file name .pgm will be added" >> simplearit.par
+echo "matin2   Root name of file #1 .pgm will be added" >> simplearit.par
+echo $factor2 "   Numerical value" >> simplearit.par
+echo "0   1 -> negative set to 0" >> simplearit.par
+echo "65533   limit" >> simplearit.par
+#
+#   execute simar
+#
+
+
+
+echo $factor2 >> logfile
+
+
+
+simar
+#
+#
+if [ $n -lt 10 ]
+   then
+      output="matin-0"$n
+   else
+      output="matin-"$n 
+fi       
+#
+#     set parameters for aodar 
+#
+echo "1   Operation" > aodarit.par
+echo "1   remove negative values" >> aodarit.par
+echo $output "   Output root file name .pgm will be added" >> aodarit.par      
+echo "matin_1_"$n "   Root name of file #1 .pgm will be added" >> aodarit.par
+echo "matin_2_"$n "   Root name of file #2 .pgm will be added" >> aodarit.par
+echo "65533   Limit" >> aodarit.par
+#
+#     execute aodar
+#
+aodar
+#
+#
+echo " Deleting temporary files in " $folder
+rm -f "matin_1_"$n".pgm" "matin_2_"$n".pgm"
+
+
+echo $output "   Root name of the file"  > interp.par
+echo "1   Pixel size in degrees">> interp.par
+echo "0   Center latitude of the south-west pixel in degrees">> interp.par
+echo "0   Center longitude of the south-west pixel in degrees">> interp.par
+echo "2   Interpolating window size in degrees">> interp.par
+echo "2   Interpolating function">> interp.par
+echo "1   Activate interpolating box size optimization (no=0, yes=1)">> interp.par
+echo "1   Size of output cell in degrees">> interp.par
+echo $nx "   Number of cells along N-S axis">> interp.par
+echo $ny "   Number of cells along E-W axis">> interp.par
+echo "0   Center latitude of the south-west cell">> interp.par
+echo "0   Center longitude of the south-west cell">> interp.par
+echo "65534   Default numerical value (nodata=65534)">> interp.par
+inter
+mv $output"_i.pgm" $output".pgm"
+let "n=n+1"
+done
+rm -f matin1.pgm matin2.pgm
+if [ -f core ] 
+   then   echo "******** An error occured during execution of matin!
+********"    rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of matin." 
+fi 

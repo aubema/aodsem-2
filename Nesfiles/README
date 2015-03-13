@@ -1,0 +1,12 @@
+Fichier README du repertoire Nesfiles de AODSEM
+
+Inventaire du GEIA:
+
+Les fichiers GEIA originaux sont contenus dans le repertoire GEIAo ils ont ete converti au 
+format pgm avec le programme geia2.
+
+lowsu##.pgm = sulfates au niveau du sol ## = mois de l'annee
+higsu##.pgm = sulfates emis a plus de 50 m d'altitude
+lowbc##.pgm = combinaison de Black Carbon provenant de l'inventaire forest fires et fossil fuel. Cet inventaire correspond a une climatilogie
+antbc##.pgm = seulement fossil fuel
+biobc##.pgm = seulement forest fire

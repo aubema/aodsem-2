@@ -1,0 +1,36 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                     bmies                    *"
+echo "*                                              *"
+echo "*     Mie's calculations for many size bins    *"
+echo "*     definition, particle type, wavelength    *"
+echo "*            and relative humidity             *"
+echo "*                                              *"
+echo "*     Martin Aube 2000                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+ln -s ~/AODSEM/Bin/batchmie batchmie
+if [ ! -f humout ] 
+  then ln -s ~/AODSEM/Nesfiles/humout humout
+fi
+echo " Executing batchmie..."
+ls *.bmi
+./batchmie
+echo " Deleting temporary files in " $folder
+rm -f batchmie
+# rm -f humout
+if [ -f core ] 
+   then   echo "******** An error occured during execution of bmies! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of bmies." 
+fi 
+
+

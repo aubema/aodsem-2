@@ -1,0 +1,851 @@
+#!/usr/bin/wish
+#############################################################################
+# Visual Tcl v1.11p1 Project
+#
+
+#################################
+# GLOBAL VARIABLES
+#
+global widget;
+global HOME;
+#global type;
+#global bin;
+#global lev;
+#global lev1;
+#global lev0; 
+
+#################################
+# USER DEFINED PROCEDURES
+#
+proc init {argc argv} {
+
+}
+
+init $argc $argv
+
+
+proc {main} {argc argv} {
+
+}
+
+proc {Window} {args} {
+global vTcl
+    set HOME [pwd]
+    set cmd [lindex $args 0]
+    set name [lindex $args 1]
+    set newname [lindex $args 2]
+    set rest [lrange $args 3 end]
+    if {$name == "" || $cmd == ""} {return}
+    if {$newname == ""} {
+        set newname $name
+    }
+    set exists [winfo exists $newname]
+    switch $cmd {
+        show {
+            if {$exists == "1" && $name != "."} {wm deiconify $name; return}
+            if {[info procs vTclWindow(pre)$name] != ""} {
+                eval "vTclWindow(pre)$name $newname $rest"
+            }
+            if {[info procs vTclWindow$name] != ""} {
+                eval "vTclWindow$name $newname $rest"
+            }
+            if {[info procs vTclWindow(post)$name] != ""} {
+                eval "vTclWindow(post)$name $newname $rest"
+            }
+        }
+        hide    { if $exists {wm withdraw $newname; return} }
+        iconify { if $exists {wm iconify $newname; return} }
+        destroy { if $exists {destroy $newname; return} }
+    }
+}
+
+#################################
+# VTCL GENERATED GUI PROCEDURES
+#
+
+proc vTclWindow. {base} {
+    if {$base == ""} {
+        set base .
+    }
+    ###################
+    # CREATING WIDGETS
+    ###################
+    wm focusmodel $base passive
+    wm geometry $base 1x1+0+0
+    wm maxsize $base 1265 994
+    wm minsize $base 1 1
+    wm overrideredirect $base 0
+    wm resizable $base 1 1
+    wm withdraw $base
+    wm title $base "vt.tcl"
+    ###################
+    # SETTING GEOMETRY
+    ###################
+}
+
+
+proc vTclWindow.top17 {base} {
+    if {$base == ""} {
+        set base .top17
+    }
+    if {[winfo exists $base]} {
+        wm deiconify $base; return
+    }
+    ###################
+    # CREATING WIDGETS
+    ###################
+    toplevel $base -class Toplevel \
+        -background #bbbbbb -highlightbackground #bbbbbb \
+        -highlightcolor #000000 
+    wm focusmodel $base passive
+    wm geometry $base 799x530+144+249
+    wm maxsize $base 1265 994
+    wm minsize $base 1 1
+    wm overrideredirect $base 0
+    wm resizable $base 1 1
+    wm deiconify $base
+    wm title $base "AODSEM .dat file viewer"
+set typename ?
+set type ?
+set binname ?
+set bin ?
+set levname ?
+set lev ?
+set lev1 ?
+set lev0 ?
+set zoo 1
+cd
+set folder [pwd]
+set scale 1
+
+#
+#  fenetres d affichage
+#
+
+    canvas $base.can18 \
+        -background #ffffff -borderwidth 2 -height 200 \
+        -highlightbackground #ffffff -highlightcolor #000000 -relief ridge \
+        -width 240 \
+        -xscrollcommand {.top17.scr20 set} -yscrollcommand {.top17.scr21 set} 
+    scrollbar $base.scr20 \
+        -activebackground #bbbbbb -activerelief sunken -background #bbbbbb \
+        -command {.top17.can18 xview} -cursor left_ptr \
+        -highlightbackground #bbbbbb -highlightcolor #000000 -orient horiz \
+        -repeatdelay 30 -troughcolor #bbbbbb -width 1 
+    scrollbar $base.scr21 \
+        -activebackground #bbbbbb -background #bbbbbb \
+        -command {.top17.can18 yview} -cursor left_ptr \
+        -highlightbackground #bbbbbb -highlightcolor #000000 -orient vert \
+        -troughcolor #bbbbbb 
+    canvas $base.can19 \
+        -background #ffffff -borderwidth 2 -height 200 \
+        -highlightbackground #ffffff -highlightcolor #000000 -relief ridge \
+        -width 240 \
+        -xscrollcommand {.top17.scr22 set} -yscrollcommand {.top17.scr23 set} 
+    scrollbar $base.scr22 \
+        -activebackground #bbbbbb -activerelief sunken -background #bbbbbb \
+        -command {.top17.can19 xview} -cursor left_ptr \
+        -highlightbackground #bbbbbb -highlightcolor #000000 -orient horiz \
+        -repeatdelay 30 -troughcolor #bbbbbb -width 1 
+    scrollbar $base.scr23 \
+        -activebackground #bbbbbb -background #bbbbbb \
+        -command {.top17.can19 yview} -cursor left_ptr \
+        -highlightbackground #bbbbbb -highlightcolor #000000 -orient vert \
+        -troughcolor #bbbbbb     
+    canvas $base.can20 \
+        -background #ffffff -borderwidth 2 -height 200 \
+        -highlightbackground #ffffff -highlightcolor #000000 -relief ridge \
+        -width 240 \
+        -xscrollcommand {.top17.scr24 set} -yscrollcommand {.top17.scr25 set} 
+    scrollbar $base.scr24 \
+        -activebackground #bbbbbb -activerelief sunken -background #bbbbbb \
+        -command {.top17.can20 xview} -cursor left_ptr \
+        -highlightbackground #bbbbbb -highlightcolor #000000 -orient horiz \
+        -repeatdelay 30 -troughcolor #bbbbbb -width 1 
+    scrollbar $base.scr25 \
+        -activebackground #bbbbbb -background #bbbbbb \
+        -command {.top17.can20 yview} -cursor left_ptr \
+        -highlightbackground #bbbbbb -highlightcolor #000000 -orient vert \
+        -troughcolor #bbbbbb 
+
+
+# numero de l image centrale
+
+    label $base.lab23 \
+        -background #bbbbbb -borderwidth 1 \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -text 1 
+
+
+
+    label $base.lab25 \
+        -background #bbbbbb -borderwidth 1 \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -text ${lev0} 
+
+
+    label $base.lab29 \
+        -background #bbbbbb -borderwidth 1 \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -text ${lev1} 
+#
+#   choix du type d aerosol
+#
+    menubutton $base.men32 \
+        -activebackground #bbbbbb -activeforeground #000000 -anchor w \
+        -background #bbbbbb \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -indicatoron 1 -menu .top17.men32.m -padx 4 \
+        -pady 3 -relief raised -text "Aerosol type: $typename" 
+    menu $base.men32.m \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb -cursor {} \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 
+    $base.men32.m add command \
+        -label Sulfate -command {set typename "Sulfate"
+         set type 1
+         .top17.men32 configure -text "Aerosol type: $typename"}
+    $base.men32.m add command \
+        -label {Black carbon} -command {set typename "Black carbon"
+         set type 2
+         .top17.men32 configure -text "Aerosol type: $typename"}
+    $base.men32.m add command \
+        -label {Soil dust} -command {set typename "Soil dust"
+         set type 3
+         .top17.men32 configure -text "Aerosol type: $typename"}
+    $base.men32.m add command \
+        -label {Sea Salt} -command {set typename "Sea salt"
+         set type 4
+         .top17.men32 configure -text "Aerosol type: $typename"}
+    $base.men32.m add command \
+        -label {Organic carbon} -command {set typename "Organic carbon"
+         set type 5
+         .top17.men32 configure -text "Aerosol type: $typename"}
+#
+#   choix de l intervalle de taille
+#
+
+    menubutton $base.men33 \
+        -activebackground #bbbbbb -activeforeground #000000 -anchor w \
+        -background #bbbbbb \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -indicatoron 1 -menu .top17.men33.m -padx 4 \
+        -pady 3 -relief raised -text "Size bin: $binname" 
+    menu $base.men33.m \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb -cursor {} \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 
+    $base.men33.m add command \
+        -label {bin 1: 0.005-0.01 um} -command {set binname "1"
+         set bin 1
+         .top17.men33 configure -text "Size bin: $binname"}
+    $base.men33.m add command \
+        -label {bin 2: 0.01-0.02 um} -command {set binname "2"
+         set bin 2
+         .top17.men33 configure -text "Size bin: $binname"}
+    $base.men33.m add command \
+        -label {bin 3: 0.02-0.04 um} -command {set binname "3"
+         set bin 3
+         .top17.men33 configure -text "Size bin: $binname"}
+    $base.men33.m add command \
+        -label {bin 4: 0.04-0.08 um} -command {set binname "4"
+         set bin 4
+         .top17.men33 configure -text "Size bin: $binname"}
+    $base.men33.m add command \
+        -label {bin 5: 0.08-0.16 um} -command {set binname "5"
+         set bin 5
+         .top17.men33 configure -text "Size bin: $binname"}
+    $base.men33.m add command \
+        -label {bin 6: 0.16-0.32 um} -command {set binname "6"
+         set bin 6
+         .top17.men33 configure -text "Size bin: $binname"}
+    $base.men33.m add command \
+        -label {bin 7: 0.32-0.56 um} -command {set binname "7"
+         set bin 7
+         .top17.men33 configure -text "Size bin: $binname"}
+    $base.men33.m add command \
+        -label {bin 8: 0.64-1.28 um} -command {set binname "8"
+         set bin 8
+         .top17.men33 configure -text "Size bin: $binname"}
+    $base.men33.m add command \
+        -label {bin 9: 1.28-2.56 um} -command {set binname "9"
+         set bin 9
+         .top17.men33 configure -text "Size bin: $binname"}
+    $base.men33.m add command \
+        -label {bin 10: 2.56-5.12 um} -command {set binname "10"
+         set bin 10
+         .top17.men33 configure -text "Size bin: $binname"}
+    $base.men33.m add command \
+        -label {bin 11: 5.12-10.24 um} -command {set binname "11"
+         set bin 11
+         .top17.men33 configure -text "Size bin: $binname"}
+    $base.men33.m add command \
+        -label {bin 12: 10.24-20.48 um} -command {set binname "12"
+         set bin 12
+         .top17.men33 configure -text "Size bin: $binname"}
+#
+#   choix du niveau
+#
+    menubutton $base.men34 \
+        -activebackground #bbbbbb -activeforeground #000000 -anchor w \
+        -background #bbbbbb \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -indicatoron 1 -menu .top17.men34.m -padx 4 \
+        -pady 3 -relief raised -text "Level: $levname" 
+    menu $base.men34.m \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb -cursor {} \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 
+    $base.men34.m add command \
+        -label {Level 1} -command {set levname "1"
+         set lev 1
+         set lev1 2
+         set lev0 10
+         .top17.men34 configure -text "Level: $levname"
+         .top17.lab23 configure -text $lev
+         .top17.lab25 configure -text $lev0
+         .top17.lab29 configure -text $lev1}
+    $base.men34.m add command \
+        -label {Level 2} -command {set levname "2"
+         set lev 2
+         set lev1 3
+         set lev0 1
+         .top17.men34 configure -text "Level: $levname"
+         .top17.lab23 configure -text $lev
+         .top17.lab25 configure -text $lev0
+         .top17.lab29 configure -text $lev1}
+    $base.men34.m add command \
+        -label {Level 3} -command {set levname "3"
+         set lev 3
+         set lev1 4
+         set lev0 2
+         .top17.men34 configure -text "Level: $levname"
+         .top17.lab23 configure -text $lev
+         .top17.lab25 configure -text $lev0
+         .top17.lab29 configure -text $lev1}
+    $base.men34.m add command \
+        -label {Level 4} -command {set levname "4"
+         set lev 4
+         set lev1 5
+         set lev0 3
+         .top17.men34 configure -text "Level: $levname"
+         .top17.lab23 configure -text $lev
+         .top17.lab25 configure -text $lev0
+         .top17.lab29 configure -text $lev1}
+    $base.men34.m add command \
+        -label {Level 5} -command {set levname "5"
+         set lev 5
+         set lev1 6
+         set lev0 4
+         .top17.men34 configure -text "Level: $levname"
+         .top17.lab23 configure -text $lev
+         .top17.lab25 configure -text $lev0
+         .top17.lab29 configure -text $lev1}
+    $base.men34.m add command \
+        -label {Level 6} -command {set levname "6"
+         set lev 6
+         set lev1 7
+         set lev0 5
+         .top17.men34 configure -text "Level: $levname"
+         .top17.lab23 configure -text $lev
+         .top17.lab25 configure -text $lev0
+         .top17.lab29 configure -text $lev1}
+    $base.men34.m add command \
+        -label {Level 7} -command {set levname "7"
+         set lev 7
+         set lev1 8
+         set lev0 6
+         .top17.men34 configure -text "Level: $levname"
+         .top17.lab23 configure -text $lev
+         .top17.lab25 configure -text $lev0
+         .top17.lab29 configure -text $lev1}
+    $base.men34.m add command \
+        -label {Level 8} -command {set levname "8"
+         set lev 8
+         set lev1 9
+         set lev0 7
+         .top17.men34 configure -text "Level: $levname"
+         .top17.lab23 configure -text $lev
+         .top17.lab25 configure -text $lev0
+         .top17.lab29 configure -text $lev1}
+    $base.men34.m add command \
+        -label {Level 9} -command {set levname "9"
+         set lev 9
+         set lev1 10
+         set lev0 8
+         .top17.men34 configure -text "Leve: $levname"
+         .top17.lab23 configure -text $lev
+         .top17.lab25 configure -text $lev0
+         .top17.lab29 configure -text $lev1}
+    $base.men34.m add command \
+        -label {Level 10} -command {set levname "10"
+         set lev 10
+         set lev1 1
+         set lev0 9
+         .top17.men34 configure -text "Level: $levname"
+         .top17.lab23 configure -text $lev
+         .top17.lab25 configure -text $lev0
+         .top17.lab29 configure -text $lev1}
+#
+#
+#
+    label $base.lab17 \
+        -background #bbbbbb -borderwidth 1 \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -text {Density factor:} 
+
+
+
+    scale $base.sca18 \
+        -activebackground #bbbbbb -background #bbbbbb \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -orient horiz -troughcolor #bbbbbb \
+        -from 1.0 -to 50.0 -command {set scale}
+    listbox $base.lis19 -yscroll "$base.scroll01 set"\
+        -background #ffffff \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 -highlightbackground #ffffff \
+        -highlightcolor #000000 -selectbackground #cd853f \
+        -selectforeground #ffffff  
+    scrollbar $base.scroll01 -command "$base.lis19 yview"
+
+
+
+#
+#   afficher le nom du fichier .dat et le repertoire 
+#
+    label $base.lab02 \
+        -background #bbbbbb -borderwidth 1 \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -text {Selected file:}
+    label $base.lab01 \
+        -background #ffffff -borderwidth 1 \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000  
+    label $base.lab04 \
+        -background #bbbbbb -borderwidth 1 \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -text {Path:}
+    set folder [pwd]
+    label $base.lab05 \
+        -background #ffffff -borderwidth 1 \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000  -text $folder
+#
+#   afficher l echelle
+#
+    label $base.lab03 \
+        -background #bbbbbb -borderwidth 1 \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000  
+    set folder [pwd]
+    cd
+    exec cp AODSEM/Nesfiles/color-code.gif $folder
+    catch {image delete legende}
+    image create photo legende -file [file join $folder color-code.gif]
+    .top17.lab03 configure -image legende
+    label $base.lab06 \
+        -background #bbbbbb -borderwidth 1 \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -text {Relative density:} 
+#
+#   lister les fichiers
+#
+    label $base.lab21 \
+        -background #bbbbbb -borderwidth 1 \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -text {Select then right click to view} 
+    foreach i [lsort [glob . .. *]] {
+           .top17.lis19 insert end $i 
+    }   
+#
+#   Activer le double click gauche
+#
+    bind .top17.lis19 <Double-ButtonPress-1> {
+       set folder [pwd]
+       set filename [selection get]
+       browse $folder $filename *
+       refresh $folder *
+       set folder [pwd]
+       .top17.lab05 configure -text $folder
+    }
+    bind .top17.lis19 <ButtonPress-3> {
+       set filname [selection get]
+       set datname [file rootname $filname]
+       .top17.lab01 configure -text $filname
+    }
+
+#
+#  bouton zoom in
+#
+    button $base.but03 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -text {ZOOM IN} \
+         -command {set zo 2
+                   image create photo imag0x
+                   imag0x copy imag0 -zoom $zo $zo
+                   image delete imag0
+                   image create photo imag0
+                   imag0 copy imag0x -zoom 1 1
+                   image delete imag0x
+                   .top17.can18 configure -scrollregion "0 0 640 320"
+                   .top17.can18 create image 320 160 -image imag0
+
+                   image create photo imagx
+                   imagx copy imag -zoom $zo $zo
+                   image delete imag
+                   image create photo imag
+                   imag copy imagx -zoom 1 1
+                   image delete imagx
+                   .top17.can19 configure -scrollregion "0 0 640 320"
+                   .top17.can19 create image 320 160 -image imag
+
+                   image create photo imag1x
+                   imag1x copy imag1 -zoom $zo $zo
+                   image delete imag1
+                   image create photo imag1
+                   imag1 copy imag1x -zoom 1 1
+                   image delete imag1x
+                   .top17.can20 configure -scrollregion "0 0 640 320"
+                   .top17.can20 create image 320 160 -image imag1
+                  }
+#
+#  bouton zoom out
+#
+    button $base.but04 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -text {ZOOM OUT} \
+        -command {image delete imag0
+                  image create photo imag0 -file [file join $folder ima0.gif]
+                  .top17.can18 configure -scrollregion "0 0 640 320"
+                  .top17.can18 create image 320 160 -image imag0
+
+                  image delete imag
+                  image create photo imag -file [file join $folder ima.gif]
+                  .top17.can19 configure -scrollregion "0 0 640 320"
+                  .top17.can19 create image 320 160 -image imag
+
+                  image delete imag1
+                  image create photo imag1 -file [file join $folder ima1.gif]
+                  .top17.can20 configure -scrollregion "0 0 640 320"
+                  .top17.can20 create image 320 160 -image imag1
+                  }
+#
+#   image etat
+#
+    set folder [pwd]
+    cd
+    exec cp AODSEM/Nesfiles/00pc.gif $folder
+    exec cp AODSEM/Nesfiles/01pc.gif $folder
+    exec cp AODSEM/Nesfiles/33pc.gif $folder
+    exec cp AODSEM/Nesfiles/66pc.gif $folder
+    exec cp AODSEM/Nesfiles/99pc.gif $folder
+    exec cp AODSEM/Nesfiles/100pc.gif $folder
+    image create photo etat0 -file [file join $folder 00pc.gif]
+    image create photo etat1 -file [file join $folder 01pc.gif]
+    image create photo etat2 -file [file join $folder 33pc.gif]
+    image create photo etat3 -file [file join $folder 66pc.gif]
+    image create photo etat4 -file [file join $folder 99pc.gif]
+    image create photo etat5 -file [file join $folder 100pc.gif]
+    exec rm -f 00pc.gif
+    exec rm -f 01pc.gif
+    exec rm -f 33pc.gif
+    exec rm -f 66pc.gif
+    exec rm -f 99pc.gif
+    exec rm -f 100pc.gif
+    label $base.lab07 \
+        -background #ffffff -borderwidth 1 \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 
+
+
+   .top17.lab07 configure -image etat0
+#
+#   boutton go
+#
+    button $base.but01 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -text {GO} \
+         -command { set folder [pwd]
+        set zoo 1
+        set zo 1
+    set folder [pwd]
+    cd
+    exec cp AODSEM/Bin/inspect3d $folder
+    exec cp AODSEM/Bin/coloraod $folder
+    exec cp AODSEM/Nesfiles/color-code.txt $folder
+    cd $folder
+
+   .top17.lab07 configure -image etat1
+    update idletasks
+    display1 $datname $lev0 $bin $type $scale
+
+   .top17.lab07 configure -image etat2
+    update idletasks    
+    display2 $datname $lev $bin $type $scale
+
+   .top17.lab07 configure -image etat3
+    update idletasks
+    display3 $datname $lev1 $bin $type $scale
+
+   .top17.lab07 configure -image etat4
+    update idletasks
+   .top17.lab07 configure -image etat5
+    update idletasks
+}
+#
+#  bouton exit
+#
+    button $base.but02 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -text {EXIT} \
+         -command {exec rm -f ima.pgm ima0.pgm ima1.pgm
+                   exit
+                  }
+    ###################
+    # SETTING GEOMETRY
+    ###################
+#
+#  premiere fenetre
+#
+    place $base.can18 \
+        -x 5 -y 220 -width 240 -height 200 -anchor nw -bordermode ignore 
+    place $base.scr20 \
+        -x 5 -y 422 -width 240 -height 20
+    place $base.scr21 \
+        -x 244 -y 220 -width 20 -height 200
+
+
+
+    
+    place $base.can19 \
+        -x 270 -y 220 -width 240 -height 200 -anchor nw -bordermode ignore 
+    place $base.scr22 \
+        -x 270 -y 422 -width 240 -height 20
+    place $base.scr23 \
+        -x 514 -y 220 -width 20 -height 200
+
+
+    place $base.can20 \
+        -x 535 -y 220 -width 240 -height 200 -anchor nw -bordermode ignore 
+    place $base.scr24 \
+        -x 535 -y 422 -width 240 -height 20
+    place $base.scr25 \
+        -x 778 -y 220 -width 20 -height 200
+
+
+    place $base.lab23 \
+        -x 390 -y 445 -width 16 -height 18 -anchor nw -bordermode ignore 
+    place $base.lab25 \
+        -x 110 -y 445 -anchor nw -bordermode ignore 
+    place $base.lab29 \
+        -x 655 -y 445 -anchor nw -bordermode ignore 
+    place $base.men32 \
+        -x 590 -y 40 -width 200 -height 24 -anchor nw -bordermode ignore 
+    place $base.men33 \
+        -x 590 -y 80 -width 200 -height 24 -anchor nw -bordermode ignore 
+    place $base.men34 \
+        -x 590 -y 120 -width 200 -height 24 -anchor nw -bordermode ignore 
+    place $base.lab17 \
+        -x 490 -y 175 -anchor nw -bordermode ignore 
+    place $base.sca18 \
+        -x 590 -y 155 -width 205 -height 43 -anchor nw -bordermode ignore 
+    place $base.lis19 \
+        -x 5 -y 35 -width 238 -height 171 -anchor nw -bordermode ignore 
+    place $base.scroll01 \
+        -x 244 -y 35 -width 20 -height 171
+    place $base.lab21 \
+        -x 45 -y 15 -anchor nw -bordermode ignore 
+    place $base.but01 \
+        -x 360 -y 146 -width 60 -height 60 -anchor nw -bordermode ignore 
+    place $base.but02 \
+        -x 425 -y 146 -width 60 -height 60 -anchor nw -bordermode ignore 
+    place $base.but03 \
+        -x 270 -y 146 -width 85 -height 27 -anchor nw -bordermode ignore 
+    place $base.but04 \
+        -x 270 -y 178 -width 85 -height 27 -anchor nw -bordermode ignore 
+    place $base.lab01 \
+        -x 375 -y 15 -width 200 -height 20 -anchor nw -bordermode ignore
+    place $base.lab02 \
+        -x 280 -y 15 -height 20 -anchor nw -bordermode ignore
+    place $base.lab05 \
+        -x 325 -y 45 -width 250 -height 20 -anchor nw -bordermode ignore
+    place $base.lab04 \
+        -x 280 -y 45 -height 20 -anchor nw -bordermode ignore
+#
+#   code couleur
+#
+    place $base.lab03 \
+        -x 125 -y 460 -anchor nw -bordermode ignore
+    place $base.lab06 \
+        -x 5 -y 480 -anchor nw -bordermode ignore
+#
+#   barre d etat
+#
+    place $base.lab07 \
+         -x 730 -y 460 -anchor nw -bordermode ignore
+     
+}
+###################################################################
+#
+#   Routine du display 1
+#
+proc display1 {datname lev0 bin type scale} {
+    set folder [pwd]
+    set norm [expr $scale*0.39]
+    set ch1 [open inspect3d.par w]
+      puts $ch1 $datname
+      puts $ch1 $lev0
+      puts $ch1 $type
+      puts $ch1 $bin
+      puts $ch1 1
+    close $ch1
+    exec ./inspect3d 
+    exec mv inspect3d.pgm ima0.pgm
+    set ch4 [open coloraod.par w]
+      puts $ch4 ima0
+      puts $ch4 1
+      puts $ch4 0
+      puts $ch4 0
+      puts $ch4 1
+      puts $ch4 $norm
+      puts $ch4 0
+    close $ch4
+    exec ./coloraod
+    exec mv coloraod.ppm ima0.ppm
+    exec convert ima0.ppm ima0.gif  
+    exec rm -f inspect3d.par
+    image create photo imag0 -file [file join $folder ima0.gif]
+    .top17.can18 configure -scrollregion "0 0 640 320"
+    .top17.can18 create image 320 160 -image imag0
+}
+
+###################################################################
+#
+#   Routine du display 2
+#
+proc display2 {datname lev bin type scale} {
+    set folder [pwd]
+    set norm [expr $scale*0.39]
+    set ch2 [open inspect3d.par w]
+      puts $ch2 $datname
+      puts $ch2 $lev
+      puts $ch2 $type
+      puts $ch2 $bin
+      puts $ch2 1
+    close $ch2
+    exec ./inspect3d 
+    exec mv inspect3d.pgm ima.pgm
+    set ch5 [open coloraod.par w]
+      puts $ch5 ima
+      puts $ch5 1
+      puts $ch5 0
+      puts $ch5 0
+      puts $ch5 1
+      puts $ch5 $norm
+      puts $ch5 0
+    close $ch5
+    exec ./coloraod
+    exec mv coloraod.ppm ima.ppm
+    exec convert ima.ppm ima.gif  
+    exec rm -f inspect3d.par
+    image create photo imag -file [file join $folder ima.gif]
+    .top17.can19 configure -scrollregion "0 0 640 320"
+    .top17.can19 create image 320 160 -image imag
+}
+
+###################################################################
+#
+#   Routine du display 3
+#
+proc display3 {datname lev1 bin type scale} {
+    set folder [pwd]
+    set norm [expr $scale*0.39]
+    set ch3 [open inspect3d.par w]
+      puts $ch3 $datname
+      puts $ch3 $lev1
+      puts $ch3 $type
+      puts $ch3 $bin
+      puts $ch3 1
+    close $ch3
+    exec ./inspect3d 
+    exec mv inspect3d.pgm ima1.pgm
+    set ch6 [open coloraod.par w]
+      puts $ch6 ima1
+      puts $ch6 1
+      puts $ch6 0
+      puts $ch6 0
+      puts $ch6 1
+      puts $ch6 $norm
+      puts $ch6 0
+    close $ch6
+    exec ./coloraod
+    exec mv coloraod.ppm ima1.ppm
+    exec convert ima1.ppm ima1.gif  
+    exec rm -f inspect3d.par
+    image create photo imag1 -file [file join $folder ima1.gif]
+    .top17.can20 configure -scrollregion "0 0 640 320"
+    .top17.can20 create image 320 160 -image imag1
+
+
+
+
+}
+###################################################################
+#
+#   Routine du Browser
+#
+proc browse {folder file filtre} {
+   refresh $file $filtre
+   if {$folder != "."} {
+      set file $folder/$file
+   } 
+   if {[file isdirectory $file]} {   
+      cd $file 
+   }  else { 
+         error "can't browse $file"
+      } 
+   
+}
+###################################################################
+#
+#    Routine pour rafraichir le browser
+#
+proc refresh {dir filtre} {
+   set dir [pwd]
+   set power [pwd]
+   cd $power
+      .top17.lis19 delete 0 end        
+      foreach i [lsort [glob . .. $filtre]] {   
+         .top17.lis19 insert end $i     
+       }
+      
+   }  
+
+
+
+
+  
+Window show .
+Window show .top17
+
+main $argc $argv

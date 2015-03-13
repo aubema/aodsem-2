@@ -1,0 +1,41 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *              Edit parameter for calib               *"
+echo " *                                                     *"
+echo " *        Aerosol optical depth map calibration        *"
+echo " *         with local precise AOD measurements         *"
+echo " *                                                     *"
+echo " *     Martin Aube 2000                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f calibrate.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more calibrate.par
+fi 
+ls *.pgm
+echo " "
+echo " New parameters:"
+echo " "
+echo "Root name of file to normalize (.pgm will be added)?"  
+read nom
+echo " Name of the reference data file?"
+read refer 
+echo " normalization function:"
+echo " "  
+echo "    0 ..... y = m * x"
+echo "    1 ..... y = m * x + b"
+echo "    2 ..... y = a * x^2 + b * x + c"
+read funct
+
+echo $nom "   Root name of the file (ext .pgm be added)"> calibrate.par
+echo $refer >> calibrate.par
+echo $funct >> calibrate.par
+
+
+echo "Done"

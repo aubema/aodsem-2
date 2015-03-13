@@ -1,0 +1,42 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *                    epar_domain                      *"
+echo " *                                                     *"
+echo " *          Construit le fichier de parametre          *"
+echo " *        contenant les informations geographiques     *"
+echo " *                   sur le domaine                    *"
+echo " *                                                     *"
+echo " *    Jean-Denis Giguere 2003                          *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Repertoire de travail : " $folder
+echo " "
+if [ -f domain.par ]
+then    echo " Les parametres actuels sont :"
+	echo " "
+	cat > domain.par
+	echo " "
+	echo " Faites Ctrl-c pour conserver ces parametres "
+fi
+
+echo " Taille d'une cellule en centieme de degre "
+read size
+echo " Latitude de la cellule S-O "
+read lat
+echo " Longitude de la cellule S-O "
+read long
+echo " Nombre de cellules dans l'axe N-S "
+read nNS
+echo " Nombre de cellules dans l'axe E-O "
+read nEO
+
+echo $size" "$lat" "$long" "$nNS" "$nEO" " > domain.par
+echo "Fin normal de epar_domain"
+
+
+
+
+

@@ -1,0 +1,47 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *              Edit parameter for 3darit              *"
+echo " *                                                     *"
+echo " *          Compute aritmetics on two initial          *"
+echo " *               aerosol 3D distributions              *"
+echo " *                                                     *"
+echo " *     Martin Aube 2001                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f 3darit.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more 3darit.par
+fi 
+ls *.dat
+echo " "
+echo " New parameters:"
+echo " "
+echo "Root name of file #1 (.dat will be added)?"
+read nom1
+echo "Root name of file #2 (.dat will be added)?"
+read nom2
+echo "Choose an operation:"
+echo " "
+echo "   1 ..... +"
+echo "   2 ..... -"
+echo "   3 ..... x"
+echo "   4 ..... /"
+read oper
+echo "Set negative output to 0 (1=yes, 0=no)?"
+read neg
+echo "Output root file name (.dat will be added)?"
+read nom3
+
+
+echo $nom1 "   dat file #1" > 3darit.par
+echo $nom2 "   dat file #2" >> 3darit.par
+echo $oper "   Operation" >> 3darit.par
+echo $nom3 "   Output root file name " >> 3darit.par
+echo $neg  "   Set negative output to 0 (1=yes, 0=no)" >> 3darit.par
+echo "Done"

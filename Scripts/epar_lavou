@@ -1,0 +1,39 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *            Edit parameter for lavoue23ds            *"
+echo " *                                                     *"
+echo " *            Convert Lavoue source files              *"
+echo " *              into AODSEM 3ds format                 *"
+echo " *                                                     *"
+echo " *     Martin Aube 2004                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f lavoue23ds.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more lavoue23ds.par
+fi 
+ls *.3ds
+echo " "
+echo " New parameters:"
+echo " "
+echo " Input Lavoue file name ?"
+read nom0
+echo "Aerosol type (1=su,2=bc,3=sd,4=ss,5=oc)?"
+read typ
+echo "Output root file name (.3ds will be added)?"
+read outf
+
+
+echo $nom0"   Input root file name" > lavoue23ds.par
+echo $typ"   Aerosol type (1=su,2=bc,3=sd,4=ss,5=oc)" >> lavoue23ds.par
+echo $outf "   Output root file name" >> lavoue23ds.par
+
+echo "Done"
+
+

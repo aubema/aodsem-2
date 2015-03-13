@@ -1,0 +1,32 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                     gemin                    *"
+echo "*                                              *"
+echo "*          Create a GEM index file for         *"
+echo "*                    AODSEM                    *"
+echo "*                                              *"
+echo "*     Martin Aube 2000                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+# creer les fichiers de liste d'analyses et de precipitations
+ls -1 *ana*asc* > listana
+ls -1 *pcp*asc* > listpcp
+ln -s ~/AODSEM/Bin/gemindex gemindex
+echo " Executing gemindex..."
+./gemindex
+echo " Deleting temporary files in " $folder
+rm -f gemindex
+if [ -f core ] 
+   then   echo "******** An error occured during execution of gemin! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of gemin." 
+fi 
+

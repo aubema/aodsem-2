@@ -1,0 +1,36 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                    gem21                     *"
+echo "*                                              *"
+echo "*        Convert CMC GEM V1.0 model file       *"
+echo "*          into AODSEM compatible files        *"
+echo "*                                              *"
+echo "*     Martin Aube 2000                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+ls
+echo " Preparing input files..."
+ln -s ~/AODSEM/Bin/gem2aodsem gem2aodsem
+if [ ! -f gem.index ] 
+   then   echo "******** An error occured during execution of gemto! ********"
+   echo "******** gem.index not found, run gemin! ********"
+   exit 0
+fi
+echo " Executing gem2aodsem..."
+./gem2aodsem
+echo " Deleting temporary files in " $folder
+rm -f gem2aodsem
+if [ -f core ] 
+   then   echo "******** An error occured during execution of gem21! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of gem21." 
+fi 
+

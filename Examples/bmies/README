@@ -1,0 +1,17 @@
+Nom de la fonction: bmies
+
+Commande d'edition de parametres: non
+
+Utilite:  Calcul de Mie applique aux divers intervalles de taille,
+type de particules, humidite relative et longeueurs d'ondes supportees
+par AODSEM.
+
+Entree: Fichier .bns.bmi contenant la description des intervalles
+de taille ainsi que le type de quadrature sous-intervalles,
+fichier .ref.bmi contenant les données d'indices de refractions
+complexes de chaque type d'aerosol et de l'eau.
+
+Sortie: Fichier .res.bmi contenant les resultats sous forme de
+tableau de sections efficaces, fichier .pfc.bmi contenant les fonctions
+de phases.
+

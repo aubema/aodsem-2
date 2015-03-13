@@ -1,0 +1,32 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                    gfaba                     *"
+echo "*                                              *"
+echo "*   multiple gaussian and polynomial fitting   *"
+echo "*                automated mode                *"
+echo "*                                              *"
+echo "*     Martin Aube 2004                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+
+ln -s $HOME/AODSEM/Bin/gfa .
+./gfa  
+rm -f gfa
+read nom x0 xf bidon <gaufit.in
+echo "plot 'resfit.fit';replot '"$nom"'; replot 'resfit.res'; set data style lines ; replot" > toto.1
+gnuplot -persist toto.1
+
+if [ -f core ] 
+   then   echo "******** An error occured during execution of gfaba! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of gfaba." 
+fi 
+exit 0

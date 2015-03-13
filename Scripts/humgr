@@ -1,0 +1,29 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                    humgr                     *"
+echo "*                                              *"
+echo "*   Hygroscopic growing factor computations    *"
+echo "*                                              *"
+echo "*     Martin Aube 2000                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+ls *.bns.*
+rm -f core
+echo " Experiment directory "$folder
+ln -s ~/AODSEM/Bin/hum hum
+echo " Executing hum..."
+./hum
+echo " Deleting temporary files..."
+rm -f hum
+if [ -f core ] 
+   then   echo "******** An error occured during execution of humgr! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of humgr." 
+fi 
+

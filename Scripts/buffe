@@ -1,0 +1,34 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *                        buffe                        *"
+echo " *                                                     *"
+echo " *                 Apply a buffer mask                 *"
+echo " *                                                     *"
+echo " *     Martin Aube 2000                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+if [ -f mkbuffer.par ] 
+   then   echo " Using existing input parameter file: mkbuffer.par"
+
+   else   epar_buffe   
+fi 
+echo " Experiment directory "$folder
+ln -s ~/AODSEM/Bin/mkbuffer mkbuffer
+echo " Executing mkbuffer..."
+./mkbuffer
+echo " Deleting temporary files in " $folder
+
+rm -f mkbuffer
+if [ -f core ] 
+   then   echo "******** An error occured during execution of buffe!
+********"    rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of buffe." 
+fi 
+

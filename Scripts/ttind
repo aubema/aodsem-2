@@ -1,0 +1,30 @@
+#!/bin/bash
+echo "ttind == ************************************************"
+echo "ttind == *                                              *"
+echo "ttind == *                     ttind                    *"
+echo "ttind == *                                              *"
+echo "ttind == *  Create a temperature index file for AODSEM  *"
+echo "ttind == *                                              *"
+echo "ttind == *     Martin Aube 2003                         *"
+echo "ttind == *                                              *"
+echo "ttind == ************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo "ttind == Experiment directory "$folder
+ln -s ~/AODSEM/Bin/ttindex ttindex 
+ls -1 *.tt > tttemp
+echo "ttind ==  Executing ttindex..."
+./ttindex
+echo "ttind ==  Deleting temporary files in " $folder
+rm -f ttindex
+rm -f tttemp
+if [ -f core ] 
+   then   echo "ttind ==  ******** An error occured during execution of ttind! ********"
+   rm -f core
+   echo "ttind == Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo "ttind ==  Normal end of ttind." 
+fi 
+

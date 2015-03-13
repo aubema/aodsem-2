@@ -1,0 +1,48 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                 epar_gfabb                   *"
+echo "*                                              *"
+echo "*      Edit parameter for gfaba et gfbba       *"
+echo "*   multiple gaussian and polynomial fitting   *"
+echo "*                                              *"
+echo "*     Martin Aube 2004                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+ls
+echo "Nom du fichier d'entree?"
+read nom
+echo " "
+echo "Quelle est la ligne de départ?"
+read n0
+echo " "
+echo "Quelle est la ligne de fin (max 2048)?"
+read ndat
+echo " "
+echo "Quel est le nombre maximal de gaussienne désiré?"
+read ngausmax
+echo " "
+echo "Merci. Veuillez patientez durant le traitement de votre demande..."
+echo " "
+
+fact=1
+
+echo $nom >gaufit.in
+echo $n0 >>gaufit.in
+echo $ndat >>gaufit.in
+echo $ngausmax >>gaufit.in
+echo $fact >>gaufit.in
+
+if [ -f core ] 
+   then   echo "******** An error occured during execution of epar_gfabb! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of epar_gfabb." 
+fi 
+exit 0

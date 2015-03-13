@@ -1,0 +1,42 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *            Edit parameter for flambe23ds            *"
+echo " *                                                     *"
+echo " *         Convert a FLAMBE emission file              *"
+echo " *               to AODSEM 3ds format                  *"
+echo " *                                                     *"
+echo " *     Martin Aube 2004                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f flambe23ds.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more flambe23ds.par
+fi 
+
+echo " "
+echo " New parameters:"
+echo " "
+echo "Input file list name ?"
+echo
+echo "Create one by typing in terminal"
+echo "   chmod a-x *.dat; ls -1 *.dat > your_file_list_name"
+read nom0
+
+
+echo "Output root file name (.3ds will be added)?"
+read outf
+
+
+echo $nom0 "   Input root file name" > flambe23ds.par
+echo $outf".3ds   Output root file name" >> flambe23ds.par
+
+
+echo "Done"
+
+

@@ -1,0 +1,36 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                   calib                      *"
+echo "*                                              *"
+echo "*     Aerosol optical depth map calibration    *"
+echo "*     with local precise AOD measurements      *"
+echo "*                                              *"
+echo "*     Martin Aube 2000                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+if [ -f calibrate.par ] 
+   then   echo " Using existing input parameter file: calibrate.par"
+
+   else   epar_calib   
+fi 
+ls
+echo " Preparing input files..."
+ln -s ~/AODSEM/Bin/calibrate calibrate
+echo " Executing calibrate..."
+./calibrate
+echo " Deleting temporary files in " $folder
+rm -f calibrate
+if [ -f core ] 
+   then   echo "******** An error occured during execution of calib! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of calib." 
+fi 
+

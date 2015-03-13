@@ -1,0 +1,176 @@
+#!/bin/bash
+# programme pour compiler AODSEM-L /usr/local/pgplot -lpgplot -L /usr/X11R6/lib -lX11
+#
+# set pgplot directory
+#
+pgdir=/usr/local/pgplot
+rm -fr Bin
+mkdir Bin
+echo "Compilation des programmes fortran"
+echo "g77 Source/2doy2fort.f Source/timedate.f Source/julian.f -o Bin/2doy2fort"
+g77 Source/2doy2fort.f Source/timedate.f Source/julian.f -o Bin/2doy2fort
+echo "g77 Source/3darit.f -o Bin/3darit"
+g77 Source/3darit.f -o Bin/3darit
+echo "g77 Source/3dtoaod16bit.f Source/julian.f -o Bin/3dtoaod"
+g77 Source/3dtoaod16bit.f Source/julian.f -o Bin/3dtoaod
+echo "g77 Source/angstrom16bit.f -o Bin/angstrom"
+g77 Source/angstrom16bit.f -o Bin/angstrom
+echo "g77 Source/aodalpha2aod16bit.f -o Bin/aodalpha2aod"
+g77 Source/aodalpha2aod16bit.f -o Bin/aodalpha2aod
+echo "g77 Source/aodarit16bit.f -o Bin/aodarit"
+g77 Source/aodarit16bit.f -o Bin/aodarit
+echo "g77 Source/aodto3d16bit.f Source/julian.f -o Bin/aodto3d"
+g77 Source/aodto3d16bit.f Source/julian.f -o Bin/aodto3d
+echo "g77 Source/autocorcoef.f -o Bin/autocorcoef"
+g77 Source/autocorcoef.f -o Bin/autocorcoef
+echo  "g77 Source/batchmie.f -o Bin/batchmie"
+g77 Source/batchmie.f -o Bin/batchmie
+echo "g77 Source/calibrate16bit.f -o Bin/calibrate"
+g77 Source/calibrate16bit.f -o Bin/calibrate
+echo "g77 Source/cmbgeiapgm.f -o Bin/cmbgeiapgm"
+g77 Source/cmbgeiapgm.f -o Bin/cmbgeiapgm
+echo "g77 Source/cmbpsd.f -o Bin/cmbpsd"
+g77 Source/cmbpsd.f -o Bin/cmbpsd
+echo "g77 Source/coloraod16bit.f -o Bin/coloraod"
+g77 Source/coloraod16bit.f -o Bin/coloraod
+echo "g77 Source/compcolor16bit.f -o Bin/compcolor"
+g77 Source/compcolor16bit.f -o Bin/compcolor
+echo "g77 Source/composite16bit.f -o Bin/composite"
+g77 Source/composite16bit.f -o Bin/composite
+echo "g77 Source/contourplot16bit.f -o Bin/contourplot -L $pgdir -lpgplot -L /usr/X11R6/lib -lX11"
+g77 Source/contourplot16bit.f -o Bin/contourplot -L $pgdir -lpgplot -L /usr/X11R6/lib -lX11
+echo "g77 Source/corcoef.f -o Bin/corcoef"
+g77 Source/corcoef.f -o Bin/corcoef
+echo "g77 Source/crosscorrelation16bit.f -o Bin/crosscorrelation"
+g77 Source/crosscorrelation16bit.f -o Bin/crosscorrelation
+echo "g77 Source/deresol.f -o Bin/deresol"
+g77 Source/deresol.f -o Bin/deresol
+echo "g77 Source/diffusio16bit.f -o Bin/diffusio"
+g77 Source/diffusio16bit.f -o Bin/diffusio
+echo "g77 Source/drawaod16bit.f -o Bin/drawaod"
+g77 Source/drawaod16bit.f -o Bin/drawaod
+echo "g77 Source/dynamic.f Source/timedate.f Source/julian.f -o Bin/dynamic.exe"
+g77 Source/dynamic.f Source/timedate.f Source/julian.f -o Bin/dynamic.exe
+echo "g77 Source/echelle.f -o Bin/echelle"
+g77 Source/echelle.f -o Bin/echelle
+echo "g77 Source/filteraeronet.f -o Bin/filteraeronet"
+g77 Source/filteraeronet.f -o Bin/filteraeronet
+echo "g77 Source/filteraod16bit.f -o Bin/filteraod"
+g77 Source/filteraod16bit.f -o Bin/filteraod
+echo "g77 Source/geia2pgm.f -o Bin/geia2pgm"
+g77 Source/geia2pgm.f -o Bin/geia2pgm
+echo "g77 Source/gem2aodsem.f Source/timedate.f Source/julian.f -o Bin/gem2aodsem"
+g77 Source/gem2aodsem.f Source/timedate.f Source/julian.f -o Bin/gem2aodsem
+echo "g77 Source/gem2aodsem2.f Source/timedate.f Source/julian.f -o Bin/gem2aodsem2"
+g77 Source/gem2aodsem2.f Source/timedate.f Source/julian.f -o Bin/gem2aodsem2
+echo "g77 Source/gem2vertpro.f -o Bin/gem2vertpro"
+g77 Source/gem2vertpro.f -o Bin/gem2vertpro
+echo "g77 Source/gemindex.f -o Bin/gemindex"
+g77 Source/gemindex.f -o Bin/gemindex
+echo "g77 Source/histogram.f -o Bin/histogram -L $pgdir -lpgplot -L /usr/X11R6/lib -lX11"
+g77 Source/histogram.f -o Bin/histogram -L $pgdir -lpgplot -L /usr/X11R6/lib -lX11
+echo "g77 Source/hum.f -o Bin/hum"
+g77 Source/hum.f -o Bin/hum
+echo "g77 Source/inspect3d.f -o Bin/inspect3d"
+g77 Source/inspect3d.f -o Bin/inspect3d
+echo "g77 Source/intermie.f -o Bin/intermie"
+g77 Source/intermie.f -o Bin/intermie
+echo "g77 Source/interp16bit.f -o Bin/interp"
+g77 Source/interp16bit.f -o Bin/interp
+echo "g77 Source/MakeMieIn.f -o Bin/MakeMieIn"
+g77 Source/MakeMieIn.f -o Bin/MakeMieIn
+echo "g77 Source/MakePSD.f -o Bin/MakePSD"
+g77 Source/MakePSD.f -o Bin/MakePSD
+echo "g77 Source/makesource.f  Source/timedate.f Source/julian.f -o Bin/makesource"
+g77 Source/makesource.f  Source/timedate.f Source/julian.f -o Bin/makesource
+echo "g77 Source/mie.f -o Bin/mie"
+g77 Source/mie.f -o Bin/mie
+echo "g77 Source/mkbuffer16bit.f -o Bin/mkbuffer"
+g77 Source/mkbuffer16bit.f -o Bin/mkbuffer
+echo "g77 Source/modelzone.f -o Bin/modelzone"
+g77 Source/modelzone.f -o Bin/modelzone
+echo "g77 Source/narcm2aodsem.f Source/timedate.f Source/julian.f -o Bin/narcm2aodsem"
+g77 Source/narcm2aodsem.f Source/timedate.f Source/julian.f -o Bin/narcm2aodsem
+echo "g77 Source/narcmaod2aodsem16bit.f Source/timedate.f Source/julian.f  -o Bin/narcmaod2aodsem"
+g77 Source/narcmaod2aodsem16bit.f Source/timedate.f Source/julian.f -o Bin/narcmaod2aodsem
+echo "g77 Source/opt2narcm.f -o Bin/opt2narcm"
+g77 Source/opt2narcm.f -o Bin/opt2narcm
+echo "g77 Source/patmos2pgm16bit.f -o Bin/patmos2pgm"
+g77 Source/patmos2pgm16bit.f -o Bin/patmos2pgm
+echo "g77 Source/plotfile.f -o Bin/plotfile -L $pgdir -lpgplot -L /usr/X11R6/lib -lX11"
+g77 Source/plotfile.f -o Bin/plotfile -L $pgdir -lpgplot -L /usr/X11R6/lib -lX11
+echo "g77 Source/prindex.f -o Bin/prindex"
+g77 Source/prindex.f -o Bin/prindex
+echo "g77 Source/randommask16bit.f -o Bin/randommask"
+g77 Source/randommask16bit.f -o Bin/randommask
+echo "g77 Source/readaod16bit.f -o Bin/readaod"
+g77 Source/readaod16bit.f -o Bin/readaod
+echo "g77 Source/repdatas.f Source/timedate.f Source/julian.f -o Bin/repdatas"
+g77 Source/repdatas.f Source/timedate.f Source/julian.f -o Bin/repdatas
+echo "g77 Source/rhmoyen.f -o Bin/rhmoyen"
+g77 Source/rhmoyen.f -o Bin/rhmoyen
+echo "g77 Source/rhuindex.f -o Bin/rhuindex"
+g77 Source/rhuindex.f -o Bin/rhuindex
+echo "g77 Source/simarit3d.f -o Bin/simarit3d"
+g77 Source/simarit3d.f -o Bin/simarit3d
+echo "g77 Source/simplearit16bit.f -o Bin/simplearit"
+g77 Source/simplearit16bit.f -o Bin/simplearit
+echo "g77 Source/specint16bit.f -o Bin/specint"
+g77 Source/specint16bit.f -o Bin/specint
+echo "g77 Source/statistique16bit.f -o Bin/statistique"
+g77 Source/statistique16bit.f -o Bin/statistique
+echo "g77 Source/timeseries16bit.f Source/julian.f -o Bin/timeseries"
+g77 Source/timeseries16bit.f Source/julian.f -o Bin/timeseries
+echo "g77 Source/toms2xyz16bit.f -o Bin/toms2xyz"
+g77 Source/toms2xyz16bit.f -o Bin/toms2xyz
+echo "g77 Source/writeaod16bit.f -o Bin/writeaod"
+g77 Source/writeaod16bit.f -o Bin/writeaod
+echo "g77 Source/wspindex.f -o Bin/wspindex"
+g77 Source/wspindex.f -o Bin/wspindex
+echo "g77 Source/interp16bit.f -o Bin/interp16bit"
+g77 Source/interp16bit.f -o Bin/interp16bit
+echo "g77 Source/writeaod16bit.f -o Bin/writeaod16bit"
+g77 Source/writeaod16bit.f -o Bin/writeaod16bit
+echo "g77 Source/2aod2alpha16bit.f -o Bin/2aod2alpha"
+g77 Source/2aod2alpha16bit.f -o Bin/2aod2alpha
+echo "g77 Source/ttindex.f -o Bin/ttindex"
+g77 Source/ttindex.f -o Bin/ttindex
+echo "g77 Source/buffersize.f -o Bin/buffersize"
+g77 Source/buffersize.f -o Bin/buffersize
+echo "g77 Source/geia23ds.f -o Bin/geia23ds"
+g77 Source/geia23ds.f -o Bin/geia23ds
+echo "g77 Source/caeronet.f -o Bin/caeronet"
+g77 Source/caeronet.f -o Bin/caeronet
+echo "g77 Source/chresol.f -o Bin/chresol"
+g77 Source/chresol.f -o Bin/chresol
+echo "g77 Source/combaod16bit.f -o Bin/combaod"
+g77 Source/combaod16bit.f -o Bin/combaod
+echo "g77 Source/23dari.f -o Bin/23dari"
+g77 Source/23dari.f -o Bin/23dari
+echo "g77 Source/normaliz3ds.f -o Bin/normaliz3ds"
+g77 Source/normaliz3ds.f -o Bin/normaliz3ds
+echo "g77 Source/lavoue23ds.f -o Bin/lavoue23ds"
+g77 Source/lavoue23ds.f -o Bin/lavoue23ds
+echo "g77 Source/reid2abba.f Source/timedate.f Source/julian.f -o Bin/reid2abba"
+g77 Source/reid2abba.f Source/timedate.f Source/julian.f -o Bin/reid2abba
+echo "g77 Source/flambe23ds.f Source/timedate.f Source/julian.f  -o Bin/flambe23ds"
+g77 Source/flambe23ds.f Source/timedate.f Source/julian.f -o Bin/flambe23ds
+echo "g77 Source/atsrlavoue.f -o Bin/atsrlavoue"
+g77 Source/atsrlavoue.f -o Bin/atsrlavoue
+echo "g77 Source/gf0.f -o Bin/gf0"
+g77 Source/gf0.f -o Bin/gf0
+echo "g77 Source/gfa.f -o Bin/gfa"
+g77 Source/gfa.f -o Bin/gfa
+echo "g77 Source/gfb.f -o Bin/gfb"
+g77 Source/gfb.f -o Bin/gfb
+echo "Source/LFD23ds.f -o Bin/LFD23ds"
+g77 Source/LFD23ds.f -o Bin/LFD23ds
+echo "g77 Source/3dfillzero.f Source/pvoisnn.f -o Bin/3dfillzero"
+g77 Source/3dfillzero.f Source/pvoisnn.f -o Bin/3dfillzero
+echo "g77 Source/3dtoaod16bit.f Source/julian.f -o Bin/3dtoaod16bit"
+g77 Source/3dtoaod16bit.f Source/julian.f -o Bin/3dtoaod16bit
+echo "g77 Source/coloraod16bit.f -o Bin/coloraod16bit"
+g77 Source/coloraod16bit.f -o Bin/coloraod16bit
+echo "g77 Source/gem2nomad.f Source/timedate.f Source/julian.f -o Bin/gem2nomad"
+g77 Source/gem2nomad.f Source/timedate.f Source/julian.f -o Bin/gem2nomad
+

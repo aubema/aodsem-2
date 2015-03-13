@@ -1,0 +1,7 @@
+demo    Root name of the file (ext .pgm be add)
+1    Type of aerosol map
+0    Buffer width
+1    colorcode (0=spectrum, 1= 20 level contour)
+0    scale the values (0=no, 1=yes)
+1    scaling factor
+0    geographical mask (0=no, 1=yes)

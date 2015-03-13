@@ -1,0 +1,31 @@
+#!/bin/bash
+echo "prind == ************************************************"
+echo "prind == *                                              *"
+echo "prind == *                     prind                    *"
+echo "prind == *                                              *"
+echo "prind == *    Create a precipitation index file for     *"
+echo "prind == *                    AODSEM                    *"
+echo "prind == *                                              *"
+echo "prind == *     Martin Aube 2000                         *"
+echo "prind == *                                              *"
+echo "prind == ************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo "prind == Experiment directory "$folder
+ln -s ~/AODSEM/Bin/prindex prindex
+ls -1 *.PR > prtemp
+echo "prind == Executing prindex..."
+./prindex
+echo "prind == Deleting temporary files in " $folder
+rm -f prindex
+rm -f prtemp
+if [ -f core ] 
+   then   echo "prind == ******** An error occured during execution of prind! ********"
+   rm -f core
+   echo "prind == Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo "prind == Normal end of prind." 
+fi 
+

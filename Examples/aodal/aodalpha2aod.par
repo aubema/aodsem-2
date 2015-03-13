@@ -1,0 +1,6 @@
+numvol_0001500_01    AOD root file name
+alpha    ALPHA root file name
+0.01 0    gain and offset
+500    wavelength #1 
+540    wavelength #2 
+numvol_0001540    Output root file name .pgm will be added

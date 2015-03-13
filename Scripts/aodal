@@ -1,0 +1,36 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                     aodal                    *"
+echo "*                                              *"
+echo "*    Spectral extrapolation based on an AOD    *"
+echo "*      image and an angstrom coeff. image      *"
+echo "*                                              *"
+echo "*     Martin Aube 2000                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+if [ -f aodalpha2aod.par ] 
+   then
+      echo " Reading parameter file."  
+   else
+      echo " No parameter file found!"
+      epar_aodal
+fi 
+ln -s ~/AODSEM/Bin/aodalpha2aod aodalpha2aod
+echo " Executing aodalpha2aod..."
+./aodalpha2aod
+echo " Deleting temporary files in " $folder
+rm -f aodalpha2aod
+if [ -f core ] 
+   then   echo "******** An error occured during execution of aodal! ********"
+          rm -f core
+          echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+          read bidon
+else
+  echo " Normal end of aodal." 
+fi 
+

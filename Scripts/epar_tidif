@@ -1,0 +1,46 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *              Edit parameter for tidif               *"
+echo " *                                                     *"
+echo " *           Compute correlation coefficient           *"
+echo " *                  and a diffusiogram                 *"
+echo " *                 between two x-y file                *"
+echo " *                                                     *"
+echo " *     Martin Aube 2001                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f autocorcoef.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more autocorcoef.par
+fi 
+ls *.cxy
+echo " "
+echo " New parameters:"
+echo " "
+echo "Root name of the 1st input file (data) (.cxy will be added)?"  
+read nom
+echo "Root name of the 2nd input file (model)(.cxy will be added)?"  
+read nom2
+echo "Name of the output file?"
+read outp 
+echo "Search best fit offset between file 1 and 2 (1=yes,0=no)?"
+read auto
+echo "Initial offset or offset limit of searching domain (in days)?" 
+read offset
+echo $nom".cxy   Name of the 1st input file (data)"> autocorcoef.par
+echo $nom2".cxy   Name of the 2nd input file (model)">> autocorcoef.par
+echo $auto  "   automatic mode (1)">> autocorcoef.par
+echo $offset  "   offset in days">> autocorcoef.par
+echo $outp  "   Name of the output file">> autocorcoef.par
+
+
+
+echo "Done"
+
+

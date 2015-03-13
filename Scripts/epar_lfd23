@@ -1,0 +1,42 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *             Edit parameter for LFD23ds              *"
+echo " *                                                     *"
+echo " *     Combine Canadian Large Fire Database and        *"
+echo " *          Lavoue et al. emission database            *"
+echo " *                into AODSEM 3ds format               *"
+echo " *                                                     *"
+echo " *     Martin Aube 2004                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f LFD23ds.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more LFD23ds.par
+fi 
+
+echo " "
+echo " New parameters:"
+echo " "
+
+
+
+echo "Date (M YYYY)? NOTE: ex. for march type 3 not 03"
+read mm yyyy
+echo "Mean fire duration (days) sugg. 3 ?"
+read duree
+
+
+
+echo $mm $yyyy "   date (M YYYY)" > LFD23ds.par
+echo $duree "   Mean fire duration (days) " >> LFD23ds.par
+
+echo "Done"
+
+
+

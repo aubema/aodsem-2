@@ -1,0 +1,32 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                               *"
+echo " *                   randm                       *"
+echo " *                                               *"
+echo " *      Apply a random mask on an AOD pgm map    *"
+echo " *                   section NARCM file          *"
+echo " *                                               *"
+echo " *     copyright Martin Aube 2002                *"
+echo " *                                               *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+ln -s ~/AODSEM/Bin/randommask randommask 
+echo " Executing randommask..."
+./randommask
+echo " Deleting temporary files in " $folder
+rm -f randommask
+if [ -f core ] 
+   then   echo "******** An error occured during execution of randm!
+********"    rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of randm." 
+fi 
+
+
+
+

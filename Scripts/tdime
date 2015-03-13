@@ -1,0 +1,47 @@
+#!/bin/bash
+clear
+echo "      Aerosol 3D functions"
+PS3="Select an function: "
+select function in Exit Help epar_aodto aodto deres epar_dynam dynam epar_3dtoa 3dtoa epar_inspe inspe gemin gem21 gem22 narcm prind rhuin wspin datas epar_rdata rdata freem epar_rhmea rhmea epar_mksrc mksrc epar_geia2 geia2 epar_cmbge cmbge mkcli epar_gemvp gemvp epar_sim3d sim3d epar_3dari 3dari
+do   case "$function" in  
+   Exit) clear;echo "      AODSEM CONTROL CENTER";exit;;
+   Help) infor;;
+   epar_aodto) epar_aodto;;
+   aodto) aodto;;
+   deres) deres;;
+   epar_dynam) epar_dynam;;
+   dynam) dynam;; 
+   epar_3dtoa) epar_3dtoa;;
+   3dtoa) 3dtoa;;
+   epar_inspe) epar_inspe;;
+   inspe) inspe;;
+   gemin) gemin;;
+   gem21) gem21;;
+   gem22) gem22;;
+   narcm) narcm;;
+   prind) prind;;
+   rhuin) rhuin;;
+   wspin) wspin;;
+   datas) datas;;
+   epar_rdata) epar_rdata;;
+   rdata) rdata;; 
+   freem) freem;;
+   epar_rhmea) epar_rhmea;;
+   rhmea) rhmea;;   
+   epar_mksrc) epar_mksrc;;
+   mksrc) mksrc;; 
+   epar_geia2) epar_geia2;;
+   geia2) geia2;; 
+   epar_cmbge) epar_cmbge;;
+   cmbge) cmbge;; 
+   mkcli) mkcli;;
+   epar_gemvp) epar_gemvp;;
+   gemvp) gemvp;; 
+   epar_sim3d) epar_sim3d;;
+   sim3d) sim3d;; 
+   epar_3dari) epar_3dari;;
+   3dari) 3dari;; 
+
+esac
+done
+

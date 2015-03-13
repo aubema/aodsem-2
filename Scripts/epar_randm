@@ -1,0 +1,36 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *            Edit parameter for randommask           *"
+echo " *                                                     *"
+echo " *      Apply a random mask on an AOD pgm map    *"
+echo " *                   section NARCM file          *"
+echo " *                                                     *"
+echo " *     Martin Aube 2002                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f randommask.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more randommask.par
+fi 
+ls *.pgm
+echo " "
+echo " New parameters:"
+echo " "
+echo "Root file name (.pgm will be added)?"
+read nom
+echo "Coverage percentage of mask?"
+read value
+
+
+
+echo $nom "   Root file name " > randommask.par
+echo $value "   Percentage value" >> randommask.par
+
+echo "Done"
+

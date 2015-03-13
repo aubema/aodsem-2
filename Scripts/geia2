@@ -1,0 +1,31 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *                       geia2                         *"
+echo " *                                                     *"
+echo " *            Convert GEIA file format into            *"
+echo " *                   AODSEM pgm format                 *"
+echo " *                                                     *"
+echo " *     Martin Aube 2002                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+
+rm -f core
+echo " Experiment directory "$folder
+ln -s ~/AODSEM/Bin/geia2pgm geia2pgm
+echo " Executing geia2pgm..."
+
+./geia2pgm
+echo " Deleting temporary files in " $folder
+rm -f geia2pgm
+
+if [ -f core ] 
+   then   echo "******** An error occured during execution of geia2! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of geia2." 
+fi 

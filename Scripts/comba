@@ -1,0 +1,38 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                   comba                      *"
+echo "*                                              *"
+echo "*            Combine and interpolate           *"
+echo "*           multiple aerosol optical           *"
+echo "*   images with an inverse error correction    *"
+echo "*                                              *"
+echo "*     Martin Aube 2003                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+if [ -f combaod.par ] 
+   then
+      echo " Readind parameter file."  
+   else
+      echo " No parameter file found!"
+      epar_comba
+fi 
+echo " Preparing input files..."
+ln -s ~/AODSEM/Bin/combaod combaod
+echo " Executing combaod..."
+./combaod
+echo " Deleting temporary files in " $folder
+rm -f combaod
+if [ -f core ] 
+   then   echo "******** An error occured during execution of comba! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of comba." 
+fi 
+

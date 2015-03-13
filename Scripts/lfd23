@@ -1,0 +1,54 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *                       lfd23                         *"
+echo " *                                                     *"
+echo " *     Combine Canadian Large Fire Database and        *"
+echo " *          Lavoue et al. emission database            *"
+echo " *                into AODSEM 3ds format               *"
+echo " *                                                     *"
+echo " *     Martin Aube 2004                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+read mois annee toto < LFD23ds.par
+if [ $mois -lt 10 ]
+  then month="0"$mois
+fi
+
+rm -f core
+echo " Experiment directory "$folder
+ln -s $HOME/AODSEM/Bin/LFD23ds LFD23ds
+
+if [ -f LFD_A02_5999_j.txt ]
+   then echo "Skipping LFD download."
+else  ln -s $HOME/AODSEM/Nesfiles/LFD_A02_5999_j.txt .
+fi
+
+if [ -f Lavoue_et_al_bb+ff_bc.3ds ] 
+   then echo "Skipping Lavoue's files download."
+else   ln -s $HOME/AODSEM/Nesfiles/Lavoue_et_al*.3ds .
+fi
+echo " Executing LFD23ds..."
+
+./LFD23ds
+
+
+ndat=`grep -c " " "LFD-"$annee$month".3ds"`
+echo $ndat >bidon.5
+cat "LFD-"$annee$month".3ds" > bidon.6
+cat bidon.5 bidon.6 > "LFD-"$annee$month".3ds"
+echo " Deleting temporary files in " $folder
+rm -f LFD23ds
+
+if [ -f core ] 
+   then   echo "******** An error occured during execution of lfd23! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of lfd23." 
+fi 
+
+

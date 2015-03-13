@@ -1,0 +1,31 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *                       lavou                         *"
+echo " *                                                     *"
+echo " *             Convert Lavoue source files             *"
+echo " *                into AODSEM 3ds format               *"
+echo " *                                                     *"
+echo " *     Martin Aube 2004                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+
+rm -f core
+echo " Experiment directory "$folder
+ln -s ~/AODSEM/Bin/lavoue23ds lavoue23ds
+echo " Executing lavoue23ds..."
+
+./lavoue23ds
+echo " Deleting temporary files in " $folder
+rm -f lavoue23ds
+
+if [ -f core ] 
+   then   echo "******** An error occured during execution of lavou! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of lavou." 
+fi 

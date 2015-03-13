@@ -1,0 +1,1076 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *                        datas                        *"
+echo " *                                                     *"
+echo " *          AODSEM's Data Assimilation System          *"
+echo " *                                                     *"
+echo " *                                                     *"
+echo " *     Copyright Martin Aube 2000                      *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+#JDG#D
+#
+# Fonction fdig : transforme un entier < 10000 en une chaine de 4 caracteres
+#
+fdig() {
+
+	if [ $to4d -lt 10 ]
+	then
+	to4d="000"$to4d
+	else
+		if [ $to4d -lt 100 ]
+		then
+		to4d="00"$to4d
+			else
+			if [ $to4d -lt 1000 ]
+			then
+			to4d="0"$to4d
+				else  #to4d a deja 4 chiffres
+				to4d=$to4d
+			fi
+		fi
+	fi
+ }
+#JDG#F
+if [ -f newmnt1.res.bmi ] 
+   then   echo "Skipping .res.bmi files download"
+   else   echo "Downloading .res.bmi files"
+          ln -s $HOME/AODSEM/Nesfiles/*res.bmi .
+fi 
+#
+# inital values
+#
+defval=65534
+# selection de la methode de conversion de la correction AOD vers 3D
+# aod3dsw = 0 siginfie qu'on utilise le mode climatologique ou la compositione et
+# la taille depend du lieu geographique
+# aod3dsw = 1 signifie que l'on prend une fraction de la distribution 3D background
+#
+echo "2D to 3D mode for analysis increment generation (0=geographic, 1=dynamic)?"
+read aod3dsw
+# wetsw=1 ->wet removal on
+#wetsw=1
+echo " Account for wet removal (1=yes, 0=no)?"
+read wetsw
+#  set this size in deg. to max twice the met field resolution
+# e.g. for GEM global: 2x 1.5 = 3 degrees
+intbox=3
+#
+#  enable automatic interpolation box size 
+#  the software will search a box greater or equal
+#  to intbox that allow interpolation over all the
+#  domain  1=enable 0=disable enabling this option 
+#  may result in huge computation time
+autom=1
+#
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder 
+echo " "
+echo " Begin file type (0=.dat, 1=.pgm)?"
+read begtype
+if [ $begtype -eq 1 ]
+   then
+   ls *.pgm
+   echo " First AOD image file name (.pgm will be added)"
+   read nom1
+   if [ -f $nom1".pgm" ] 
+      then   echo " " 
+      else   echo "Bad file name!  datas execution aborted!"
+         exit 1
+   fi 
+elif [ $begtype -eq 0 ]
+   then
+   ls *.dat
+   echo " First 3D file name (.dat will be added)"
+   read nom1
+   if [ -f $nom1".dat" ] 
+      then   echo " " 
+   else   echo "Bad file name!  datas execution aborted!"
+      exit 1
+   fi 
+fi
+echo " Second AOD image file name (.pgm will be added)"
+read nom2
+if [ -f $nom2".pgm" ] 
+   then   echo " " 
+   else   echo "Bad file name!  datas execution aborted!"
+   exit 1
+fi 
+#JDG#D
+echo " Number of the first output file "
+read firstnb
+#JDG#F
+echo " Enter the time and date for first file."
+echo " HH MM SS DD MM YYYY"
+read heure0 minute0 seconde0 jour0 mois0 annee0
+echo " Enter the time and date for second file."
+echo " HH MM SS DD MM YYYY"
+read heure minute seconde jour mois annee
+echo " Dynamical time step in minutes (integer)?"
+read timestep
+echo " Buffer width in cell units (min 1)?"
+read buffer
+echo " Use an emission inventory (1=yes, 0=no)?"
+read src
+#
+#    calcul du nombre de pas de calcul dynamiques
+#
+if [ $annee -ne $annee0 ] 
+  then
+     echo "!!!!  multiple years run!  !!!!"
+     let dmois=mois+12-mois0
+  else let dmois=mois-mois0
+fi
+if [ $dmois -gt 1 ] 
+   then echo "ERROR Time too long between consecutive datasets!"
+        echo "      Restricted to be on same or consecutives month."
+		exit 1
+fi
+if [ $mois -ne $mois0 ] 
+   then  
+   if [ $mois0 -eq 1 ]
+      then
+      mlong=31
+   elif [ $mois0 -eq 2 ] 
+      then
+      let "bisext=annee0%4"
+      let "bis100=annee0%100"
+      let "bis400=annee0%400"
+      if [ $bisext -eq 0 ]
+        then mlong=29
+        if [ $bis100 -eq 0 ]
+           then mlong=28
+           if [ $bis400 -eq 0 ] 
+              then mlong=29
+           fi
+        fi
+      else mlong=28
+      fi 
+   elif [ $mois0 -eq 3 ]   
+      then
+      mlong=31
+   elif [ $mois0 -eq 4 ]   
+      then
+      mlong=30
+   elif [ $mois0 -eq 5 ]   
+      then
+      mlong=31
+   elif [ $mois0 -eq 6 ] 
+      then
+      mlong=30   
+   elif [ $mois0 -eq 7 ]   
+      then
+      mlong=31   
+   elif [ $mois0 -eq 8 ]   
+      then
+      mlong=31   
+   elif [ $mois0 -eq 9 ]   
+      then
+      mlong=30   
+   elif [ $mois0 -eq 10 ]   
+      then
+      mlong=31
+   elif [ $mois0 -eq 11 ]   
+      then
+      mlong=30      
+   else 
+      mlong=31  
+   fi  
+   let "ntime=(((mlong+jour-1)*24+heure)*60+minute-(((jour0-1)*24+heure0)*60+minute0)+timestep/10)/timestep"
+else
+   let "ntime=((heure-heure0+(jour-jour0)*24)*60+minute-minute0+timestep/10)/timestep"
+fi 
+if [ $ntime -gt 9999 ] 
+   then
+   echo "Number of time steps exceed limits!"
+   exit 1
+fi
+echo " Wavelength of the aod map?"
+echo " "
+echo " 1 ..... 0.34 um"
+echo " 2 ..... 0.38 um"
+echo " 3 ..... 0.44 um"
+echo " 4 ..... 0.47 um"
+echo " 5 ..... 0.50 um"
+echo " 6 ..... 0.55 um"
+echo " 7 ..... 0.67 um"
+echo " 8 ..... 0.86 um"
+echo " 9 ..... 0.87 um"
+echo " 10 .... 0.94 um"
+echo " 11 .... 1.02 um"
+echo " 12 .... 1.24 um"
+echo " 13 .... 1.64 um"
+echo " 14 .... 2.13 um"
+
+#Les b* servent a stocker des valeurs qui ne sont pas
+#encore utilisees.
+read nwave b1 b2 b2 b4 b5 b6 b7 b8 b9 b10 b11 b12 b13
+if [ $nwave -eq 1 ] 
+   then  wavelen=340
+elif [ $nwave -eq 2 ] 
+   then  wavelen=380   
+elif [ $nwave -eq 3 ] 
+   then  wavelen=440
+elif [ $nwave -eq 4 ] 
+   then  wavelen=470   
+elif [ $nwave -eq 5 ] 
+   then  wavelen=500  
+elif [ $nwave -eq 6 ] 
+   then  wavelen=550  
+elif [ $nwave -eq 7 ] 
+   then  wavelen=670 
+elif [ $nwave -eq 8 ] 
+   then  wavelen=860 
+elif [ $nwave -eq 9 ] 
+   then  wavelen=870 
+elif [ $nwave -eq 10 ] 
+   then  wavelen=940 
+elif [ $nwave -eq 11 ] 
+   then  wavelen=1020 
+elif [ $nwave -eq 12 ] 
+   then  wavelen=1240 
+elif [ $nwave -eq 13 ] 
+   then  wavelen=1640 
+elif [ $nwave -eq 14 ] 
+   then  wavelen=2130 
+fi
+if [ -f domain.par ] 
+   then
+      echo " Domain parameter file (domain.par) exist. Using the following values!"
+      echo  
+      read pixs ncellx ncelly lat0 lon0 < domain.par
+      echo " ==================================="
+      echo " Domain properties:"
+      echo " Number of N-S pixels= " $ncellx
+      echo " Number of E-W pixels= " $ncelly
+      echo " Pixel size in 1/100th degrees= " $pixs
+      echo " Center latitude of the south-west pixel in degrees= " $lat0
+      echo " Center longitude of the south-west pixel in degrees= " $lon0
+      echo " ==================================="
+      echo
+   else
+      echo " No domain parameter file found!"
+      echo
+      echo " Domain properties:"
+      echo " Number of N-S pixels?"
+      read ncellx
+      echo " Number of E-W pixels?"
+      read ncelly
+      echo " Pixel size in 1/100th degrees?"
+      read pixs
+      echo " Center latitude of the south-west pixel in degrees?"
+      read lat0
+      echo " Center longitude of the south-west pixel in degrees?"
+      read lon0
+      echo $pixs $ncellx $ncelly $lat0 $lon0 > domain.par       
+fi
+#  charger les valeurs de domain.par dans les variables concernees    
+read pixs ncellx ncelly lat0 lon0 < domain.par
+let "ndegr=pixs/100"
+let "ndeci=(pixs-ndegr*100)/10"
+let "ncent=pixs-ndegr*100-ndeci*10"
+pixsiz=$ndegr"."$ndeci$ncent
+#
+#  determiner les tailles de fenetres pour l interpolation 
+#  de la correction 
+#  la variable grow correspond au rapport de la taille de la fenetre
+#  d interpolation / taille du pixel
+#
+#grow=5
+#let "pscent=grow*ncent"
+#let "psdeci=grow*ndeci"
+#let "psdegr=grow*ndegr"
+#if [ $pscent -gt 9 ]
+#   then  let "psdeci=pscent/10+psdeci"
+#         let "pscent=-pscent/10*10+pscent"
+#fi
+#if [ $psdeci -gt 9 ]
+#   then  let "psdegr=psdeci/10+psdegr"
+#         let "psdeci=-psdeci/10*10+psdeci"
+#fi
+#intbox=$psdegr"."$psdeci$pscent
+#let "ncx=1+ncellx/grow"
+#let "ncy=1+ncelly/grow"
+
+echo " Smoothing box width in 1/100 th degrees?"
+read lissebox
+let "ldegr=lissebox/100"
+let "ldeci=(lissebox-ldegr*100)/10"
+let "lcent=lissebox-ldegr*100-ldeci*10"
+lissebox=$ldegr"."$ldeci$lcent
+ls *.res.bmi
+echo " Root name of the cross section data base file (extension .res.bmi will be added)?"
+read crofile
+if [ -f $crofile".res.bmi" ] 
+   then   echo " " 
+   else   echo "Bad file name!  datas execution aborted!"
+          exit 1
+fi 
+#
+#     convertir les nom en moms standard pour le data assimil system
+#
+if [ $begtype -eq 1 ]
+   then
+   cp $nom1".pgm" datas1.pgm
+   #
+   #     Analyse initiale non disponible -> utiliser une interpolation des obs.
+   #   
+   #     interpoler la premiere observation
+   #
+   echo "datas1   Root name of the file"  > interp.par
+   echo $pixsiz "   Pixel size in degrees">> interp.par
+   echo $lat0 "   Center latitude of the south-west pixel in degrees">> interp.par
+   echo $lon0 "   Center longitude of the south-west pixel in degrees">> interp.par
+   echo $intbox "   Interpolating window size in degrees">> interp.par
+   #  2 is for 1/r**2 interpolating scheme
+   echo "2   Interpolating function">> interp.par
+   echo $autom "   Activate interpolating box size optimization (no=0, yes=1)">> interp.par
+   echo $pixsiz "   Size of output cell in degrees">> interp.par
+   echo $ncellx "   Number of cells along N-S axis">> interp.par
+   echo $ncelly "   Number of cells along E-W axis">> interp.par
+   echo $lat0 "   Center latitude of the south-west cell">> interp.par
+   echo $lon0 "   Center longitude of the south-west cell">> interp.par 
+   echo "0   Default num. value">> interp.par 
+   inter
+   #
+   #     convertir les epaisseurs optiques en densite numerique
+   #
+   #     fichier #1 
+   #
+   echo "datas1_i   Root name of the files"  > aodto3d.par
+   echo $nwave "   Wavelength of the aod map">> aodto3d.par
+   echo $heure0 $minute0 $seconde0 $jour0 $mois0 $annee0 "   Time of the distribution (hh mm ss dd mm yyyy)">> aodto3d.par
+   echo "1   vertical profile">> aodto3d.par
+   echo $crofile "   Root name of the cross section data base file">> aodto3d.par
+   aodto
+elif [ $begtype -eq 0 ]
+   then
+   cp $nom1".dat" datas1_i.dat
+   cp $nom1".vis" datas1_i.vis
+fi
+cp $nom2".pgm" datas2.pgm
+#
+#     calcul dynamiques pour le background
+#
+echo "datas1_i   Root name of the 1st init. distribution"> dynamic.par
+echo $heure $minute $seconde $jour $mois $annee "   Time of the output (hh mm ss dd mm yyyy)">> dynamic.par
+echo $timestep "   dynamical time step in minute" >> dynamic.par
+echo $src "   Fixed source inventory" >> dynamic.par
+echo $wetsw "   Activate wet removal (1=y,0=n)" >> dynamic.par  
+echo $buffer "    buffer width in pixels" >> dynamic.par
+dynam 
+#
+#     Convertir la densite numerique finale en epaisseur optique
+#
+if [ $ntime -lt 10 ] 
+   then
+   echo "numvol_000"$ntime "   Root name of the files (ext .dat and .vis will be added)"  > 3dtoaod.par
+else
+   if [ $ntime -lt 100 ]
+      then
+      echo "numvol_00"$ntime "   Root name of the files (ext .dat and .vis will be added)"  > 3dtoaod.par 
+   else
+      if [ $ntime -lt 1000 ]
+         then
+         echo "numvol_0"$ntime "   Root name of the files (ext .dat and .vis will be added)"  > 3dtoaod.par 
+      else
+         echo "numvol_"$ntime "   Root name of the files (ext .dat and .vis will be added)"  > 3dtoaod.par
+      fi
+   fi
+fi       
+echo $crofile "   Root name of the cross section data base file (extension .res.bmi will be added)">> 3dtoaod.par
+3dtoa
+#
+#     renaming new background image 
+# 
+if [ $ntime -lt 10 ]
+   then
+   cp "numvol_000"$ntime$wavelen"_01.pgm" datasbg.pgm
+else
+   if [ $ntime -lt 100 ]
+      then
+      cp "numvol_00"$ntime$wavelen"_01.pgm" datasbg.pgm       
+   else
+      if [ $ntime -lt 1000 ]
+         then
+         cp "numvol_0"$ntime$wavelen"_01.pgm" datasbg.pgm          
+      else
+         cp "numvol_"$ntime$wavelen"_01.pgm" datasbg.pgm      
+      fi
+   fi
+fi        
+#
+#     substract background from observation
+#
+echo "2   Operation" > aodarit.par
+echo "0   remove negative values" >> aodarit.par
+echo "datascor   Output root file name .pgm will be add" >> aodarit.par
+echo "datas2   Root name of file #1 .pgm will be add" >> aodarit.par
+echo "datasbg   Root name of file #2 .pgm will be add" >> aodarit.par
+echo "65533   Limit" >> aodarit.par
+aodar
+
+
+
+#
+#  apply the mask to correction
+#
+echo "datascor    File name" > mkbuffer.par
+echo $buffer "    buffer width" >> mkbuffer.par
+buffe
+
+#
+#     interpoler la correction  datascor.pgm -> datascor_i
+#
+#let ptmp=pixs*2
+#let pun=ptmp/100
+#let pde=ptmp-pun*100
+#let pde=pde/10
+#let pce=ptmp-pun*100-pde*10
+#pixtmp=$pun"."$pde$pce
+#let nxtmp=1+ncellx/2
+#let nytmp=1+ncelly/2
+
+echo "datascor   Root name of the file"  > interp.par
+echo $pixsiz "   Pixel size in degrees">> interp.par
+echo $lat0 "   Center latitude of the south-west pixel in degrees">> interp.par
+echo $lon0 "   Center longitude of the south-west pixel in degrees">> interp.par
+echo $intbox "   Interpolating window size in degrees">> interp.par
+#  2 is for 1/r² interpolating scheme
+echo "2   Interpolating function">> interp.par
+echo "$autom   Activate interpolating box size optimization (no=0, yes=1)">> interp.par
+echo $pixsiz "   Size of output cell in degrees">> interp.par
+echo $ncellx "   Number of cells along N-S axis">> interp.par
+echo $ncelly "   Number of cells along E-W axis">> interp.par
+echo $lat0 "   Center latitude of the south-west cell">> interp.par
+echo $lon0 "   Center longitude of the south-west cell">> interp.par 
+echo "0   Default num. value">> interp.par
+inter
+mv datascor_i.pgm datascor.pgm
+#echo "datascor   Root name of the file"  > interp.par
+#echo $pixtmp "   Pixel size in degrees">> interp.par
+#echo $lat0 "   Center latitude of the south-west pixel in degrees">> interp.par
+#echo $lon0 "   Center longitude of the south-west pixel in degrees">> interp.par
+#echo $intbox "   Interpolating window size in degrees">> interp.par
+##  2 is for 1/r² interpolating scheme
+#echo "0   Interpolating function">> interp.par
+#echo "$autom   Activate interpolating box size optimization (no=0, yes=1)">> interp.par
+#echo $pixsiz "   Size of output cell in degrees">> interp.par
+#echo $ncellx "   Number of cells along N-S axis">> interp.par
+#echo $ncelly "   Number of cells along E-W axis">> interp.par
+#echo $lat0 "   Center latitude of the south-west cell">> interp.par
+#echo $lon0 "   Center longitude of the south-west cell">> interp.par 
+#echo $defval "   Default num. value">> interp.par
+#inter
+#mv datascor_i.pgm datascor.pgm
+
+
+
+#
+#   Boucle sur tous les pas de calcul de dynam
+#
+n=1
+while test $n -le $ntime
+do
+
+#JDG#D
+#
+# Numero des fichiers de sortie de ce pas de calcul
+#
+let " nb4file = firstnb + n - 1 "
+to4d=$nb4file
+fdig	#convertit en format 4 chiffres
+nb4file=$to4d
+#JDG#F
+   #
+   #   calcul de la date et heure pour l analyse en cours
+   #
+   let "hre=heure0"
+   let "min=minute0"
+   let "sec=seconde0"
+   let "jou=jour0"
+   let "moi=mois0"
+   let "ann=annee0"
+   if [ $mois0 -eq 1 ]
+      then
+      mlong=31
+   elif [ $mois0 -eq 2 ] 
+      then
+      let "bisext=annee0%4"
+      let "bis100=annee0%100"
+      let "bis400=annee0%400"
+      if [ $bisext -eq 0 ]
+        then mlong=29
+        if [ $bis100 -eq 0 ]
+           then mlong=28
+           if [ $bis400 -eq 0 ] 
+              then mlong=29
+           fi
+        fi
+      else mlong=28
+      fi 
+   elif [ $mois0 -eq 3 ]   
+      then
+      mlong=31
+   elif [ $mois0 -eq 4 ]   
+      then
+      mlong=30
+   elif [ $mois0 -eq 5 ]   
+      then
+      mlong=31
+   elif [ $mois0 -eq 6 ] 
+      then
+      mlong=30   
+   elif [ $mois0 -eq 7 ]   
+      then
+      mlong=31   
+   elif [ $mois0 -eq 8 ]   
+      then
+      mlong=31   
+   elif [ $mois0 -eq 9 ]   
+      then
+      mlong=30   
+   elif [ $mois0 -eq 10 ]   
+      then
+      mlong=31
+   elif [ $mois0 -eq 11 ]   
+      then
+      mlong=30      
+   else 
+      mlong=31  
+   fi       
+   let "njou=n*timestep/24/60"
+   let "nhre=n*timestep/60-njou*24"
+   let "nmin=n*timestep-njou*24*60-nhre*60"
+   let "min=min+nmin"
+   if [ $min -ge 60 ] 
+      then
+      let "hre=hre+1"
+      let "min=min-60"
+   fi
+   let "hre=hre+nhre"
+   if [ $hre -ge 24 ] 
+      then
+      let "hre=hre-24"
+      let "jou=jou+1"
+   fi
+   let "jou=jou+njou"
+   if [ $jou -gt $mlong ]
+      then
+      let "moi=moi+1"
+      let "jou=jou-mlong"
+      if [ $moi -gt 12 ]
+         then 
+         let "ann=ann+1"
+         let "moi=1"
+      fi
+   fi
+   echo " Computing AOD analysis no. "$n " ( Time:" $hre $min $sec " Date: " $jou $moi $ann " )"
+   #
+   #   compute correction for time step n
+   #
+   let "centi=100*n/ntime"
+   if [ $centi -lt 10 ]
+      then
+      centi="0"$centi
+   fi
+   echo "3   Operation" > simplearit.par
+   echo "datascortmp   Output root file name .pgm will be added" >> simplearit.par
+   echo "datascor   Root name of file #1 .pgm will be added" >> simplearit.par
+   if [ $n -eq $ntime ] 
+      then
+      echo "1.   Numerical value" >> simplearit.par
+   else
+      echo "0."$centi "   Numerical value" >> simplearit.par
+   fi
+   echo "0   1 -> negative set to 0" >> simplearit.par
+   echo "65533   Limit" >> simplearit.par
+   simar
+   #
+   #   split correction into positive and negative part
+   #
+   echo "3   Operation" > simplearit.par
+   echo "negative   Output root file name .pgm will be added" >> simplearit.par
+   echo "datascortmp   Root name of file #1 .pgm will be added" >> simplearit.par
+   echo "-1   Numerical value" >> simplearit.par
+   echo "1   1 -> negative set to 0" >> simplearit.par
+   echo "65533   Limit" >> simplearit.par
+   simar
+   #
+   echo "3   Operation" > simplearit.par
+   echo "positive   Output root file name .pgm will be added" >> simplearit.par
+   echo "datascortmp   Root name of file #1 .pgm will be added" >> simplearit.par
+   echo "1   Numerical value" >> simplearit.par
+   echo "1   1 -> negative set to 0" >> simplearit.par
+   echo "65533   Limit" >> simplearit.par
+   simar
+#
+#
+if [ $aod3dsw -eq 1 ]
+#
+# dans ce cas nous utilisons l'info sur la composition actuelle en aerosol pour determiner
+# la correction
+# negative.dat=background_remp.dat*negative.pgm/background_remp.pgm
+# positive.dat=background_remp.dat*positive.pgm/background_remp.pgm
+#
+   then
+#
+#  definit le nom du fichier de background a utiliser
+#
+   if [ $n -lt 10 ] 
+      then
+         nomremp="numvol_000"$n
+   else
+      if [ $n -lt 100 ]
+         then
+           nomremp="numvol_00"$n     
+      else
+         if [ $n -lt 1000 ]
+            then
+                nomremp="numvol_0"$n      
+         else
+             nomremp="numvol_"$n       
+         fi
+      fi
+   fi  
+#
+#  remplir les colonnes vides avec le plus proche voisin
+#
+   echo $nomremp > 3dfillzero.par
+   3dfil
+   mv -f $nomremp"_f0.dat" background_remp.dat
+   cp -f $nomremp".vis" background_remp.vis
+#
+#  convertir ce background "rempli" en 2D (pgm)
+#
+   echo "background_remp   dat file">3dtoaod.par
+   echo $crofile >> 3dtoaod.par
+   3dtoa
+   mv -f "background_remp"$wavelen"_01.pgm" background_remp.pgm
+#
+# =========
+# correction negative
+#
+#  multiplier la background 3D par la correction negative
+#
+   echo "background_remp    dat file #1" > 23dar.par
+   echo "negative   pgm file #2" >> 23dar.par
+   echo "3   Operation" >> 23dar.par
+   echo "1 5   Type de particules a modifier" >> 23dar.par
+   echo "1 12   Taille de particules a modifier" >> 23dar.par
+   echo "1 10   Altitude a modifier" >> 23dar.par
+   echo "negative_tmp   Output root file name " >> 23dar.par
+   echo "1   Set negative output to 0 (1=yes, 0=no)" >> 23dar.par
+   23dar
+#
+#  diviser ce resultat par le background 2D
+#   
+   echo "negative_tmp    dat file #1" > 23dar.par
+   echo "background_remp   pgm file #2" >> 23dar.par
+   echo "4   Operation" >> 23dar.par
+   echo "1 5   Type de particules a modifier" >> 23dar.par
+   echo "1 12   Taille de particules a modifier" >> 23dar.par
+   echo "1 10   Altitude a modifier" >> 23dar.par
+   echo "negative   Output root file name " >> 23dar.par
+   echo "1   Set negative output to 0 (1=yes, 0=no)" >> 23dar.par
+   23dar
+#
+# ========
+# correction positive
+#
+   echo "background_remp    dat file #1" > 23dar.par
+   echo "positive   pgm file #2" >> 23dar.par
+   echo "3   Operation" >> 23dar.par
+   echo "1 5   Type de particules a modifier" >> 23dar.par
+   echo "1 12   Taille de particules a modifier" >> 23dar.par
+   echo "1 10   Altitude a modifier" >> 23dar.par
+   echo "positive_tmp   Output root file name " >> 23dar.par
+   echo "1   Set negative output to 0 (1=yes, 0=no)" >> 23dar.par
+   23dar
+   echo "positive_tmp    dat file #1" > 23dar.par
+   echo "background_remp   pgm file #2" >> 23dar.par
+   echo "4   Operation" >> 23dar.par
+   echo "1 5   Type de particules a modifier" >> 23dar.par
+   echo "1 12   Taille de particules a modifier" >> 23dar.par
+   echo "1 10   Altitude a modifier" >> 23dar.par
+   echo "positive   Output root file name " >> 23dar.par
+   echo "1   Set negative output to 0 (1=yes, 0=no)" >> 23dar.par
+   23dar
+   rm -f background_remp*
+   rm -f negative_tmp*
+   rm -f positive_tmp*
+else  
+#
+#  dans ce cas nous utilisons les modeles standards dependants de la 
+#  geographie pour determiner la composition en aerosols de la correction
+#
+   #
+   #   convertir en 3d
+   #   
+   echo "negative   Root name of the files"  > aodto3d.par
+   echo $nwave "   Wavelength of the aod map">> aodto3d.par
+   echo $hre $min $sec $jou $moi $ann "   Time of the distribution (hh mm ss dd mm yyyy)">> aodto3d.par
+   echo "2   vertical profile">> aodto3d.par
+   echo $crofile "   Root name of the cross section data base file">> aodto3d.par
+   aodto
+   #
+   echo "positive   Root name of the files"  > aodto3d.par
+   echo $nwave "   Wavelength of the aod map">> aodto3d.par
+   echo $hre $min $sec $jou $moi $ann "   Time of the distribution (hh mm ss dd mm yyyy)">> aodto3d.par
+   echo "2   vertical profile">> aodto3d.par
+   echo $crofile "   Root name of the cross section data base file">> aodto3d.par
+   aodto
+fi
+
+#############################################
+#############################################
+
+   #
+   #  appliquer la correction a la distribution
+   #
+   if [ $n -lt 10 ] 
+      then
+         echo "numvol_000"$n "   dat file #1" > 3darit.par
+   else
+      if [ $n -lt 100 ]
+         then
+         echo "numvol_00"$n "   dat file #1" > 3darit.par       
+      else
+         if [ $n -lt 1000 ]
+            then
+            echo "numvol_0"$n "   dat file #1" > 3darit.par          
+         else
+            echo "numvol_"$n "   dat file #1" > 3darit.par         
+         fi
+      fi
+   fi    
+   echo "negative   dat file #2" >> 3darit.par
+   echo "2   Operation" >> 3darit.par
+   echo "outtmp   Output root file name " >> 3darit.par
+   echo "1   Set negative output to 0 (1=yes, 0=no)" >> 3darit.par
+   3dari
+   echo "positive   dat file #1" > 3darit.par
+   echo "outtmp   dat file #2" >> 3darit.par  
+   echo "1   Operation" >> 3darit.par
+   echo "outtmp2   Output root file name " >> 3darit.par
+   echo "0   Set negative output to 0 (1=yes, 0=no)" >> 3darit.par
+   3dari
+   #
+   if [ $n -lt 10 ] 
+      then
+      mv outtmp2.dat "analyse_000"$n".dat"
+      mv outtmp2.vis "analyse_000"$n".vis"
+   else
+      if [ $n -lt 100 ]
+         then
+         mv outtmp2.dat "analyse_00"$n".dat" 
+         mv outtmp2.vis "analyse_00"$n".vis"          
+      else
+         if [ $n -lt 1000 ]
+            then
+            mv outtmp2.dat "analyse_0"$n".dat" 
+            mv outtmp2.vis "analyse_0"$n".vis"          
+         else
+            mv outtmp2.dat "analyse_"$n".dat" 
+            mv outtmp2.vis "analyse_"$n".vis"         
+         fi
+      fi
+   fi    
+   #
+   #     Convertir la densite numerique en epaisseur optique
+   #
+   if [ $n -lt 10 ]
+      then
+      echo "analyse_000"$n "   Root name of the files (ext .dat and .vis will be added)"  > 3dtoaod.par
+   else
+      if [ $n -lt 100 ]
+         then
+         echo "analyse_00"$n "   Root name of the files (ext .dat and .vis will be added)"  > 3dtoaod.par       
+      else
+         if [ $n -lt 1000 ]
+            then
+            echo "analyse_0"$n "   Root name of the files (ext .dat and .vis will be added)"  > 3dtoaod.par          
+         else
+            echo "analyse_"$n "   Root name of the files (ext .dat and .vis will be added)"  > 3dtoaod.par         
+         fi
+      fi
+   fi       
+   echo $crofile "   Root name of the cross section data base file (extension .res.bmi will be added)">> 3dtoaod.par
+   3dtoa
+   if [ $n -lt 10 ]
+      then
+      cp "analyse_000"$n$wavelen"_01.pgm" "analyse_000"$n".pgm"
+   else
+      if [ $n -lt 100 ] 
+         then
+         cp "analyse_00"$n$wavelen"_01.pgm"  "analyse_00"$n".pgm"        
+      else
+         if [ $n -lt 1000 ]
+            then
+            cp "analyse_0"$n$wavelen"_01.pgm"  "analyse_0"$n".pgm"           
+         else
+            cp "analyse_"$n$wavelen"_01.pgm"  "analyse_"$n".pgm"         
+         fi
+      fi
+   fi        
+   #
+   #     interpoler l analyse
+   #
+   if [ $n -lt 10 ] 
+      then
+      echo "analyse_000"$n"   Root name of the file"  > interp.par
+   else
+      if [ $n -lt 100 ]
+         then
+         echo "analyse_00"$n"   Root name of the file"  > interp.par       
+      else
+         if [ $n -lt 1000 ]
+            then
+            echo "analyse_0"$n"   Root name of the file"  > interp.par           
+         else
+            echo "analyse_"$n"   Root name of the file"  > interp.par         
+         fi
+      fi
+   fi           
+   echo $pixsiz "   Pixel size in degrees">> interp.par
+   echo $lat0 "   Center latitude of the south-west pixel in degrees">> interp.par
+   echo $lon0 "   Center longitude of the south-west pixel in degrees">> interp.par
+   echo $intbox "   Interpolating window size in degrees">> interp.par
+   #  2 is for 1/r² interpolating scheme
+   echo "2   Interpolating function">> interp.par
+   #  1 set box size optimization on
+   echo "0   Activate interpolating box size opt (no=0, yes=1)">> interp.par
+   echo $pixsiz "   Size of output cell in degrees">> interp.par
+   echo $ncellx "   Number of cells along N-S axis">> interp.par
+   echo $ncelly "   Number of cells along E-W axis">> interp.par
+   echo $lat0 "   Center latitude of the south-west cell">> interp.par
+   echo $lon0 "   Center longitude of the south-west cell">> interp.par 
+   echo $defval "   Default num. value">> interp.par
+   inter
+   #
+   #    lisser l analyse
+   #
+   if [ $n -lt 10 ] 
+      then
+      echo "analyse_000"$n"_i   Root name of the file"  > interp.par
+   else
+      if [ $n -lt 100 ]
+         then
+         echo "analyse_00"$n"_i   Root name of the file"  > interp.par       
+      else
+         if [ $n -lt 1000 ]
+            then
+            echo "analyse_0"$n"_i   Root name of the file"  > interp.par           
+         else
+            echo "analyse_"$n"_i   Root name of the file"  > interp.par          
+         fi
+      fi
+   fi          
+   echo $pixsiz "   Pixel size in degrees">> interp.par
+   echo $lat0 "   Center latitude of the south-west pixel in degrees">> interp.par
+   echo $lon0 "   Center longitude of the south-west pixel in degrees">> interp.par
+   echo $lissebox "   Interpolating window size in degrees">> interp.par
+   #  3 is for mean interpolating scheme
+   echo "3   Interpolating function">> interp.par
+   #  0 set box size optimization off
+   echo "0   Activate interpolating box size optimization (no=0, yes=1)">> interp.par
+   echo $pixsiz "   Size of output cell in degrees">> interp.par
+   echo $ncellx "   Number of cells along N-S axis">> interp.par
+   echo $ncelly "   Number of cells along E-W axis">> interp.par
+   echo $lat0 "   Center latitude of the south-west cell">> interp.par
+   echo $lon0 "   Center longitude of the south-west cell">> interp.par 
+   echo $defval "   Default num. value">> interp.par
+   inter
+   #
+   #     colorer l image d analyse
+   #
+   if [ $n -lt 10 ] 
+      then
+      echo "analyse_000"$n"_i_i   Root name of the file (ext .pgm be added)"> coloraod.par
+   else
+      if [ $n -lt 100 ]
+         then
+         echo "analyse_00"$n"_i_i   Root name of the file (ext .pgm be added)"> coloraod.par       
+      else
+         if [ $n -lt 1000 ]
+            then
+            echo "analyse_0"$n"_i_i   Root name of the file (ext .pgm be added)"> coloraod.par          
+         else
+            echo "analyse_"$n"_i_i   Root name of the file (ext .pgm be added)"> coloraod.par         
+         fi
+      fi
+   fi      
+   echo "1   Type of aerosol map">> coloraod.par
+   echo  $buffer "   buffer width">> coloraod.par
+   echo "0   colorcode ">> coloraod.par
+   echo "0   scale the values (0=no, 1=yes)">> coloraod.par
+   echo "1   scaling factor">> coloraod.par
+   echo "0   geographical mask (0=no, 1=yes)">> coloraod.par
+   ln -s ~/AODSEM/Bin/coloraod coloraod
+   ln -s ~/AODSEM/Nesfiles/color-code.txt color-code.txt
+   ./coloraod
+   rm -f color-code.txt
+   rm -f coloraod
+   convert coloraod.ppm coloraod.gif 
+   #
+   #  cette lecture a ete conservee afin d assurer la continuite
+   #  avec une version anterieure de datas elle offre la flexibilite
+   #  de pouvoir nommer l image couleur differemment du fichier de donnee
+   # .pgm
+   #
+#JDG#R   echo " New root name for color image (.gif will be added)?"
+#JDG#R   read gifname
+#JDG#D
+gifname="ana-"$nb4file
+#JDG#F
+   mv coloraod.gif $gifname".gif"
+   #
+   #   archiver les resultats
+   #
+#JDG#R les 16 lignes suivantes 
+#   if [ $n -lt 10 ] 
+#      then
+#     echo " New root name for analysis: analyse_000"$n"_i_i ?"
+#  else
+#     if [ $n -lt 100 ]
+#        then
+#        echo " New root name for analysis: analyse_00"$n"_i_i ?"          
+#     else
+#        if [ $n -lt 1000 ]
+#           then
+#           echo " New root name for analysis: analyse_0"$n"_i_i ?"             
+#        else
+#           echo " New root name for analysis: analyse_"$n"_i_i ?"           
+#        fi
+#     fi
+#  fi         
+#        read output
+#JDG#D
+output="ana-"$nb4file
+#JDG#F
+
+#JDG#R les 17 lignes suivantes
+#  if [ $n -lt 10 ] 
+#     then
+#     echo " New root name for background: numvol_000"$n$wavelen"_01.pgm ?"
+#  else
+#     if [ $n -lt 100 ]
+#        then
+#        echo " New root name for background: numvol_00"$n$wavelen"_01.pgm ?"       
+#     else
+#        if [ $n -lt 1000 ]
+#           then
+#           echo " New root name for background: numvol_0"$n$wavelen"_01.pgm ?"          
+#        else
+#           echo " New root name for background: numvol_"$n$wavelen"_01.pgm ?"         
+#        fi
+#     fi
+#  fi      
+#  read outnumvol
+#JDG#D
+outnumvol="bgd-"$nb4file
+#JDG#F
+   #
+   #     Convertir la densite numerique background en epaisseur optique
+   #
+   if [ $n -lt 10 ] 
+      then
+         echo "numvol_000"$n "   Root name of the files (ext .dat and .vis will be added)"  > 3dtoaod.par
+   else
+      if [ $n -lt 100 ]
+         then
+         echo "numvol_00"$n "   Root name of the files (ext .dat and .vis will be added)"  > 3dtoaod.par        
+      else
+         if [ $n -lt 1000 ]
+            then
+            echo "numvol_0"$n "   Root name of the files (ext .dat and .vis will be added)"  > 3dtoaod.par           
+         else
+            echo "numvol_"$n "   Root name of the files (ext .dat and .vis will be added)"  > 3dtoaod.par          
+         fi
+      fi
+   fi       
+   echo $crofile "   Root name of the cross section data base file (extension .res.bmi will be added)">> 3dtoaod.par
+   3dtoa
+   outcld="cld-"$nb4file
+   if [ $n -lt 10 ] 
+      then
+         mv "analyse_000"$n"_i_i.pgm" $output".pgm"
+         cp "numvol_000"$n$wavelen"_01.pgm" $outnumvol".pgm"
+         mv "analyse_000"$n".dat" $output".dat"
+         mv "analyse_000"$n".vis" $output".vis"
+         mv "cloud_000"$n".pgm"  $outcld".pgm"
+   else
+      if [ $n -lt 100 ]
+         then
+         mv "analyse_00"$n"_i_i.pgm" $output".pgm"
+         cp "numvol_00"$n$wavelen"_01.pgm" $outnumvol".pgm" 
+         mv "analyse_00"$n".dat" $output".dat"
+         mv "analyse_00"$n".vis" $output".vis"    
+         mv "cloud_00"$n".pgm"  $outcld".pgm"   
+      else
+         if [ $n -lt 1000 ]
+            then
+            mv "analyse_0"$n"_i_i.pgm" $output".pgm"
+            cp "numvol_0"$n$wavelen"_01.pgm" $outnumvol".pgm" 
+            mv "analyse_0"$n".dat" $output".dat"
+            mv "analyse_0"$n".vis" $output".vis"   
+             mv "cloud_0"$n".pgm"  $outcld".pgm"       
+         else
+            mv "analyse_"$n"_i_i.pgm" $output".pgm"
+            cp "numvol_"$n$wavelen"_01.pgm" $outnumvol".pgm" 
+            mv "analyse_"$n".dat" $output".dat"
+            mv "analyse_"$n".vis" $output".vis"
+            mv "cloud_"$n".pgm"  $outcld".pgm"         
+         fi
+      fi
+   fi 
+   if [ $n -lt $ntime ]
+      then
+          gzip $output".dat"   
+   fi     
+   let "n=n+1"
+done
+
+#JDG#D
+#
+# Conversion des numeros de fichiers pour les fichiers emis une seule fois
+#
+to4d=$firstnb
+fdig  #Fonction qui transforme au format 4 chiffres
+nb4file=$to4d
+#JDG#F
+
+#JDG#R les 2 lignes suivantes
+#echo " New root name for correction file datascor.pgm ?"
+#read corfile
+corfile="cor-"$nb4file
+cp datascor.pgm $corfile".pgm"
+rm -f numvol*
+rm -f datas*
+rm -f analys* 
+rm -f positive*
+rm -f negative*
+rm -f outtmp*
+#JDG#R les 4 lignes suivantes
+#echo " New root name for wet deposition file ?"
+#read wet
+#echo " New root name for dry deposition file ?"
+#read dry
+#JDG#D
+wet="wet-"$nb4file
+dry="dry-"$nb4file
+mv "wetdepf.dat" $wet".dat"
+mv "drydepf.dat" $dry".dat"        
+if [ -f core ] 
+   then   echo "******** An error occured during execution of datas! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+   echo " Normal end of datas." 
+fi
+
+

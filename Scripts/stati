@@ -1,0 +1,45 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                   stati                      *"
+echo "*                                              *"
+echo "*       compute statistics on an aerosol       *"
+echo "*              optical depth map               *"
+echo "*                                              *"
+echo "*     Martin Aube 2000                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+ls *.pgm
+if [ -f statistique.par ] 
+   then
+      echo " Readind parameter file."  
+   else
+      echo " No parameter file found!"
+      epar_stati
+fi 
+echo " Preparing input files..."
+ln -s ~/AODSEM/Bin/statistique statistique
+echo " Executing statistique..."
+./statistique
+echo " Output file name ?"
+output=stat-`cat statistique.par`
+
+
+cp statistique.res $output
+
+echo " Deleting temporary files in " $folder
+rm -f statistique
+rm -f statistique.res
+if [ -f core ] 
+   then   echo "******** An error occured during execution of stati! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of stati." 
+fi 
+

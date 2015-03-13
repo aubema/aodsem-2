@@ -1,0 +1,18 @@
+#!/bin/bash
+stty erase [3~
+clear
+echo " "
+echo "      AODSEM CONTROL CENTER"
+PS3="Select an item: "
+select item in Exit Help AeroProp Mapping 3-D Select_Folder
+do
+case "$item" in
+   Exit) clear;exit;;
+   Help) clear;infor;;
+   AeroProp) aerop;;          
+   Mapping) mappi;;
+   3-D) tdime;;
+   Select_Folder) echo "Choose a working folder:";read folder; cd $folder ; clear ; echo "Working folder:"; pwd;; 
+   *) echo " Unknown function!";;
+esac
+done

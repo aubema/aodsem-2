@@ -1,0 +1,9 @@
+# Relative humidity 3-d file for aeros.f
+ 12 00 00 01 01 2000  TU (hh mm ss), Date (jj mm yyyy)
+ 1                 Number of X cells
+ 50. 		   Largeur de la cellule en degres selon x 
+ 1                 Number of Y cells
+ 50.		   largeur de la cellule en degres selon y 
+ 20. 320.    	   Position du coin-cellule inferieur(e) gauche 
+DATA
+ 1  

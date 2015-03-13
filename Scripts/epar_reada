@@ -1,0 +1,48 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *              Edit parameter for readaod             *"
+echo " *                                                     *"
+echo " *        Read aerosol optical depth map value         *"
+echo " *            for some particular locations            *"
+echo " *                                                     *"
+echo " *     Martin Aube 2000                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f readaod.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more readaod.par
+fi 
+ls *.pgm
+echo " "
+echo " Root name of the file (.pgm will be added)?"
+read img
+echo " Number of sites?"
+read nsite
+  
+
+echo $img > readaod.par
+echo $nsite >> readaod.par
+
+
+i=1
+while [ $i -le $nsite ]
+do
+echo " Latitude of site #" $i "?"
+read lat
+echo " Longitude of site #" $i "?"
+read lon
+echo $lat $lon >> readaod.par
+let i=i+1
+done
+
+
+
+
+
+echo "Done"

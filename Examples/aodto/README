@@ -1,0 +1,14 @@
+Nom de la fonction: aodto
+
+Commande d'edition de parametres: oui
+
+Utilite:  Convertir une image d'AOD .pgm en distribution 3D des aerosols.
+
+Entree: Fichier d'AOD .pgm (ici aod_0001.pgm), fichiers d'humidite relative
+.rhu (ici 2000010100.rhu), fichier d'index des fichiers d'humidite relative
+disponibles (relhum.index), fichier de sections efficaces des aerosols
+(ici newdemo.res.bmi).
+
+Sortie:  fichier 3D .dat (ici aod_0001.dat), fichier d'observation stantard a
+adapter manuellement par l'utilisateur (ici aod_0001.vis)
+

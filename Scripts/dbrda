@@ -1,0 +1,82 @@
+# permet de combiner deux base de donnee differentes pour
+# l assimilation (dans des repertoires .sorted distincts).
+# Le script commencera par verifier si deux 
+# fichiers correspondent a une meme date et si oui il les combinera
+# a l aide du script comba. Le script executera aussi epar_rdata de 
+# facon automatique.
+ls *.sorted
+echo "Nom de base du premier repertoire .sorted?"
+read nom1
+echo "Offset et gain de l'erreur associee (error=offset+gain*AOD)?"
+read off1 gain1
+echo "Nom de base du deuxieme repertoire .sorted?"
+read nom2
+echo "Offset et gain de l'erreur associee (error=offset+gain*AOD)?"
+read off2 gain2
+outdir=$nom1"+"$nom2".sorted"
+echo "Output dir=" $outdir
+rm -fr $outdir
+mkdir $outdir
+cd $nom1.sorted
+list1=`ls -1 *.pgm`
+cd ..
+cd $nom2.sorted
+list2=`ls -1 *.pgm`
+cd ..
+for i in $list1 
+do 
+  for j in $list2
+  do if [ $i == $j ]
+     then
+     #
+     # combiner les fichiers
+     #
+        cp -f $nom1.sorted/$i ./"a"$i
+        cp -f $nom2.sorted/$j ./"b"$j
+        rm -f $i
+        rm -f $j
+         echo "comba    Root name of the file" > combaod.par
+         echo "9    interpolating window size in pixel" >> combaod.par
+         echo "2    interpolating function" >> combaod.par
+         echo "0    Activate interpolating box size optimization (no=0, yes=1)" >> combaod.par
+         echo "65534    Default numerical value (nodata=65534)" >> combaod.par
+         echo "2    number of data source" >> combaod.par
+         echo "a"$i"  file name #1" >> combaod.par
+         echo $gain1 $off1   "  error (gain offset) #1" >> combaod.par
+         echo "b"$j"  file name #2" >> combaod.par
+         echo $gain2 $off2   "  error (gain offset) #2" >> combaod.par
+        sed -e 's/\.pgm//g' combaod.par > combaod.tmp
+        mv combaod.tmp combaod.par
+        comba
+        rm -f "a"$j
+        rm -f "b"$j
+        mv comba_i.pgm $outdir/$i 
+     else
+        if [ ! -f $outdir/$i ]
+        then  
+          cp -f $nom1.sorted/$i $outdir 
+        fi
+        if [ ! -f $outdir/$j ] 
+        then 
+          cp -f $nom2.sorted/$j $outdir 
+        fi
+     fi
+  done
+done
+list2=`ls -1 $outdir/*pgm`
+name=$nom1"+"$nom2
+nfiles=`ls -1 $outdir/*.pgm | grep -c ""`
+rm -f $outdir/$name.rdata
+for j in $list2
+   do grep "date" $j > lstdf.tmp
+  read bidon1 bidon2 he mi se jo mo an < lstdf.tmp
+  echo $he $mi $se $jo $mo $an >> $outdir/$name.rdata 
+  echo $j > lstdf.tmp
+  sed -e "s/$name.sorted\///g" lstdf.tmp > lstdf2.tmp
+  sed -e "s/\.pgm//g" lstdf2.tmp  >> $outdir/$name.rdata
+  echo $outdir/$name.rdata
+done
+
+
+
+

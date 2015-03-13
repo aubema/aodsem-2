@@ -1,0 +1,33 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                     bufsi                    *"
+echo "*                                              *"
+echo "*            Compute buffer size for           *"
+echo "*                    AODSEM                    *"
+echo "*                                              *"
+echo "*     Martin Aube 2003                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+
+ln -s ~/AODSEM/Bin/buffersize buffersize
+echo " Executing buffersize..."
+./buffersize
+
+echo " Deleting temporary files in " $folder
+rm -f buffersize
+echo "Stike a key to stop"
+read
+if [ -f core ] 
+   then   echo "******** An error occured during execution of bufsi! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of bufsi." 
+fi 
+

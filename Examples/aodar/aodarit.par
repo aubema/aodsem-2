@@ -1,0 +1,6 @@
+1    Operation
+1    Set negative output to 0 (1=yes, 0=no)
+aod_0001+0002    Output root file name .pgm will be added
+aod_0001    Root name of file #1 .pgm will be added
+aod_0002    Root name of file #2 .pgm will be added
+253    Limit

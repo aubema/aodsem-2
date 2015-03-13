@@ -1,0 +1,42 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *           Edit parameter for gem2vertpro            *"
+echo " *                                                     *"
+echo " *        Extract a vertical meteo profile for         *"
+echo " *    a particular location from GEM ASCII format      *"
+echo " *                                                     *"
+echo " *     Martin Aube 2000                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f gem2vertpro.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more gem2vertpromakesource.par
+fi 
+ls *
+echo " "
+echo " New parameters:"
+echo " "
+echo "First GEM file name?"
+read nom0
+echo "Date (HH MM SS JJ MM YYYY)?"
+read hh0 mm0 ss0 jj0 mo0 yy0
+echo "Second GEM file name?"
+read nom1
+echo "Time interval between the two GEM files (hour)?"
+read dt
+echo "Site latitude, longitude?"
+read lat lon
+
+echo $nom0 "    First GEM file name" > gem2vertpro.par
+echo $hh0 $mm0 $ss0 $jj0 $mo0 $yy0 "   Date (HH MM SS JJ MM YYYY)" >>  gem2vertpro.par
+echo $nom1 "   Second GEM file name" >>  gem2vertpro.par
+echo $dt "   Time interval between the two GEM files (hour)" >>  gem2vertpro.par
+echo $lat $lon "   Site latitude, longitude" >>  gem2vertpro.par
+
+echo "Done"

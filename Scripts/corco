@@ -1,0 +1,35 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                    corco                     *"
+echo "*                                              *"
+echo "*       Compute correlation coefficien t       *"
+echo "*              from a x-y file                 *"
+echo "*                                              *"
+echo "*     Martin Aube 2000                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+if [ -f corcoef.par ] 
+   then   echo " Using existing input parameter file: corcoef.par"
+
+   else   epar_corco   
+fi 
+echo " Preparing input files..."
+ln -s ~/AODSEM/Bin/corcoef corcoef
+echo " Executing corcoef..."
+./corcoef
+echo " Deleting temporary files in " $folder
+rm -f corcoef
+if [ -f core ] 
+   then   echo "******** An error occured during execution of corco! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of corco." 
+fi 
+

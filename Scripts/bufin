@@ -1,0 +1,49 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                     bufin                    *"
+echo "*                                              *"
+echo "*     Create a buffer index file for AODSEM    *"
+echo "*                                              *"
+echo "*     Martin Aube 2004                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+chmod a-x *.dat
+echo " Experiment directory "$folder
+echo "Common file name substring (e.g. bgf)?"
+read str
+ls -1 *$str*.dat > bidon.1
+ndat=`grep -c dat bidon.1`
+if [ $ndat -lt 1 ]
+  then echo "Bad file name substring!"
+     echo "killing bufin"
+     exit 0
+fi
+  ndat=`grep -c dat bidon.1`
+  echo $ndat "   number of files" > buffer.index
+  list1=`ls -1 *$str*.dat`
+n=0
+  for i in $list1
+  do
+  let 'n=n+1'
+  echo $n" of "$ndat
+  sed -n '3p' $i > bidon.2
+  read h m s j m a toto < bidon.2
+  echo $h $m $s $j $m $a $i >> buffer.index
+done
+
+
+rm -f bidon.2
+rm -f bidon.1
+
+if [ -f core ] 
+   then   echo "******** An error occured during execution of bufin! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of bufin." 
+fi 

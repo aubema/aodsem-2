@@ -1,0 +1,1005 @@
+#!/bin/bash
+# programme bash permettant de rouler de facon automatique le modele aodsem
+# un mois a la fois
+#
+x=`basename $0`
+if test $# = 0; then
+  echo usage: ${x} MM YYYY rerunstage
+  echo   "MM=month YYYY=year rerunstage=0,1,2,3,4"
+  echo   " 0=all,1=fine,2=aeronet,3=modis,4=modis+aeronet"
+  exit 1
+fi
+if test $1 -lt 1 ; then
+   echo "MM >= 1" 
+   exit 1
+fi
+if test $1 -gt 12 ; then
+   echo "MM <= 12" 
+   exit 1
+fi
+if test $2 -lt 1980 ; then
+   echo "YYYY >= 1980" 
+   exit 1
+fi
+actyear=`date +%Y`
+actmonth=`date +%m`
+if test $2 -gt $actyear ; then
+   echo "YYYY <= "  $actyear
+   exit 1
+fi
+if test $2 -eq $actyear ; then
+   if test $1 -ge $actmonth ; then
+      if test $1 -eq 1 ; then
+        echo "date < "  $actmonth $actyear
+        exit 1
+      else
+        echo "MM < "  $actmonth
+        exit 1
+      fi
+   fi
+fi
+echo $1 $2 $3
+#
+# mois d'execution (important ne pas mettre un 0 avant les mois inferieurs a 10
+# par exemple pour juin entrer mo0=6 et non mo0=06 c'est le but de la commande let
+mo0=$1
+an0=$2
+ana=$an0
+anp=$an0
+let "mo0=mo0+0"
+
+#
+# ajouter un 0 avant les mois inferieurs a 10
+let "mop=mo0-1"
+if [ $mop -lt 1 ] 
+   then mop=12
+   let "anp=an0-1"
+fi
+let "moa=mo0+1"
+if [ $moa -gt 12 ] 
+   then moa=1
+   let "ana=an0+1"
+fi
+if [ $mo0 -lt 10 ]
+then mois0="0"$mo0
+else
+     mois0=$mo0
+fi
+if [ $mop -lt 10 ]
+then moisp="0"$mop
+else
+     moisp=$mop
+fi
+if [ $moa -lt 10 ]
+then moisa="0"$moa
+else
+     moisa=$moa
+fi
+# repertoires de dates de run
+dirdate=$an0"/"$mois0
+#
+#<<<<<<<<<<<<<<<<<<<<<< Section de configs <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< 
+#
+# repertoire de base contentant tout ce qu'il faut pour rouler auto-nomad
+# ainsi que tous les resultats
+#
+# base="/home/level3/minh/"
+
+base="/opt/modele/"
+# repertoire devant contenir les resultats du run. Il sera cree si non existant
+# le chemin doit etre absolu i.e. /home/toto/toto/...
+#
+folder="/opt/modele/results1/"
+# repertoire sources en format .3ds
+# le repertoire srcdir doit contenir l'ensemble des fichiers des sources pertinents 
+# y compris le fichiers standards. Un maximum de 9 fichiers est permis
+# noms des fichiers sources a utiliser.
+# nosrc.3ds sera attribue si aucun fichier ne doit etre associe au nom de variable
+# ces sources seront considerees constante sur toute la periode y compris la periode
+# d'initialisation qui est pourtant dans le mois precedent
+#
+srcdir="emissions1/"
+# repertoire images pgm modis 0.4x0.4 deg
+modisdir="modis0.4/"
+# repertoire images pgm aeronet 0.4x0.4 deg
+anetdir="aeronet_L15/"
+# repertoire de fichiers meteo
+meteodir="GEM/"
+# repertoire anmodir qui sera cree (si non existant) pour le resultat de combinaison aeronet modis
+anmodir="modis+aeronet/"
+# repertoire omodisdir contenant les fichiers pgm modis a pleine resolution (0.1 deg)
+# 
+omodisdir="modis/"
+# wavelength 
+wave=6
+# donnees optiques
+opto="newmnt0"
+# taille de la fonction de lissage en output en centiemes de degres
+# cette taille correspond au diametre de la fenetre de lissage
+lissage=300
+#
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+#
+# definition du lissage en degres pour freem
+let "uliss=lissage/100"
+let "dliss=lissage-uliss*100"
+dlissage=$uliss"."$dliss
+echo "auto-nomad == Taille du lissage des sorties=" $dlissage "deg."
+#
+#  completer les noms pour la meteo pour les mois prededent et suivant
+#
+folder=$folder$dirdate
+srcdir=$base$srcdir$dirdate
+modisdir=$base$modisdir$dirdate
+anetdir=$base$anetdir$dirdate
+anmodir=$base$anmodir$dirdate
+omodisdir=$base$omodisdir$dirdate
+meteodir=$base$meteodir
+meteodir1=$meteodir"/"$an0"/"$mois0
+meteodir2=$meteodir"/"$anp"/"$moisp
+meteodir3=$meteodir"/"$ana"/"$moisa
+
+#
+#  creer les repertoires manquants
+#
+if [ ! -d $anmodir ] 
+then mkdir -p $anmodir
+fi
+if [ ! -d $folder ]
+then   mkdir -p $folder
+fi
+if [ ! -d $modisdir ]
+then   mkdir -p $modisdir
+fi
+#
+# convertir les fichiers de sources (emissions)
+#
+cd $srcdir
+declare -a srcfil
+srclst=`ls -1 *.3ds`
+# echo $srcdir
+# echo $srclst
+ls -1 *.3ds > lstsrc.tmp
+nbsrc=`grep -c "3ds" lstsrc.tmp`
+n=0
+for lll in $srclst
+do let "n=n+1"
+   srcfil[$n]=$lll
+done
+n=0
+while [ $n -lt 9 ]
+do let "n=n+1"
+   if [ $n -gt $nbsrc ] 
+   then
+      srcfil[$n]="nosrc.3ds"
+   fi
+   echo "auto-nomad == " ${srcfil[$n]}
+done
+cd $folder
+# 
+#  Considerations pour la climatologie (eponge pour le coarse mode)
+#
+# ete=2 hiver=1
+#
+saison=1
+if [ $mo0 -ge 4 ]
+   then
+   if [ $mo0 -le 9 ]
+      then
+      saison=2
+   fi
+fi
+#
+#  generer les dates de debut et fin
+#
+   if [ $mo0 -eq 1 ]
+      then
+      jof=31
+   elif [ $mo0 -eq 2 ] 
+      then
+      let "bisext=an0%4"
+      let "bis100=an0%100"
+      let "bis400=an0%400"
+      if [ $bisext -eq 0 ]
+        then jof=29
+        if [ $bis100 -eq 0 ]
+           then jof=28
+           if [ $bis400 -eq 0 ] 
+              then jof=29
+           fi
+        fi
+      else jof=28
+      fi 
+   elif [ $mo0 -eq 3 ]   
+      then
+      jof=31
+   elif [ $mo0 -eq 4 ]   
+      then
+      jof=30
+   elif [ $mo0 -eq 5 ]   
+      then
+      jof=31
+   elif [ $mo0 -eq 6 ] 
+      then
+      jof=30   
+   elif [ $mo0 -eq 7 ]   
+      then
+      jof=31   
+   elif [ $mo0 -eq 8 ]   
+      then
+      jof=31   
+   elif [ $mo0 -eq 9 ]   
+      then
+      jof=30   
+   elif [ $mo0 -eq 10 ]   
+      then
+      jof=31
+   elif [ $mo0 -eq 11 ]   
+      then
+      jof=30      
+   else 
+      jof=31  
+   fi  
+let "mof=mo0+1"
+anf=$an0
+if [ $mof -gt 12 ] 
+then
+   mof=1
+   let "anf=an0+1"
+fi
+let "moi=mo0-1"
+ani=$an0
+if [ $moi -lt 1 ]
+then moi=12
+     let "ani=an0-1"
+fi
+
+   if [ $moi -eq 1 ]
+      then
+      joi=31
+   elif [ $moi -eq 2 ] 
+      then
+      let "bisext=ani%4"
+      let "bis100=ani%100"
+      let "bis400=ani%400"
+      if [ $bisext -eq 0 ]
+        then joi=29
+        if [ $bis100 -eq 0 ]
+           then joi=28
+           if [ $bis400 -eq 0 ] 
+              then joi=29
+           fi
+        fi
+      else joi=28
+      fi 
+   elif [ $moi -eq 3 ]   
+      then
+      joi=31
+   elif [ $moi -eq 4 ]   
+      then
+      joi=30
+   elif [ $moi -eq 5 ]   
+      then
+      joi=31
+   elif [ $moi -eq 6 ] 
+      then
+      joi=30   
+   elif [ $moi -eq 7 ]   
+      then
+      joi=31   
+   elif [ $moi -eq 8 ]   
+      then
+      joi=31   
+   elif [ $moi -eq 9 ]   
+      then
+      joi=30   
+   elif [ $moi -eq 10 ]   
+      then
+      joi=31
+   elif [ $moi -eq 11 ]   
+      then
+      joi=30      
+   else 
+      joi=31  
+   fi  
+# fixer le spin-up time a 10 jours
+let "jod=joi-10"
+ti="0 0 0 "$jod" "$moi" "$ani
+t0="0 0 0 1 "$mo0" "$an0
+tf="0 0 0 2 "$mof" "$anf
+###################################################
+#
+# Debut de l'execution
+#
+# nettoyage du repertoire
+#
+if [ $3 -le 0 ] 
+then
+   rm -f *asc* 
+   rm -f *.par 
+   rm -f *.pgm 
+   rm -f *.dat 
+   rm -f *PR 
+   rm -f *3ds 
+   rm -fr buffer 
+   rm -fr coarse 
+   rm -f *.index 
+   rm -f *vis 
+   rm -f *.in 
+   rm -f *rhu 
+   rm -fr fine
+   rm -f *.gif 
+   rm -f *pho 
+   rm -f *bmi
+   #
+   # creation de sources vides
+   #
+   echo "1" >nosrc.3ds
+   echo "1 1 2000 1 1 2000 0 0 0 0 0 0 0 0" >> nosrc.3ds
+   mv -f nosrc.3ds $srcdir
+   #
+   # grille du domaine coarse
+   #
+   echo "100" > bidon.1
+   echo "60" >> bidon.1
+   echo "120" >> bidon.1
+   echo "25" >> bidon.1
+   echo "-165" >> bidon.1
+   domai < bidon.1
+   #
+   # enlever les fichiers meteo existants et mise a jour
+   #
+   rm -f *asc*
+   rm -f *PR
+   ln -f -s $meteodir1/*wsp . 
+   ln -f -s $meteodir1/*rhu . 
+   ln -f -s $meteodir1/*PR . 
+   ln -f -s $meteodir1/*tt .
+   ln -f -s $meteodir2/*wsp .
+   ln -f -s $meteodir2/*rhu .
+   ln -f -s $meteodir2/*PR .
+   ln -f -s $meteodir2/*tt .
+   ln -f -s $meteodir3/*wsp .
+   ln -f -s $meteodir3/*rhu .
+   ln -f -s $meteodir3/*PR .
+   ln -f -s $meteodir3/*tt .
+   #
+   # creation des index meteo
+   #
+   prind 
+   wspin 
+   ttind 
+   rhuin
+   #
+   # creer la climatologie
+   #
+   echo $saison >bidon.1
+   echo $wave >>bidon.1
+   echo $opto >> bidon.1
+   mkcli < bidon.1
+   #rm -f bidon.1
+   #
+   # Creation des sources coarse
+   #
+   rm -f *.3ds
+   ln -f -s $srcdir/*3ds . 
+   echo $ti "    begining date" >makesource.par
+   echo $tf "    ending date" >>makesource.par
+   echo "60    Number of N-S pixels" >>makesource.par
+   echo "120    Number of E-W pixels" >>makesource.par
+   echo "1.0    Pixel size in degrees" >>makesource.par
+   echo "25   Center latitude of the south-west pixel in degrees" >>makesource.par
+   echo "-165 Center longitude of the south-west pixel in degrees" >>makesource.par
+   echo "9    Number of 3ds source database files" >>makesource.par
+   echo ${srcfil[1]} "    File name #  1" >>makesource.par
+   echo ${srcfil[2]} "    File name #  2" >>makesource.par
+   echo ${srcfil[3]} "    File name #  3" >>makesource.par
+   echo ${srcfil[4]} "    File name #  4" >>makesource.par
+   echo ${srcfil[5]} "    File name #  5" >>makesource.par
+   echo ${srcfil[6]} "    File name #  6" >>makesource.par
+   echo ${srcfil[7]} "    File name #  7" >>makesource.par
+   echo ${srcfil[8]} "    File name #  8" >>makesource.par
+   echo ${srcfil[9]} "    File name #  9" >>makesource.par
+   echo "1    Activate dynamical seasalt emission (1=yes, 0=no)" >>makesource.par
+   mksrc
+   #
+   # executer freem en coarse
+   #
+   echo "1" > coarse.in
+   echo $ti  >> coarse.in
+   echo $tf >> coarse.in
+   echo "360" >> coarse.in
+   echo "4" >> coarse.in
+   echo "1" >> coarse.in
+   echo "6" >> coarse.in
+   echo $dlissage >> coarse.in
+   echo $opto  >> coarse.in
+   echo "2" >> coarse.in
+   echo "1" >> coarse.in
+   echo "0" >> coarse.in
+   freem <coarse.in
+fi
+if [ $3 -le 1 ] 
+then
+   #
+   # grille du domaine fine
+   #
+   echo "40" > bidon.1
+   echo "125" >> bidon.1
+   echo "275" >> bidon.1
+   echo "30" >> bidon.1
+   echo "-160" >> bidon.1
+   domai < bidon.1
+   rm bidon.1
+   #
+   # inventaire des sources fine
+   #
+   echo $ti "    begining date" >makesource.par
+   echo $tf "    ending date" >>makesource.par
+   echo "125    Number of N-S pixels" >>makesource.par
+   echo "275    Number of E-W pixels" >>makesource.par
+   echo "0.4    Pixel size in degrees" >>makesource.par
+   echo "30    Center latitude of the south-west pixel in degrees" >>makesource.par
+   echo "-160  Center longitude of the south-west degrees" >>makesource.par
+   echo "9    Number of 3ds source database files" >>makesource.par
+   echo ${srcfil[1]} "    File name #  1" >>makesource.par
+   echo ${srcfil[2]} "    File name #  2" >>makesource.par
+   echo ${srcfil[3]} "    File name #  3" >>makesource.par
+   echo ${srcfil[4]} "    File name #  4" >>makesource.par
+   echo ${srcfil[5]} "    File name #  5" >>makesource.par
+   echo ${srcfil[6]} "    File name #  6" >>makesource.par
+   echo ${srcfil[7]} "    File name #  7" >>makesource.par
+   echo ${srcfil[8]} "    File name #  8" >>makesource.par
+   echo ${srcfil[9]} "    File name #  9" >>makesource.par
+   echo "1    Activate dynamical seasalt emission (1=yes, 0=no)" >>makesource.par
+   mksrc
+   #
+   # changer la resolution du coarse pour fabriquer le nouveau buffer
+   #
+   gzip -v -d bgf*.dat.gz
+   chmod a-x bg*
+   list=`ls -1 bgf-*.dat | sed 's/.dat//'`
+   for i in $list
+   do echo $i > chresol.par
+      echo "30" >> chresol.par 
+      echo "-160" >> chresol.par 
+      echo "0.4" >> chresol.par 
+      echo "125" >> chresol.par 
+      echo "275" >> chresol.par 
+      chres 
+   done
+   #
+   # deplacer le nouveaux fichiers et archiver le coarse
+   #
+   rm -fr buffer  
+   mkdir buffer 
+   mv bgf-*_c.* buffer
+   if [ $3 -eq 0 ] 
+   then
+      rm -fr coarse 
+      mkdir coarse 
+      mv bgf-* coarse 
+      mv cld-* coarse
+   fi
+   #
+   # faire le fichier index du buffer et lier le buffer dans le repertoire de travail
+   #
+   cd buffer
+   echo "bgf-" >bidon.1
+   bufin <bidon.1
+   cd ..
+   rm -f buffer.index
+   ln -f -s buffer/*_c* . 
+   ln -f -s buffer/buffer.index .
+   #
+   # executer freem en fine
+   #
+   echo "1" > fine.in
+   echo $ti >> fine.in
+   echo $tf >> fine.in
+   echo "180" >> fine.in
+   echo "5" >> fine.in
+   echo "1" >> fine.in
+   echo "6" >> fine.in
+   echo $dlissage >> fine.in
+   echo $opto >> fine.in
+   echo "2" >> fine.in
+   echo "1001" >> fine.in
+   echo "0" >> fine.in
+   freem <fine.in
+   #
+   # archiver le fine
+   #
+   rm -fr fine 
+   rm -f bgf*_c* 
+   mkdir fine 
+   mv bgf-* fine 
+   mv cld-* fine
+   #
+   # creer les AOD a toutes les longueurs d'ondes
+   #
+   cd fine 
+   ln -f -s ../*rhu . 
+   ln -f -s ../relhum.index . 
+   gzip -v -d bgf*.dat.gz
+   gzip -v -d bgf*.vis.gz 
+   chmod a-x bgf*
+   list=`ls -1 bgf-*.dat | sed 's/.dat//'`
+   for i in $list
+      do echo $i > 3dtoaod.par
+      echo "newmnt0" >> 3dtoaod.par 
+      3dtoa 
+   done
+
+   cd ..
+   cd coarse 
+   ln -f -s ../*rhu . 
+   ln -f -s ../relhum.index . 
+   gzip -v -d bgf*.dat.gz
+   gzip -v -d bgf*.vis.gz  
+   chmod a-x bgf* 
+   list=`ls -1 bgf-*.dat | sed 's/.dat//'`
+   for i in $list
+   do echo $i > 3dtoaod.par
+      echo "newmnt0" >> 3dtoaod.par 
+      3dtoa 
+   done
+   echo "auto-nomad == Fin de nomad freem"
+fi
+#===============================================================
+#section rdata pour l'assimilation de donnees (pour l'instant mode interactif)
+#assimilation aeronet seulement
+#
+#  associer le no de wave a la longueur d'onde en nm
+#
+if [ $wave -eq 1 ]
+then wavelen=340
+elif [ $wave -eq 2 ]
+then wavelen=380 
+elif [ $wave -eq 3 ]
+then wavelen=440 
+elif [ $wave -eq 4 ]
+then wavelen=470 
+elif [ $wave -eq 5 ]
+then wavelen=500 
+elif [ $wave -eq 6 ]
+then wavelen=550 
+elif [ $wave -eq 7 ]
+then wavelen=670 
+elif [ $wave -eq 8 ]
+then wavelen=860 
+elif [ $wave -eq 9 ]
+then wavelen=870 
+elif [ $wave -eq 10 ]
+then wavelen=940 
+elif [ $wave -eq 11 ]
+then wavelen=1020 
+elif [ $wave -eq 12 ]
+then wavelen=1240 
+elif [ $wave -eq 13 ]
+then wavelen=1640 
+elif [ $wave -eq 14 ]
+then wavelen=2130
+fi
+
+if [ $3 -le 2 ] 
+then
+   #
+   #----------------------------------
+   # assimilation aeronet
+   #
+   #
+   #  creation du repertoire de fichiers aeronet classes (aeronet.sorted)
+   #
+   cd $anetdir
+   echo "aeronet" > anet.tmp
+   echo $an0 >> anet.tmp
+   echo $wavelen >> anet.tmp
+   echo "auto-nomad == Creating aeronet sorted data directory..."
+   lstdf < anet.tmp
+   #
+   # completer le fichier .rdata pour en faire un repdata.par
+   #
+   echo "auto-nomad == Creating data assimilation input file: repdatas.par"
+   cd $anetdir/aeronet.sorted
+   echo "0" > repdatas.par
+   echo "0" >> repdatas.par
+   # la donnee qui suit est le fichier dat du fine qui correspond a t0
+   cd $folder/fine
+   lstbgf=`ls -1 bg*.dat`
+   flag=0
+   for nnom in $lstbgf 
+   do if [ $flag -eq 0 ] 
+      then echo "auto-nomad == Is" $nnom "the right initialization file?"
+           grep -m 1 "Date" $nnom > lstbgf.tmp
+           read h m s j mm a bidon < lstbgf.tmp
+           echo $h $m $s $j $mm $a $joi $moi $ani
+           let "heurej=h+m+s"
+           if [ $heurej -eq 0 ]
+           then  if [ $j -eq $joi ]
+                 then 
+                    if [ $mm -eq $moi ]
+                    then
+                       if [ $a -eq $ani ]
+                       then nominitial=$nnom
+                            flag=1
+                            echo "auto-nomad == YES!"
+                       fi
+                    fi
+                 fi
+           fi
+        if [ $flag -eq 0 ] 
+        then echo "auto-nomad == NO!"
+        fi
+      fi
+   done
+   echo "auto-nomad == Fichier de d'initialisation pour l'assimilation:" $nominitial
+   cp $nominitial $folder
+   echo $nominitial > nomini.tmp
+   rootnominitial=`sed -e 's/\.dat//g' nomini.tmp` 
+   cp $rootnominitial".vis" $folder
+   #
+   # compresser les fichiers fine
+   #
+   #gzip -v bgf*.dat
+   #gzip -v bgf*.vis
+   #
+   cd $anetdir/aeronet.sorted
+   echo  $rootnominitial >> repdatas.par
+   echo "180" >> repdatas.par
+   echo "5" >> repdatas.par
+   echo "1" >> repdatas.par
+   echo "1" >> repdatas.par
+   echo $wave " 0 0 0 0 0 0 0 0 0 0 0 0 0" >> repdatas.par
+   echo "125" >> repdatas.par
+   echo "275" >> repdatas.par
+   echo "40" >> repdatas.par
+   echo "30" >> repdatas.par
+   echo "-160" >> repdatas.par
+   echo $lissage >> repdatas.par
+   echo $opto >> repdatas.par
+   read nassim bidon < aeronet.nfiles
+   echo $nassim >> repdatas.par
+   echo "1" >> repdatas.par
+   echo "0 0 0" $joi $moi $ani >> repdatas.par
+   cat aeronet.rdata >> repdatas.par
+   cd $folder
+   rm -f repdatas.par
+   ln -f -s $anetdir/aeronet.sorted/repdatas.par .
+   ln -f -s $anetdir/aeronet.sorted/*.pgm .
+   ln -f -s buffer/*_c* .
+   rdata
+   #
+   #  Completer jusqu a la fin du mois avec une prevision si necessaire
+   #
+   prevfile=`ls -1 ana-*.dat | tail -1`
+   grep -m 1 "Date" $prevfile > previs.tmp
+   read hpr mipr spr jpr mopr anpr bidon < previs.tmp
+   echo "1" > prev.in
+   echo $hpr $mipr $spr $jpr $mopr $anpr >> prev.in
+   echo $tf >> prev.in
+   echo "180" >> prev.in
+   echo "5" >> prev.in
+   echo "1" >> prev.in
+   echo "6" >> prev.in
+   echo $dlissage >> prev.in
+   echo $opto >> prev.in
+   echo "1" >> prev.in
+   echo $prevfile > root.tmp
+   sed -e 's/\.dat//g' root.tmp > root1.tmp
+   sed -e 's/ana-0//g' root1.tmp > root2.tmp
+   read rootininam < root1.tmp
+   read ininum < root2.tmp
+   let "initnum=ininum+1"
+   echo $rootininam >> prev.in
+   echo $initnum >> prev.in
+   echo "0" >> prev.in
+   freem < prev.in
+   mkdir aeronet 
+   rm -f *_c*
+   mv -f ana-* aeronet 
+   mv -f bgf-* aeronet
+   mv -f cor-* aeronet
+   cp -f repdatas.par aeronet
+   mv -f part* aeronet
+   rm -f *pgm
+   rm -f bgd-*
+   #
+   # creer les AOD a toutes le longueurs d'ondes
+   #
+   cd aeronet
+   ln -f -s ../*rhu . 
+   ln -f -s ../relhum.index . 
+   gzip -v -d ana*.dat.gz
+   gzip -v -d ana*.vis.gz 
+   gzip -v -d bgf*.dat.gz
+   gzip -v -d bgf*.vis.gz 
+   chmod a-x ana*
+   chmod a-x bgf*
+   ls -1 ana-*.dat | sed 's/.dat//' > list1.tmp
+   ls -1 bgf-*.dat | sed 's/.dat//' > list2.tmp
+   list=`cat list1.tmp list2.tmp`
+   for i in $list
+   do echo $i > 3dtoaod.par
+      echo "newmnt0" >> 3dtoaod.par 
+      3dtoa 
+   done
+   gzip -v bgf*.dat
+   gzip -v bgf*.vis
+   gzip -v ana*.dat
+   gzip -v ana*.vis
+fi
+
+
+
+
+
+if [ $3 -le 3 ] 
+then
+   #
+   #--------------------------------------------
+   # assimilation modis
+   #
+   # reechantillonner les images modis avec inter sur la grille 0.4 deg
+   #
+   cd $folder
+   rootnominitial=`sed -e 's/\.dat//g' fine/nomini.tmp` 
+   echo "auto-nomad == " $rootnominitial
+   cp fine/$rootnominitial".vis" $folder
+   cp fine/$rootnominitial".dat" $folder
+
+   ln -f -s buffer/*_c* .
+   echo "auto-nomad == Reechantillonage des images modis sur une grille de 0.4 deg"
+   cd $omodisdir
+   rm -f *_i.pgm
+   list=`ls -1 *.pgm | sed 's/.pgm//'`
+   for i in $list
+   do echo $i > interp.par
+      echo "0.1" >> interp.par
+      echo "30"  >> interp.par
+      echo "-160"  >> interp.par
+      echo "0.4"  >> interp.par
+      echo "0"  >> interp.par
+      echo "0"  >> interp.par
+      echo "0.4"  >> interp.par
+      echo "125"  >> interp.par
+      echo "275"  >> interp.par
+      echo "30"  >> interp.par
+      echo "-160"  >> interp.par
+      echo "65534"  >> interp.par
+      inter
+   done
+   cd $modisdir
+   mv -f $omodisdir/*_i.pgm .
+   echo "modis" > modis.tmp
+   echo $an0 >> modis.tmp
+   echo $wavelen >> modis.tmp
+   lstdf < modis.tmp
+   #
+   # completer le fichier .rdata pour en faire un repdata.par
+   #
+   echo "auto-nomad == Creating data assimilation input file: repdatas.par"
+   cd $modisdir/modis.sorted
+   echo "0" > repdatas.par
+   echo "0" >> repdatas.par
+   echo  $rootnominitial >> repdatas.par
+   echo "180" >> repdatas.par
+   echo "5" >> repdatas.par
+   echo "1" >> repdatas.par
+   echo "1" >> repdatas.par
+   echo $wave " 0 0 0 0 0 0 0 0 0 0 0 0 0" >> repdatas.par
+   echo "125" >> repdatas.par
+   echo "275" >> repdatas.par
+   echo "40" >> repdatas.par
+   echo "30" >> repdatas.par
+   echo "-160" >> repdatas.par
+   echo $lissage >> repdatas.par
+   echo $opto >> repdatas.par
+   read nassim bidon < modis.nfiles
+   echo $nassim >> repdatas.par
+   echo "1" >> repdatas.par
+   echo "0 0 0" $joi $moi $ani >> repdatas.par
+   cat modis.rdata >> repdatas.par
+   cd $folder
+   rm -f repdatas.par
+   ln -f -s $modisdir/modis.sorted/repdatas.par .
+   ln -f -s $modisdir/modis.sorted/*.pgm .
+   rdata
+   #
+   #  Completer jusqu a la fin du mois avec une prevision si necessaire
+   #
+   prevfile=`ls -1 ana-*.dat | tail -1`
+   grep -m 1 "Date" $prevfile > previs.tmp
+   read hpr mipr spr jpr mopr anpr bidon < previs.tmp
+   echo "1" > prev.in
+   echo $hpr $mipr $spr $jpr $mopr $anpr >> prev.in
+   echo $tf >> prev.in
+   echo "180" >> prev.in
+   echo "5" >> prev.in
+   echo "1" >> prev.in
+   echo "6" >> prev.in
+   echo $dlissage >> prev.in
+   echo $opto >> prev.in
+   echo "1" >> prev.in
+   echo $prevfile > root.tmp
+   sed -e 's/\.dat//g' root.tmp > root1.tmp
+   sed -e 's/ana-0//g' root1.tmp > root2.tmp
+   read rootininam < root1.tmp
+   read ininum < root2.tmp
+   let "initnum=ininum+1"
+   echo $rootininam >> prev.in
+   echo $initnum >> prev.in
+   echo "0" >> prev.in
+   freem < prev.in
+   mkdir modis 
+   rm -f *_c*
+   mv -f ana-* modis 
+   mv -f bgf-* modis
+   mv -f cor-* modis
+   cp -f repdatas.par modis
+   mv -f part* modis
+   rm -f *pgm
+   rm -f bgd-*
+   #
+   # creer les AOD a toutes le longueurs d'ondes
+   #
+   cd modis
+   ln -f -s ../*rhu . 
+   ln -f -s ../relhum.index . 
+   gzip -v -d ana*.dat.gz
+   gzip -v -d ana*.vis.gz 
+   gzip -v -d bgf*.dat.gz
+   gzip -v -d bgf*.vis.gz
+   chmod a-x ana*
+   chmod a-x bgf*
+   ls -1 ana-*.dat | sed 's/.dat//' > list1.tmp
+   ls -1 bgf-*.dat | sed 's/.dat//' > list2.tmp
+   list=`cat list1.tmp list2.tmp`
+   for i in $list
+   do echo $i > 3dtoaod.par
+      echo "newmnt0" >> 3dtoaod.par 
+      3dtoa 
+   done
+   gzip -v bgf*.dat
+   gzip -v bgf*.vis
+   gzip -v ana*.dat
+   gzip -v ana*.vis
+fi
+
+if [ $3 -le 4 ] 
+then
+   #---------------------------------------------
+   # assimilation modis+aeronet
+   #
+   # combiner les bases de donnees modis.sorted et aeronet.sorted dans modis+aeronet.sorted
+   #
+   cd $folder
+   rootnominitial=`sed -e 's/\.dat//g' fine/nomini.tmp` 
+   echo "auto-nomad == " $rootnominitial
+   cp fine/$rootnominitial".vis" $folder
+   cp fine/$rootnominitial".dat" $folder
+
+   ln -f -s buffer/*_c* .
+   cd $anmodir
+   ln -f -s $modisdir/modis.sorted .
+   ln -f -s $anetdir/aeronet.sorted .
+   #
+   # executer dbrda
+   #
+   echo "modis" > dbrda.tmp
+   # erreurs modis=0.05+0.2AOD
+   # erreurs aeronet=0.02
+   echo "0.05 0.2" >> dbrda.tmp
+   echo "aeronet" >> dbrda.tmp
+   echo "0.02 0" >> dbrda.tmp
+   dbrda < dbrda.tmp
+
+   #
+   #cd modis+aeronet.sorted
+   #echo "modis+aeronet" > modis+aeronet.tmp
+   #echo $an0 >> modis+aeronet.tmp
+   #echo $wavelen >> modis+aeronet.tmp
+   #lstdf < modis+aeronet.tmp
+
+   #
+   # completer le fichier .rdata pour en faire un repdata.par
+   #
+   echo "auto-nomad == Creating data assimilation input file: repdatas.par"
+   cd $anmodir/modis+aeronet.sorted
+   # compter le nombre de fichiers
+   nassim=`ls -1 *.pgm | grep -c ""`
+   echo "0" > repdatas.par
+   echo "0" >> repdatas.par
+   echo  $rootnominitial >> repdatas.par
+   echo "180" >> repdatas.par
+   echo "5" >> repdatas.par
+   echo "1" >> repdatas.par
+   echo "1" >> repdatas.par
+   echo $wave " 0 0 0 0 0 0 0 0 0 0 0 0 0" >> repdatas.par
+   echo "125" >> repdatas.par
+   echo "275" >> repdatas.par
+   echo "40" >> repdatas.par
+   echo "30" >> repdatas.par
+   echo "-160" >> repdatas.par
+   echo $lissage >> repdatas.par
+   echo $opto >> repdatas.par
+   echo $nassim >> repdatas.par
+   echo "1" >> repdatas.par
+   echo "0 0 0" $joi $moi $ani >> repdatas.par
+   cat modis+aeronet.rdata >> repdatas.par
+   cd $folder
+   rm -f repdatas.par
+   rm -f bgf-*.pgm
+   rm -f ana-*.pgm
+   ln -f -s $anmodir/modis+aeronet.sorted/repdatas.par .
+   ln -f -s $anmodir/modis+aeronet.sorted/*.pgm .
+   rdata
+   #
+   #  Completer jusqu a la fin du mois avec une prevision si necessaire
+   #
+   prevfile=`ls -1 ana-*.dat | tail -1`
+   grep -m 1 "Date" $prevfile > previs.tmp
+   read hpr mipr spr jpr mopr anpr bidon < previs.tmp
+   echo "1" > prev.in
+   echo $hpr $mipr $spr $jpr $mopr $anpr >> prev.in
+   echo $tf >> prev.in
+   echo "180" >> prev.in
+   echo "5" >> prev.in
+   echo "1" >> prev.in
+   echo "6" >> prev.in
+   echo $dlissage >> prev.in
+   echo $opto >> prev.in
+   echo "1" >> prev.in
+   echo $prevfile > root.tmp
+   sed -e 's/\.dat//g' root.tmp > root1.tmp
+   sed -e 's/ana-0//g' root1.tmp > root2.tmp
+   read rootininam < root1.tmp
+   read ininum < root2.tmp
+   let "initnum=ininum+1"
+   echo $rootininam >> prev.in
+   echo $initnum >> prev.in
+   echo "0" >> prev.in
+   freem < prev.in
+   mkdir modis+aeronet
+   rm -f *_c*
+   mv -f ana-* modis+aeronet 
+   mv -f bgf-* modis+aeronet
+   mv -f cor-* modis+aeronet
+   cp -f repdatas.par modis+aeronet
+   mv -f part* modis+aeronet
+   rm -f *pgm
+   rm -f bgd-*
+   #
+   # creer les AOD a toutes le longueurs d'ondes
+   #
+   cd modis+aeronet
+   ln -f -s ../*rhu . 
+   ln -f -s ../relhum.index . 
+   gzip -v -d ana*.dat.gz
+   gzip -v -d ana*.vis.gz 
+   gzip -v -d bgf*.dat.gz
+   gzip -v -d bgf*.vis.gz
+   chmod a-x ana*
+   chmod a-x bgf*
+   ls -1 ana-*.dat | sed 's/.dat//' > list1.tmp
+   ls -1 bgf-*.dat | sed 's/.dat//' > list2.tmp
+   list=`cat list1.tmp list2.tmp`
+   for i in $list
+   do echo $i > 3dtoaod.par
+      echo "newmnt0" >> 3dtoaod.par 
+      3dtoa 
+   done
+   gzip -v bgf*.dat
+   gzip -v bgf*.vis
+   gzip -v ana*.dat
+   gzip -v ana*.vis
+   # compression du fine
+   cd $folder/fine
+   gzip -v bgf*.dat
+   gzip -v bgf*.vis
+   gzip -v ana*.dat
+   gzip -v ana*.vis
+   cd $folder
+   echo "auto-nomad == FIN de l execution de NOMAD Level-3 pour: " $mois0"/"$an0
+   exit 0
+fi   

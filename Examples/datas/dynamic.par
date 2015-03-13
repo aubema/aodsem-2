@@ -1,0 +1,6 @@
+0   Number of data assimilation loops (0=no)
+datas1_i   Root name of the 1st init. distribution
+datas1_i  Root name of the 2nd init. distribution
+0 0 0 2 1 2000    Time of the distribution (hh mm ss dd mm yyyy)
+0   Fixed source inventory
+1   Activate wet removal (1=y,0=n)

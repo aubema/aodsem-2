@@ -1,0 +1,49 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                     compc                    *"
+echo "*                                              *"
+echo "*          Create a color composite            *"
+echo "*           from up to 3 pgm files             *"
+echo "*                                              *"
+echo "*     Martin Aube 2001                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+if [ -f compcolor.par ] 
+   then
+      echo " Reading parameter file."  
+   else
+      echo " No parameter file found!"
+      epar_compc
+fi
+ln -s ~/AODSEM/Nesfiles/worldmask.pbm worldmask.pbm
+ln -s ~/AODSEM/Bin/compcolor compcolor
+echo " Executing compcolor..."
+./compcolor
+echo " Deleting temporary files in " $folder
+rm -f compcolor
+rm -f worldmask.pbm
+echo " Converting ppm images to gif images..."
+convert compcolor.ppm temp.gif
+convert temp.gif compcolor.gif
+echo " Removing ppm images..."
+rm -f  *.ppm
+echo " Displaying output image."
+display compcolor.gif &
+echo "Save as (.gif will be add)?"
+read outf
+echo "sortie" $outf
+cp coloraod.gif $outf".gif"
+if [ -f core ] 
+   then   echo "******** An error occured during execution of compc! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of compc." 
+fi 
+

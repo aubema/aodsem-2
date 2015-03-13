@@ -1,0 +1,35 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                    tidif                     *"
+echo "*                                              *"
+echo "*       Compute correlation coefficient        *"
+echo "*               and a diffusiogram             *"
+echo "*            between two x-y file              *"
+echo "*                                              *"
+echo "*     Martin Aube 2001                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+if [ -f autocorcoef.par ] 
+   then   echo " Using existing input parameter file: autocorcoef.par"
+
+   else   epar_tidif   
+fi 
+echo " Preparing input files..."
+cp ~/AODSEM/Bin/autocorcoef $folder
+echo " Executing autocorcoef..."
+./autocorcoef
+echo " Deleting temporary files in " $folder
+rm -f autocorcoef
+if [ -f core ] 
+   then   echo "******** An error occured during execution of tidif! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of tidif." 
+fi 

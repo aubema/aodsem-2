@@ -1,0 +1,5 @@
+ 1 ** 1 = VERBOSE **
+  1  ** Aerosol shape**
+  0.00 180.00   5.00 ** i angle , f angle , delta **
+ 1  ** Polarisation state (1=//,2=_|_,3=random) **
+   1.03500 .10000E-01 ** Refractive index (a-ib) **

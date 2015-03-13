@@ -1,0 +1,45 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *              Edit parameter for chres               *"
+echo " *                                                     *"
+echo " *      Changing resolution of a aerosol 3D dist.      *"
+echo " *                                                     *"
+echo " *     Martin Aube 2003                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f chresol.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more chresol.par
+fi 
+ls *.dat
+echo " "
+echo " New parameters:"
+echo " "
+echo "Root name of the file (.dat will be added) ?"  
+read nom
+echo "Center latitude of the output south-west pixel in degrees?"
+read lat0in
+echo "Center longitude of the output south-west pixel in degrees?"
+read lon0in
+echo "Size of output cell in degrees?"
+read pixsizout
+echo "Number of cells along N-S axis?"
+read ncellx
+echo "Number of cells along E-W axis?"
+read ncelly
+
+
+echo $nom "   Root name of the file"  > chresol.par
+echo $lat0in "   Center latitude of the south-west pixel in degrees">> chresol.par
+echo $lon0in "   Center longitude of the south-west pixel in degrees">> chresol.par
+echo $pixsizout "   Size of output cell in degrees">> chresol.par
+echo $ncellx "   Number of cells along N-S axis">> chresol.par
+echo $ncelly "   Number of cells along E-W axis">> chresol.par
+
+echo "Done"

@@ -1,0 +1,5 @@
+ 1  ** 1 = AFFICHAGE **
+  1  ** Morphologie de l aerosol **
+   .00 180.00  1.00 ** angle i, angle f, delta **
+ 3  ** etat de polarisation (1=//,2=_|_,3=random) **
+   1.53000     .00660 ** indice de refraction (a-ib) **

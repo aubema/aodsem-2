@@ -1,0 +1,36 @@
+#!/bin/bash
+echo "speci == ************************************************"
+echo "speci == *                                              *"
+echo "speci == *                     speci                    *"
+echo "speci == *                                              *"
+echo "speci == *      Aerosol optical depth map spectral      *"
+echo "speci == *    interpolation from 2 initial aod maps     *"
+echo "speci == *                                              *"
+echo "speci == *     Martin Aube 2000                         *"
+echo "speci == *                                              *"
+echo "speci == ************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo "speci == Experiment directory "$folder
+if [ -f specint.par ] 
+   then   echo "speci == Using existing input parameter file: specint.par"
+
+   else   epar_speci   
+fi 
+ls *.pgm
+echo "speci == Preparing input files..."
+ln -s ~/AODSEM/Bin/specint specint
+echo "speci == Executing specint..."
+./specint
+echo "speci == Deleting temporary files in " $folder
+rm -f specint
+if [ -f core ] 
+   then   echo "speci ==  ******** An error occured during execution of speci! ********"
+   rm -f core
+   echo "speci == Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo "speci == Normal end of speci." 
+fi 
+

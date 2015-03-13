@@ -1,0 +1,31 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *                       flamb                         *"
+echo " *                                                     *"
+echo " *           Convert a FLAMBE emission file            *"
+echo " *                to AODSEM 3ds format                 *"
+echo " *                                                     *"
+echo " *     Martin Aube 2004                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+
+rm -f core
+echo " Experiment directory "$folder
+ln -s ~/AODSEM/Bin/flambe23ds flambe23ds
+echo " Executing flambe23ds..."
+
+./flambe23ds
+echo " Deleting temporary files in " $folder
+rm -f flambe23ds
+
+if [ -f core ] 
+   then   echo "******** An error occured during execution of flamb! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of flamb." 
+fi 

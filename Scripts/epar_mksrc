@@ -1,0 +1,105 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *           Edit parameter for makesource             *"
+echo " *                                                     *"
+echo " *              Compute source inventory               *"
+echo " *              for an AODSEM experiment               *"
+echo " *                                                     *"
+echo " *     Martin Aube 2003                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f makesource.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more makesource.par
+fi 
+cd $HOME/AODSEM/Nesfiles/
+l3ds=`ls -1 *.3ds |sed 's/@/ /g' | sed 's/*/ /g'`
+cd $folder
+for i in $l3ds
+do if [ -f $i ]
+   then echo "Skipping download of file: " $i
+   else  echo "Downloading " $i
+         ln -s $HOME/AODSEM/Nesfiles/$i .
+   fi
+done
+
+echo " "
+echo " New parameters:"
+echo " "
+echo "AODSEM run general properties"
+echo "Enter begining date for this AODSEM run."
+echo "HH MM SS JJ MM YYYY"
+read hh0 mm0 ss0 jj0 mo0 yy0
+echo "Enter ending date of the run."
+echo "HH MM SS JJ MM YYYY"
+read hhf mmf ssf jjf mof yyf
+if [ -f domain.par ] 
+   then
+      echo " Domain parameter file (domain.par) exist. Using the following values!"
+      echo  
+      read pixs ncellx ncelly lat0 lon0 < domain.par
+      echo " ==================================="
+      echo " Domain properties:"
+      echo " Number of N-S pixels= " $ncellx
+      echo " Number of E-W pixels= " $ncelly
+      echo " Pixel size in degrees= " $pixs
+      echo " Center latitude of the south-west pixel in degrees= " $lat0
+      echo " Center longitude of the south-west pixel in degrees= " $lon0
+      echo " ==================================="
+      echo
+   else
+      echo " No domain parameter file found!"
+      echo
+      echo " Domain properties:"
+      echo " Number of N-S pixels?"
+      read ncellx
+      echo " Number of E-W pixels?"
+      read ncelly
+      echo " Pixel size in 1/100th degrees?"
+      read pixs
+      echo " Center latitude of the south-west pixel in degrees?"
+      read lat0
+      echo " Center longitude of the south-west pixel in degrees?"
+      read lon0
+      echo $pixs $ncellx $ncelly $lat0 $lon0 > domain.par       
+fi
+#  charger les valeurs de domain.par dans les variables concernees    
+read pixs ncellx ncelly lat0 lon0 < domain.par
+#  convertir les 1/100th deg. en decimale
+let "ndegr=pixs/100"
+let "ndeci=(pixs-ndegr*100)/10"
+let "ncent=pixs-ndegr*100-ndeci*10"
+pixsiz=$ndegr"."$ndeci$ncent
+ls *.3ds
+
+echo $hh0 $mm0 $ss0 $jj0 $mo0 $yy0 "   begining date" >  makesource.par
+echo $hhf $mmf $ssf $jjf $mof $yyf "   ending date" >>  makesource.par
+echo $ncellx "   Number of N-S pixels" >>  makesource.par
+echo $ncelly "   Number of E-W pixels" >>  makesource.par
+echo $pixsiz "   Pixel size in degrees" >>  makesource.par
+echo $lat0 "   Center latitude of the south-west pixel in degrees" >>  makesource.par
+echo $lon0 "   Center longitude of the south-west pixel in degrees" >>  makesource.par
+
+echo "Number of 3ds source database files?"
+read nfile
+echo $nfile "   Number of 3ds source database files" >> makesource.par
+
+i=$nfile
+n=1
+while test $n -le $i
+do
+  echo "File name # " $n " (.3ds will be addes)?"
+  read filename
+  echo $filename".3ds" "   File name # " $n >> makesource.par 
+  let "n=n+1"
+done
+echo "Activate dynamical seasalt emission (1=yes, 0=no)?"
+read seasw
+echo $seasw "   Activate dynamical seasalt emission (1=yes, 0=no)" >> makesource.par
+echo "Done"

@@ -1,0 +1,46 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *           Edit parameter for timeseries             *"
+echo " *                                                     *"
+echo " *        Read aerosol optical depth maps values       *"
+echo " *            for some particular locations            *"
+echo " *                                                     *"
+echo " *     Martin Aube 2001                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f timeseries.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more timeseries.par
+fi 
+ls *.pgm
+echo " "
+echo " Number of pgm files?"
+read nfiles
+echo $nfiles > timeseries.par
+i=1
+while [ $i -le $nfiles ]
+do
+echo " File name #" $i "? (.pgm will be added)"
+read file
+echo $file >> timeseries.par
+let i=i+1
+done
+echo " Latitude of site?"
+read lat
+echo " Longitude of site?"
+read lon
+echo $lat $lon >> timeseries.par
+echo " Timestep (minute)?"
+read dt
+echo $dt >> timeseries.par
+echo " Starting date (HH MM SS DD MM YYYY)?"
+read hre min sec jou moi ann
+echo $hre $min $sec $jou $moi $ann >> timeseries.par
+
+echo "Done"

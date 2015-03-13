@@ -1,0 +1,29 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                    drawa                     *"
+echo "*                                              *"
+echo "*  Draw shapes on an aerosol optical depth map *"
+echo "*                                              *"
+echo "*    Martin Aube 2000                          *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+echo " Preparing input files..."
+ln -s ~/AODSEM/Bin/drawaod drawaod
+echo " Executing drawaod..."
+./drawaod
+echo " Deleting temporary files in " $folder
+rm -f drawaod
+if [ -f core ] 
+   then   echo "******** An error occured during execution of drawa! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of drawa." 
+fi 
+

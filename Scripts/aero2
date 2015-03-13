@@ -1,0 +1,101 @@
+#!/bin/bash
+echo "blb"
+echo "***********************************************"
+echo "*                                             *"
+echo "*                  aero2                      *"
+echo "*                                             *"
+echo "*           Prouduit des fichiers xyt         *"
+echo "*              a partir des donnees           *"
+echo "*                 d'aeronet                   *"
+echo "*                                             *"
+echo "*         Minh Nguyen 2004                    *"
+echo "*         et Martin Aubé 2004                 *"
+echo "*                                             *"
+echo "***********************************************"
+AODSEM_HOME=~
+folder=`pwd`
+echo $folder
+echo "A partir de quelle date les donnees doivent-elles"
+echo "etre transformees ? (HH MM SS JJ MM AAAA)"
+read hhi mii ssi jji mmi aaaai
+echo "Jusqu'a quelle date les donnees doivent-elles etre"
+echo "transformees ? (HH MM SS JJ MM AAAA)"
+read hhf mif ssf jjf mmf aaaaf
+echo "Les valeurs seront extraites à 00, 03, 06, 09, 12, 15, 18 and 21h UTC"
+echo "avec une tolérance de 30 min pour toute la période désirée."
+echo "Quel niveau d'aerosol voulez-vous utiliser ?"
+echo "(lev10 , lev15 , lev20)"
+read level
+echo "Dans quel repertoire se situent les fichiers ZIP AERONET?"
+read input
+#
+#Proprietes du domaine pour le pgm
+#
+echo "Cell size (deg.)?"
+read pixsiz
+echo "Lower left cell latitude?"
+read lat0
+echo "Lower left cell longitude?"
+read lon0
+echo "Number of cells along N-S axis?"
+read nlat
+echo "Number of cells along E-W axis?"
+read nlon
+#
+# execution de aero2xy
+#
+datei=$aaaai$mmi$jji$hhi$mii$ssi
+datef=$aaaaf$mmf$jjf$hhf$mif$ssf
+aero2xy -level=$level -outputdir=$folder -tinf=$datei -tsup=$datef $input/*.zip
+#
+# execution de xy2pgm
+#
+col=":"
+if [ $lon0 -lt 0 ]
+then let "lon0=lon0+360"
+fi
+a=$aaaai
+ while [ $a -le $aaaaf ]  
+do
+moisdelan="01 02 03 04 05 06 07 08 09 10 11 12"
+
+    for m in $moisdelan
+    do
+      place=$a.$m
+echo "Probing for "$place
+      if [ -d $level/$place ]
+    
+      then  echo "."
+lati=$lat0$col$pixsiz$col$nlat
+long=$lon0$col$pixsiz$col$nlon
+
+xy2pgm -lat=$lati -lon=$long -mp=3 $level/$place/*.AOT_*.xy 
+#
+#  production des autres longueurs d'ondes de AODSEM
+#
+for prefix in `ls $level/$place/*.380-500Angstrom.xy | cut -c-26`
+do
+   xy2pgm -lat=$lati -lon=$long -mp=3 $level/$place/$prefix.AOT_440.xy -ang=$level/$place/$prefix.380-500Angstrom.xy,470
+done
+for prefix in `ls $level/$place/*.500-870Angstrom.xy | cut -c-26`
+do
+   xy2pgm -lat=$lati -lon=$long -mp=3 $prefix.AOT_500.xy -ang=$prefix.500-870Angstrom.xy,550
+done
+for prefix in `ls $level/$place/*.440-870Angstrom.xy | cut -c-26`
+do
+   xy2pgm -lat=$lati -lon=$long -mp=3 $prefix.AOT_870.xy -ang=$prefix.440-870Angstrom.xy,860
+done
+for prefix in `ls $level/$place/*.500-870Angstrom.xy | cut -c-26`
+do
+   xy2pgm -lat=$lati -lon=$long -mp=3 $prefix.AOT_870.xy -ang=$prefix.500-870Angstrom.xy,940
+   xy2pgm -lat=$lati -lon=$long -mp=3 $prefix.AOT_1020.xy -ang=$prefix.500-870Angstrom.xy,1240
+   xy2pgm -lat=$lati -lon=$long -mp=3 $prefix.AOT_1020.xy -ang=$prefix.500-870Angstrom.xy,1640
+   xy2pgm -lat=$lati -lon=$long -mp=3 $prefix.AOT_1020.xy -ang=$prefix.500-870Angstrom.xy,2130
+done
+      fi
+    done
+let "a=a+1"
+  done
+
+echo "Fin normale de aero2"
+

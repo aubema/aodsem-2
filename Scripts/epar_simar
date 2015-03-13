@@ -1,0 +1,50 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *           Edit parameter for simplearit             *"
+echo " *                                                     *"
+echo " *              Compute aritmetics on an               *"
+echo " *             aerosol optical depth map               *"
+echo " *                                                     *"
+echo " *     Martin Aube 03-03-2000                          *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f simplearit.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more simplearit.par
+fi 
+ls *.pgm
+echo " "
+echo " New parameters:"
+echo " "
+
+echo "Choose an operation:"
+echo " "
+echo "   1 ..... +"
+echo "   2 ..... -"
+echo "   3 ..... x"
+echo "   4 ..... /"
+read oper
+echo "Output root file name (.pgm will be added)?"
+read date
+echo "Root name of file (.pgm will be added)?"
+read nom1
+echo "Numerical value?"
+read value
+echo "Replace negative values by 0 (1=yes, 0=no)?"
+read neg
+echo "Maximum numerical value (sugg. 65533)?"
+read limit
+
+echo $oper "   Operation" > simplearit.par
+echo $date "   Output root file name .pgm will be added" >> simplearit.par
+echo $nom1 "   Root name of file #1 .pgm will be added" >> simplearit.par
+echo $value "   Numerical value" >> simplearit.par
+echo $neg "   1=negative -> 0" >> simplearit.par
+echo $limit "   Limit" >> simplearit.par
+echo "Done"

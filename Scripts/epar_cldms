@@ -1,0 +1,40 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *             Edit parameter for cldms                *"
+echo " *                                                     *"
+echo " *       Apply the cloud mask to AOD pgm output        *"
+echo " *                                                     *"
+echo " *                                                     *"
+echo " *     Martin Aube 2003                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f cldms.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more cldms.par
+fi 
+ls *.pgm
+echo " "
+echo " New parameters:"
+echo " "
+
+
+
+echo "Output root file name (.pgm will be added)?"
+read nom
+echo "Root name of cloud mask file (.pgm will be added)?"
+read nom1
+echo "Root name of AOD file (.pgm will be added)?"
+read nom2
+
+
+
+echo $nom  $nom1 $nom2 > cldms.par
+
+
+echo "Done"

@@ -1,0 +1,40 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *          Edit parameter for 2aod2alpha            *"
+echo " *                                                     *"
+echo " *         Creation of an Angstrom coffficient         *"
+echo " *               image from 2 aod images               *"
+echo " *                                                     *"
+echo " *     Martin Aube 2003                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f 2aod2alpha.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more 2aod2alpha.par
+fi 
+ls *.pgm
+echo " "
+echo " New parameters:"
+echo " "
+echo " First AOD file root name?"
+read nom1
+echo " Second AOD file root name?" 
+read nom2 
+echo " First wavelenght (nm)?" 
+read wave1
+echo " Second wavelenght (nm)?" 
+read wave2
+echo " ALPHA output root name?" 
+read nomout
+echo $nom1 "   AOD root file name" > 2aod2alpha.par
+echo $nom2  "   ALPHA root file name" >> 2aod2alpha.par
+echo $wave1 "   wavelength #1 " >> 2aod2alpha.par
+echo $wave2 "   wavelength #2 " >> 2aod2alpha.par
+echo $nomout "   Output root file name .pgm will be added" >> 2aod2alpha.par
+echo "Done"

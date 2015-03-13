@@ -1,0 +1,41 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *             Edit parameter for geia2pgm             *"
+echo " *                                                     *"
+echo " *           Convert GEIA file output into             *"
+echo " *                   AODSEM pgm format                 *"
+echo " *                                                     *"
+echo " *     Martin Aube 2002                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f geia2pgm.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more geia2pgm.par
+fi 
+ls *
+echo " "
+echo " New parameters:"
+echo " "
+echo "GEIA file?"
+read nom0
+echo "File type? (0=annual,1=seasonal,2=monthly)"
+read type
+echo "Output root file name (.pgm will be added)?"
+read outf
+
+
+
+echo $nom0 "    GEIA file name" > geia2pgm.par
+echo $type "   File type (0=annual,1=seasonal,2=monthly)" >> geia2pgm.par
+echo $outf "   Output pgm file" >>  geia2pgm.par
+
+
+echo "Done"
+
+

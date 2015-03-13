@@ -1,0 +1,65 @@
+#!/bin/bash
+echo "*******************************************************"
+echo "*                                                     *"
+echo "*             Edit parameter for aodto3d              *"
+echo "*                                                     *"
+echo "*          Create an aerosol 3d distribution          *"
+echo "*       from an aerosol optical depth generated       *"
+echo "*            with interp.f from parse data            *"
+echo "*                                                     *"
+echo "*     Martin Aube 2000                                *"
+echo "*                                                     *"
+echo "*******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f newmnt1.res.bmi ] 
+   then   echo "Skipping .res.bmi files download"
+   else   echo "Downloading .res.bmi files"
+          ln -s $HOME/AODSEM/Nesfiles/*res.bmi .
+fi 
+if [ -f aodto3d.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more aodto3d.par
+fi 
+ls *.pgm
+echo " "
+echo " New parameters:"
+echo " "
+echo "Root name of the files?"  
+read nom
+echo "Wavelength of the aod map?"
+echo " "
+echo " 1 ..... 0.34 um"
+echo " 2 ..... 0.38 um"
+echo " 3 ..... 0.44 um"
+echo " 4 ..... 0.47 um"
+echo " 5 ..... 0.50 um"
+echo " 6 ..... 0.55 um"
+echo " 7 ..... 0.67 um"
+echo " 8 ..... 0.86 um"
+echo " 9 ..... 0.87 um"
+echo " 10 .... 0.94 um"
+echo " 11 .... 1.02 um"
+echo " 12 .... 1.24 um"
+echo " 13 .... 1.64 um"
+echo " 14 .... 2.13 um"
+read nwave
+echo "Time of the distribution (hh mm ss dd mm yyyy) ?"
+read heure minute seconde jour mois annee
+echo "Choose the vertical profile."
+echo " 1 ... AODSEM (PBL->exp, TROP->constant, STRAT->0)"
+echo " 2 ... Exponential of 2 km scale height"
+echo " 3 ... McClatchey 1971"
+read vertpro
+ls *.res.bmi
+echo "Root name of the cross section data base file (extension .res.bmi will be added)?"
+read crofile
+echo $nom "   Root name of the files"  > aodto3d.par
+echo $nwave "   Wavelength of the aod map">> aodto3d.par
+echo $heure $minute $seconde $jour $mois $annee "   Time of the distribution (hh mm ss dd mm yyyy)">> aodto3d.par
+echo $vertpro "   vertical profile">> aodto3d.par
+echo $crofile "   Root name of the cross section data base file">> aodto3d.par
+echo "Done"

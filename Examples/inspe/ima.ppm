@@ -1,0 +1,75 @@
+P3
+# aerosol optical depth ppm image from coloraod
+# min. = 0. , max. = 1.
+# first data correspond to pixel x=xmax
+# and y=1, the second , x=xmax, y=2 and so on.
+# x -> nord,  y -> est
+# autre details dans le fichier .html
+    11      6
+ 255
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0
+  0   0   0

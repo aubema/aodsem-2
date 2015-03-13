@@ -1,0 +1,15 @@
+Dans l'exemple present nous n'avons pas active les sources globales du GEIA et 
+les emissions de sels de mer + poussieres.  Seule une source ponctuelle a ete 
+simulee en injectant deux fois plus de masse en black carbon que de sulfate et 
+deux fois plus de organic carbon que de black carbon.
+
+
+Fichiers qui doivent etre presents:
+
+- wspeed.index  qui contient la liste datee des fichiers de vent 3D (utile pour les taux d'emissions des poussieres et des sels de mer)
+
+- *.wsp  les fichier qui sont listes dans wspeed.index
+
+executer epar_mksrc pour generer le fichier de parametres (makesource.par)
+
+executer mksrc pour produire la base de donnee de sources (fichiers *src.dat)

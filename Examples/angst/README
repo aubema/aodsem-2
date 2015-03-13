@@ -1,0 +1,11 @@
+Nom de la fonction: angst
+
+Commande d'edition de parametres: oui
+
+Utilite:   Extrapole une carte d'epaisseur optique vers une autre 
+longueur d'onde en supposant un coeff. d'angstrom de 1.3
+
+Entree: fichier de parametres angstrom.par, fichier .pgm initial (ici 
+numvol_0001500_01.pgm)
+
+Sortie: fichier _w.pgm (ici numvol_0001500_01_w.pgm)

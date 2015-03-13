@@ -1,0 +1,32 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                     echel                    *"
+echo "*                                              *"
+echo "*         Compute horizontal scale for         *"
+echo "*             a specific location              *"
+echo "*                                              *"
+echo "*     Martin Aube 2001                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+
+ln -s ~/AODSEM/Bin/echelle echelle
+echo " Executing echelle..."
+./echelle
+
+echo " Deleting temporary files in " $folder
+rm -f echelle
+
+if [ -f core ] 
+   then   echo "******** An error occured during execution of echel! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of echel." 
+fi 
+

@@ -1,0 +1,37 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                    writa                     *"
+echo "*                                              *"
+echo "*    Write aerosol optical depth map value     *"
+echo "*        for some particular locations         *"
+echo "*                                              *"
+echo "*    Martin Aube 2000                          *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+if [ -f writeaod.par ] 
+   then
+      echo " Readind parameter file."  
+   else
+      echo " No parameter file found!"
+      epar_writa
+fi 
+echo " Preparing input files..."
+ln -s ~/AODSEM/Bin/writeaod writeaod 
+echo " Executing writeaod..."
+./writeaod
+echo " Deleting temporary files in " $folder
+rm -f writeaod
+if [ -f core ] 
+   then   echo "******** An error occured during execution of writa! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of writa." 
+fi 
+

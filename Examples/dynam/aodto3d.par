@@ -1,0 +1,5 @@
+climato   Root name of the files
+5    Wavelength of the aod map
+00 00 00 00 00 0000   Time of the distribution (hh mm ss dd mm yyyy)
+1   vertical profile
+newdemo    Root name of the cross section data base file

@@ -1,0 +1,60 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*         Edit paramters for 23dar             *"
+echo "*                                              *"
+echo "*       Compute aritmetics on aerosol 3d       *"
+echo "*          distribution with operands          *"
+echo "*                store in pgm                  *"
+echo "*                                              *"
+echo "*     Jean-Denis Giguere 2004                  *"
+echo "*   on basis of Martin Aube script 3dari       *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f 23dar.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more 23dar.par
+fi 
+ls *.dat | more
+ls *.pgm | more
+echo " "
+echo " New parameters:"
+echo " "
+echo "Root name of file #1 (.dat will be added)?"
+read nom1
+echo "Root name of file #2 (.pgm will be added)?"
+read nom2
+echo "Choose an operation:"
+echo " "
+echo "   1 ..... +"
+echo "   2 ..... -"
+echo "   3 ..... x"
+echo "   4 ..... /"
+read oper
+echo "Set negative output to 0 (1=yes, 0=no)?"
+read neg
+echo "Which type of aerosol would you compute ? Specify lower and higher boundaries ( 1 5 for all)"
+read typi typf
+echo "Which bins would you compute ? Specify lower en higher boundaries (1 12 for all)"
+read sizi sizf
+echo "For which altitude would you compute ? Specify lower en higher boundaries (1 10 for all)"
+read alti altf
+echo "Output root file name (.dat will be added)?"
+read nom3
+
+
+echo $nom1 "   dat file #1" > 23dar.par
+echo $nom2 "   pgm file #2" >> 23dar.par
+echo $oper "   Operation" >> 23dar.par
+echo $typi " " $typf "   Type de particules a modifier" >> 23dar.par
+echo $sizi " " $sizf "   Taille de particules a modifier" >> 23dar.par
+echo $alti " " $altf "   Altitude a modifier" >> 23dar.par
+echo $nom3 "   Output root file name " >> 23dar.par
+echo $neg  "   Set negative output to 0 (1=yes, 0=no)" >> 23dar.par
+echo "Done"

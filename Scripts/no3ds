@@ -1,0 +1,31 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *                       no3ds                         *"
+echo " *                                                     *"
+echo " *                     Normalize a                     *"
+echo " *                   AODSEM 3ds format                 *"
+echo " *                                                     *"
+echo " *     Martin Aube 2004                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+
+rm -f core
+echo " Experiment directory "$folder
+ln -s ~/AODSEM/Bin/normaliz3ds normaliz3ds
+echo " Executing normaliz3ds..."
+
+./normaliz3ds
+echo " Deleting temporary files in " $folder
+rm -f normaliz3ds
+
+if [ -f core ] 
+   then   echo "******** An error occured during execution of no3ds! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of no3ds." 
+fi 

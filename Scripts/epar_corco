@@ -1,0 +1,40 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *              Edit parameter for corco               *"
+echo " *                                                     *"
+echo " *          Compute correlation coefficien t           *"
+echo " *                 from a x-y file                     *"
+echo " *                                                     *"
+echo " *     Martin Aube 2000                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f corcoef.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more corcoef.par
+fi 
+ls *.cxy
+echo " "
+echo " New parameters:"
+echo " "
+echo "Root name of the input file (.cxy will be added)?"  
+read nom
+echo " Name of the output file?"
+read refer 
+echo " Horizontal scale (0=linear, 1=log10)?"
+read xscal
+echo " Vertical scale (0=linear, 1=log10)?"
+read yscal
+
+echo $nom".cxy   Name of the input file"> corcoef.par
+echo $refer  "   Name of the output file">> corcoef.par
+echo $xscal "   horizontal scale 1=log10">> corcoef.par
+echo $yscal "   vertical scale 1=log10">> corcoef.par
+
+
+echo "Done"

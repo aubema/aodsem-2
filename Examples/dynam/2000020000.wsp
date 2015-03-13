@@ -1,0 +1,16 @@
+# Wind speed 3-d in m/s for AODSEM
+ 0 0 0 01 01 2000 Date                      (HH MM SS DD MM YYYY)
+ 1 Nb cells along N-S
+  50. S-N cell width
+ 1 Nb cells along E-W
+  50. W-E cell width
+ 1 Nb cells along Z
+  50000.
+  20.  320.  0. S-W lat lon Z
+ DATA
+# Axis: S-N  Units: m/s Level:  1
+  6.28066111  
+# Axis: W-E  Units: m/s Level:  1
+ -0.775362134 
+# Axis: Z    Units: m/s Level:  1
+ -2.68855038E-05 

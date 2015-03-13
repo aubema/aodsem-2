@@ -1,0 +1,17 @@
+Nom de la fonction: calib
+
+Commande d'edition de parametres: oui
+
+Utilite: Calibrer une carte d'AOD avec une serie de mesures
+ponctuelles.  Le programme procede a un fit par la methode
+des moindres carres entre les donnees de l'image correspondantes
+aux donnees ponctuelles (fonction de fit: proportionnel, lineaire,
+quadratique).
+
+Entree: Fichier de parametres (ici calibrate.par), fichier .pgm
+d'AOD (ici demo.pgm), fichier de donnees ponctuelles (ici mesures)
+
+Sortie: Fichier _nor.pgm calibre (ici demo_nor.pgm), fichier
+contenant les parametres de fit (ici demo_nor.fit).
+
+

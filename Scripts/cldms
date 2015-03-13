@@ -1,0 +1,36 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *                        cldms                        *"
+echo " *                                                     *"
+echo " *       Apply the cloud mask to AOD pgm output        *"
+echo " *                                                     *"
+echo " *                                                     *"
+echo " *     Martin Aube 2003                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+read outfil cloud aod < cldms.par
+
+echo "3    Operation" > simplearit.par
+echo "cloudtmp    Output root file name .pgm will be added" >> simplearit.par
+echo $cloud "   Root name of file #1 .pgm will be added" >> simplearit.par
+echo "1000    Numerical value" >> simplearit.par
+echo "1    1=negative -> 0" >> simplearit.par
+echo "65533    Limit" >> simplearit.par
+simar
+
+echo "1    Operation" > aodarit.par
+echo "1    Set negative output to 0 (1=yes, 0=no)" >> aodarit.par
+echo $outfil "    Output root file name .pgm will be added" >> aodarit.par
+echo "cloudtmp    Root name of file #1 .pgm will be added" >> aodarit.par
+echo $aod "    Root name of file #2 .pgm will be added" >> aodarit.par
+echo "65533    Limit" >> aodarit.par
+aodar
+
+echo " Normal end of cldms." 
+
+

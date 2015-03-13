@@ -1,0 +1,47 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *             Edit parameter for geia23ds             *"
+echo " *                                                     *"
+echo " *           Convert GEIA file output into             *"
+echo " *                   AODSEM 3ds format                 *"
+echo " *                                                     *"
+echo " *     Martin Aube 2003                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f geia23ds.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more geia23ds.par
+fi 
+ls *
+echo " "
+echo " New parameters:"
+echo " "
+echo "GEIA file?"
+read nom0
+echo "File type? (0=annual,1=seasonal,2=monthly)"
+read type
+echo "Aerosol type (1=su,2=bc,3=sd,4=ss,5=oc)?"
+read atype
+echo "Injection height (m)?"
+read height
+echo "Output root file name (.pgm will be added)?"
+read outf
+
+
+
+echo $nom0 "    GEIA file name" > geia23ds.par
+echo $type "   File type (0=annual,1=seasonal,2=monthly)" >> geia23ds.par
+echo $atype "   Aerosol type 1=su,2=bc,3=sd,4=ss,5=oc " >> geia23ds.par
+echo $height "   Injection height (m)" >> geia23ds.par
+echo $outf "   Output pgm file" >>  geia23ds.par
+
+
+echo "Done"
+
+

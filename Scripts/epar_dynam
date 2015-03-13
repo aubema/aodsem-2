@@ -1,0 +1,44 @@
+#!/bin/bash
+echo "*******************************************************"
+echo "*                                                     *"
+echo "*             Edit parameter for dynamic              *"
+echo "*                                                     *"
+echo "*      aerosol advection and sedimentation model      *"
+echo "*                                                     *"
+echo "*     Martin Aube 2000                                *"
+echo "*                                                     *"
+echo "*******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f dynamic.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more dynamic.par
+fi 
+ls *.dat
+echo " "
+echo " New parameters:"
+echo " "
+echo "Root name of the 1st init. distribution? (ext. .dat will be added.)"
+read nom1
+     echo "Use an emission inventory? (0=no, 1=yes)"
+     read fixsour
+echo "Enter the time and date for the output distribution."
+echo "HH MM SS DD MM YYYY"
+read heure minute seconde jour mois annee
+echo "Dynamical time step in minute (usually eq.to orbital period)?"
+read timestep
+echo "Activate wet removal? (0=no, 1=yes)"
+read pluie 
+echo "Buffer width in pixels?"
+read buffer
+
+echo $nom1 "   Root name of the 1st init. distribution"> dynamic.par
+echo $heure $minute $seconde $jour $mois $annee "   Time of the output (hh mm ss dd mm yyyy)">> dynamic.par
+echo $timestep "  Dynamical time step in minute" >> dynamic.par
+echo $fixsour "  Emission inventory (0=no, 1=yes)" >> dynamic.par
+echo $pluie " Activate wet removal (1=y,0=n) " >> dynamic.par 
+echo $buffer "    buffer width in pixels" >> dynamic.par
+echo "Done"

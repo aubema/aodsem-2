@@ -1,0 +1,16 @@
+# wind speed 3-d file
+ 12 00 00 01 01 2000  TU (hh mm ss), Date (jj mm yyyy)
+ 1                 Number of X cells
+ 50. 		   Largeur de la cellule en degres selon x 
+ 1                 Number of Y cells
+ 50.		   largeur de la cellule en degres selon y 
+ 1                 Number of Z cells
+ 50000.            largeur de la couche
+ 0. 0. 0. 	   Position du coin-cellule inferieur(e) gauche 
+DATA
+# Axis: S-N  Units: m/s Level: 1 
+ -2.5
+# Axis: W-E  Units: m/s Level: 1
+  2.5 
+# Axis: Z    Units: m/s Level: 1
+  0. 

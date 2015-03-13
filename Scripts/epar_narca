@@ -1,0 +1,50 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *         Edit parameter for narcmaod2aodsem          *"
+echo " *                                                     *"
+echo " *         Convert NARCM AOD file output into          *"
+echo " *                   AODSEM pgm format                 *"
+echo " *                                                     *"
+echo " *     Martin Aube 2002                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f narcmaod2aodsem.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more narcmaod2aodsem.par
+fi 
+ls *
+echo " "
+echo " New parameters:"
+echo " "
+echo "NARCM ASCII aod file name?"
+read nom0
+echo "Date of the first dataset (HH MM SS JJ MM YYYY)?"
+read hh0 mm0 ss0 jj0 mo0 yy0
+echo "Date of the last dataset (HH MM SS JJ MM YYYY)?"
+read hhf mmf ssf jjf mof yyf
+echo "Time interval between each NARCM files (hour) ?"
+read dh
+echo "Latitude of the S-W cell?"
+read xcell0
+echo "Longitude of the S-W cell?"
+read ycell0
+
+
+echo $nom0 "    First NARCM AOD file name" > narcmaod2aodsem.par
+echo $hh0 $mm0 $ss0 $jj0 $mo0 $yy0 "   First date (HH MM SS JJ MM YYYY)" >> 
+narcmaod2aodsem.par
+echo $hhf $mmf $ssf $jjf $mof $yyf "   Last date (HH MM SS JJ MM YYYY)" >>  
+narcmaod2aodsem.par
+echo $dh "   Time interval between each NARCM files (hour)" >>  
+narcmaod2aodsem.par
+echo $xcell0 $lon "   Latitude of the S-W cell" >>  narcmaod2aodsem.par
+echo $ycell0 $lon "   Longitude of the S-W cell" >>  narcmaod2aodsem.par
+
+echo "Done"
+

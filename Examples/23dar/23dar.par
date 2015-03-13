@@ -1,0 +1,9 @@
+numvol_0001   "Fichier .dat qui sera modifie"
+test  "Fichier .pgm qui contient les operandes"
+1   "Operateurs : 1 +    2 -     3 x     4 /"
+1 5 "Type de particules a modifier"
+1 12 "Taille de particules a modifier"
+1 10 "Altitude a modifier"
+datplus    "Fichier .dat de sortie"
+0    "Remplacer les valeurs negatives par 0 (1=oui, 0=non)
+

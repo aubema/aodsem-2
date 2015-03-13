@@ -1,0 +1,37 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *             Edit parameter for 3dtoaod              *"
+echo " *                                                     *"
+echo " *     Creating aerosol optical depth maps from 3-D    *"
+echo " *             aerosol distribution model.             *"
+echo " *                                                     *"
+echo " *     Martin Aube 2000                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f newmnt1.res.bmi ] 
+   then   echo "Skipping .res.bmi files download"
+   else   echo "Downloading .res.bmi files"
+          ln -s $HOME/AODSEM/Nesfiles/*res.bmi .
+fi 
+if [ -f 3dtoaod.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more 3dtoaod.par
+fi 
+ls *.dat
+echo " "
+echo " New parameters:"
+echo " "
+echo "Root name of the files (ext .dat and .vis will be added) ?"  
+read nom
+ls *.res.bmi
+echo "Root name of the cross section data base file (extension .res.bmi will be added)?"
+read crofile
+echo $nom "   Root name of the files (ext .dat and .vis will be added)"  > 3dtoaod.par
+echo $crofile "   Root name of the cross section data base file (extension .res.bmi will be added)">> 3dtoaod.par
+echo "Done"

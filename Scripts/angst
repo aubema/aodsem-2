@@ -1,0 +1,37 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                    angst                     *"
+echo "*                                              *"
+echo "*      Aerosol optical depth map spectral      *"
+echo "*                 interpolation                *"
+echo "*                                              *"
+echo "*     Martin Aube 2000                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+if [ -f angstrom.par ] 
+   then
+      echo " Reading parameter file."  
+   else
+      echo " No parameter file found!"
+      epar_angst
+fi 
+echo " Preparing input files..."
+ln -s ~/AODSEM/Bin/angstrom angstrom
+echo " Executing angstrom..."
+./angstrom
+echo " Deleting temporary files in " $folder
+rm -f angstrom
+if [ -f core ] 
+   then   echo "******** An error occured during execution of angst! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of angst." 
+fi
+

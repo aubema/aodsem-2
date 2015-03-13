@@ -1,0 +1,16 @@
+#!/bin/bash
+# convert 2001 GEM file header into previous format
+# this script was written in order to render the new format provided by the canadian
+# meteorological center compatible with the previous one which is comprehensible by
+# the script gem22
+# 
+# Usage: just type gem_virgule2 in a directory and all asc files will be convert
+#
+#  copyright Martin Aube 2005
+#
+list=`ls -1 *asc`
+for name in $list
+   do  echo $name
+#      sed 's/,/ \n /g' $name | sed 's/&PDFPARAM/&PDFPARAM \n/g'| sed 's/ *$//' | sed '/LEVEL2/d' |  sed 's/START_DATA/\n \/ \n START_DATA\n/' | sed 's/END_DATA/\n END_DATA\n/' | sed '/./!d' | sed 's/   / /g' | sed 's/  / /g' > $name"_c"
+tr -d '\n' < $name | sed 's/\/START_DATA/\n \/ \n START_DATA \n/g' | sed 's/PDFPARAM/\nPDFPARAM/g' | sed 's/END_DATA/\n END_DATA \n/g' | sed 's/ VARIABLE/\n VARIABLE/g' | sed 's/ NATURE/\n NATURE/g' | sed 's/ STAMP/\n STAMP/g'   | sed 's/ UNITS/\n UNITS/g'   | sed 's/ DATE/\n DATE/g'    | sed 's/ TIME/\n TIME/g' | sed 's/ STEPNO/\n STEPNO/g'  | sed 's/ LEVEL/\n LEVEL/g'  | sed 's/ VERTCOORD/\n VERTCOORD/g'   | sed 's/ NI/\n NI/g'  | sed 's/ NJ/\n NJ/g' | sed 's/ NK/\n NK/g'   | sed 's/ MAPPRO/\n MAPPRO/g' | sed 's/ MAPRO/\n MAPRO/g'  | sed 's/ XPOLE/\n XPOLE/g'  | sed 's/ YPOLE/\n YPOLE/g'  | sed 's/ MESH/\n MESH/g' | sed 's/ SWL/\n SWL/g'  | sed 's/ BASE/\n BASE/g'  | sed 's/ FORM/\n FORM/g' | sed 's/ DIGITS/\n DIGITS/g' | sed 's/ MIN/\n MIN/g' | sed 's/ MAX/\n MAX/g'  | sed 's/ DATYP/\n DATYP/g' | sed 's/ NBITS/\n NBITS/g' | sed 's/ IPDESC/\n IPDESC/g'   | sed 's/ MAPDESC/\n MAPDESC/g'           > $name"_c"
+   done

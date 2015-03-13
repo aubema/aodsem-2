@@ -1,0 +1,13 @@
+climato   Root name of the file
+5   Pixel size in degrees
+-87.5   Center latitude of the south-west pixel in degrees
+182.5   Center longitude of the south-west pixel in degrees
+5   Interpolating window size in degrees
+0   Interpolating function
+1   Activate interpolating box size optimization (no=0, yes=1)
+0.5    Size of output cell in degrees
+6    Number of cells along N-S axis
+12    Number of cells along E-W axis
+33    Center latitude of the south-west cell
+267    Center longitude of the south-west cell
+254   default value

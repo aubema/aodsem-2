@@ -1,0 +1,2513 @@
+#!/usr/bin/wish
+#
+###################################################################
+#
+# GLOBAL VARIABLES
+#
+global folder; 
+global widget; 
+global dir;
+global filtre;
+image create photo logo -file [file join ~/AODSEM/Nesfiles/aodsemCC.gif]
+image create photo aodsmall -file [file join ~/AODSEM/Nesfiles/aodsemCC_small.gif]
+
+set dir [pwd]
+set folder [pwd]
+set filtre *
+proc {Window} {args} {
+global vTcl
+    set cmd [lindex $args 0]
+    set name [lindex $args 1]
+    set newname [lindex $args 2]
+    set rest [lrange $args 3 end]
+    if {$name == "" || $cmd == ""} {return}
+    if {$newname == ""} {
+        set newname $name
+    }
+    set exists [winfo exists $newname]
+    switch $cmd {
+        show {
+            if {$exists == "1" && $name != "."} {wm deiconify $name; return}
+            if {[info procs vTclWindow(pre)$name] != ""} {
+                eval "vTclWindow(pre)$name $newname $rest"
+            }
+            if {[info procs vTclWindow$name] != ""} {
+                eval "vTclWindow$name $newname $rest"
+            }
+            if {[info procs vTclWindow(post)$name] != ""} {
+                eval "vTclWindow(post)$name $newname $rest"
+            }
+        }
+        hide    { if $exists {wm withdraw $newname; return} }
+        iconify { if $exists {wm iconify $newname; return} }
+        destroy { if $exists {destroy $newname; return} }
+    }
+}
+#
+#
+proc vTclWindow. {base} {
+    if {$base == ""} {
+        set base .
+    }
+#
+#   CREATING WIDGETS
+#
+    wm focusmodel $base passive
+    wm geometry $base 1x1+1271+49
+    wm maxsize $base 1265 994
+    wm minsize $base 1 1
+    wm overrideredirect $base 0
+    wm resizable $base 1 1
+    wm iconify $base
+    wm title $base "vt.tcl"
+}
+################################################################
+#
+#   Fenetre INFO
+#
+proc vTclWindow.top31 {base} {
+    if {$base == ""} {
+        set base .top31
+    }
+    if {[winfo exists $base]} {
+        wm deiconify $base; return
+    }
+#
+#   CREATING WIDGETS
+#
+    toplevel $base -class AODSEM  -background #bbbbbb \
+       -highlightbackground #bbbbbb  -highlightcolor #000000 
+    wm focusmodel $base passive
+    wm geometry $base 300x239+150+150
+    wm maxsize $base 1265 994
+    wm minsize $base 1 1
+    wm overrideredirect $base 0
+    wm resizable $base 1 1
+    wm title $base "Info"
+    frame $base.fra37  -background #bbbbbb -borderwidth 2 -height 75 \
+       -highlightbackground #bbbbbb -highlightcolor #000000 \
+       -relief groove  -width 125 
+    label $base.fra37.lab44 -background #bbbbbb -borderwidth 1 \
+       -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+       -foreground #000000 -highlightbackground #bbbbbb \
+       -highlightcolor #000000 -text {Aerosol Optical Depth} 
+    label $base.fra37.lab45 -background #bbbbbb -borderwidth 1 \
+       -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+       -foreground #000000 -highlightbackground #bbbbbb \
+       -highlightcolor #000000 -text {Spatio-temporal Evolution} 
+    label $base.fra37.lab46 -background #bbbbbb -borderwidth 1 \
+       -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+       -foreground #000000 -highlightbackground #bbbbbb \
+       -highlightcolor #000000 -text Model 
+    label $base.fra37.lab47 -background #bbbbbb -borderwidth 1 \
+       -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+       -foreground #000000 -highlightbackground #bbbbbb \
+       -highlightcolor #000000 -text {(AODSEM V2.0)} 
+    label $base.fra37.lab48 -background #bbbbbb -borderwidth 1 \
+       -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+       -foreground #000000 -highlightbackground #bbbbbb \
+       -highlightcolor #000000 -text {copyright Martin Aubé 2003} 
+    label $base.fra37.lab49 -background #bbbbbb -borderwidth 1 \
+       -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+       -foreground #000000 -highlightbackground #bbbbbb \
+       -highlightcolor #000000 -text {aubema@collegesherbrooke.qc.ca}
+    label $base.fra37.lab50 -background #bbbbbb -borderwidth 1 \
+       -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+       -foreground #000000 -highlightbackground #bbbbbb \
+       -highlightcolor #000000 -text {http://www.graphycs.qc.ca/martinaube.html}
+    label $base.fra37.img1 -background #bbbbbb -borderwidth 1 \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -image logo -text label 
+
+#
+#   SETTING GEOMETRY
+#
+#
+# Logo        
+#
+    place $base.fra37.img1 \
+        -x 120 -y 10  -anchor nw -bordermode ignore      
+        
+    place $base.fra37  -x 5 -y 5 -width 290 -height 230 -anchor nw \
+       -bordermode ignore 
+    place $base.fra37.lab44  -x 56 -y 65 -width 176 -height 18 -anchor nw \
+       -bordermode ignore 
+    place $base.fra37.lab45  -x 68 -y 80 -anchor nw -bordermode ignore 
+    place $base.fra37.lab46  -x 128 -y 95 -anchor nw -bordermode ignore 
+    place $base.fra37.lab47  -x 98 -y 115 -anchor nw -bordermode ignore 
+    place $base.fra37.lab48  -x 65 -y 165 -anchor nw -bordermode ignore 
+    place $base.fra37.lab49  -x 55 -y 185 -anchor nw -bordermode ignore
+    place $base.fra37.lab50  -x 23 -y 205 -anchor nw -bordermode ignore
+}
+
+
+#####################################################################
+#
+#   Fenetre principale
+#
+proc vTclWindow.top01 {base} {
+    set folder [pwd]
+    if {$base == ""} {
+        set base .top01
+    }
+    if {[winfo exists $base]} {
+        wm deiconify $base; return
+    }
+#
+#  
+#
+#
+#   geometrie de la fenetre principale
+#    
+#
+# CREATING WIDGETS
+#
+    toplevel $base -class AODSEM \
+        -background #bbbbbb -borderwidth 4 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 
+    wm focusmodel $base passive
+    wm geometry $base 385x240+483+382
+    wm maxsize $base 1265 994
+    wm minsize $base 1 1
+    wm overrideredirect $base 0
+    wm resizable $base 0 0
+    wm deiconify $base
+    wm title $base "AODSEM CONTROL CENTER V2.0"
+#
+#   cadres de fond
+#    
+    frame $base.cadre01 \
+        -background #bbbbbb -borderwidth 2 -height 75 \
+        -highlightbackground #bbbbbb -highlightcolor #000000 -relief groove \
+        -width 125 
+    frame $base.cadre02 \
+        -background #bbbbbb -borderwidth 2 -height 75 \
+        -highlightbackground #bbbbbb -highlightcolor #000000 -relief groove \
+        -width 125 
+    frame $base.cadre03 \
+        -background #bbbbbb -borderwidth 2 -height 75 \
+        -highlightbackground #bbbbbb -highlightcolor #000000 -relief groove \
+        -width 125 
+#
+#   menu service
+#
+    menubutton $base.menu91 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -menu $base.menu91.m -padx 4 -pady 3 \
+        -relief flat -text {Services} -underline 0
+    menu $base.menu91.m \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb -cursor {} \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.menu91.m add command \
+        -label {DOY <-> DATE}   \
+        -command {exec konsole -e 2doy2 &}  
+    $base.menu91.m add command \
+        -label {Get pixel size}   \
+        -command {exec konsole -e echel &}
+    $base.menu91.m add command \
+        -label {Compute buffer size}   \
+        -command {exec konsole -e bufsi &}
+    $base.menu91.m add command \
+        -label {Remove dead links}   \
+        -command {exec konsole -e rmdln &}
+############################################################
+#
+#   menu packages
+#
+    menubutton $base.menu92 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -menu $base.menu92.m -padx 4 -pady 3 \
+        -relief flat -text {Packages} -underline 0
+    menu $base.menu92.m \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb -cursor {} \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.menu92.m add cascade \
+        -label {Fire tools} -menu $base.menu92.m.fire
+    menu $base.menu92.m.fire \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000
+    $base.menu92.m add cascade \
+        -label {Spectroscopy} -menu $base.menu92.m.spec
+    menu $base.menu92.m.spec \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000
+#
+# convert Jeff Reid's flambe goes fire produt to ABBA E. Prins file format
+#
+    $base.menu92.m.fire add cascade \
+        -label {Convert Reid's ABBA to Prins's ABBA} -menu $base.menu92.m.fire.reid
+    menu $base.menu92.m.fire.reid \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.menu92.m.fire.reid add command \
+        -command {exec konsole -e epar_reid2 &} -label {Edit parameters}
+    $base.menu92.m.fire.reid add command \
+        -command {exec konsole -e reid2 &} -label {Execute reid2} 
+
+
+#----------------------------
+# lavoue to 3ds
+#
+    $base.menu92.m.fire add cascade \
+        -label {Lavoue -> 3ds} -menu $base.menu92.m.fire.lavou 
+    menu $base.menu92.m.fire.lavou \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.menu92.m.fire.lavou add command \
+        -command {exec konsole -e epar_lavou &} -label {Edit parameters} \
+        -state active 
+    $base.menu92.m.fire.lavou add command \
+        -command {exec konsole -e lavou &} -label {Execute lavou} 
+
+#----------------------------
+# flambe to 3ds
+#
+    $base.menu92.m.fire add cascade \
+        -label {FLAMBE -> 3ds} -menu $base.menu92.m.fire.flamb
+    menu $base.menu92.m.fire.flamb \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.menu92.m.fire.flamb add command \
+        -command {exec konsole -e epar_flamb &} -label {Edit parameters} \
+        -state active 
+    $base.menu92.m.fire.flamb add command \
+        -command {exec konsole -e flamb &} -label {Execute flamb}
+
+#----------------------------
+# atsr et Lavoue to 3ds
+#
+    $base.menu92.m.fire add cascade \
+        -label {ATSR & Lavoue -> daily 3ds} -menu $base.menu92.m.fire.atsrl
+    menu $base.menu92.m.fire.atsrl \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.menu92.m.fire.atsrl add command \
+        -command {exec konsole -e epar_atsrl &} -label {Edit parameters} \
+        -state active 
+    $base.menu92.m.fire.atsrl add command \
+        -command {exec konsole -e atsrl &} -label {Execute atsrl}
+
+#----------------------------
+# Large fire database (service canadien des forets) to 3ds
+#
+    $base.menu92.m.fire add cascade \
+        -label {Canadian Large Fire Database & Lavoue -> daily 3ds} -menu $base.menu92.m.fire.lfd
+    menu $base.menu92.m.fire.lfd \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.menu92.m.fire.lfd add command \
+        -command {exec konsole -e epar_lfd23 &} -label {Edit parameters} \
+        -state active 
+    $base.menu92.m.fire.lfd add command \
+        -command {exec konsole -e lfd23 &} -label {Execute lfd23}
+#----------------------------
+# fitting de gaussiennes
+#
+    $base.menu92.m.spec add cascade \
+        -label {Multiple gaussian and polynomial fitting} -menu $base.menu92.m.spec.gf
+    menu $base.menu92.m.spec.gf \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.menu92.m.spec.gf add command \
+        -command {exec konsole -e epar_gfabb &} -label {Edit parameters} \
+        -state active 
+    $base.menu92.m.spec.gf add command \
+        -command {exec konsole -e gfaba &} -label {Auto detect fitting}
+    $base.menu92.m.spec.gf add command \
+        -command {exec konsole -e gfbba &} -label {Semi-automatic fitting}
+
+#########################################################
+#
+#   champ d entree/affichage du repertoire et scrollbar
+#
+set folder blabla
+    entry $base.input01 -xscrollcommand "$base.scroll01 set"\
+        -background #ffffff -borderwidth 1 \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 -highlightbackground #cacaca \
+        -highlightcolor #000000 -selectbackground #cd853f \
+        -selectforeground #fefefe  -textvariable folder
+    scrollbar $base.scroll01 -relief sunken -orient horiz \
+        -activebackground #bbbbbb -background #bbbbbb \
+        -highlightbackground #bbbbbb -highlightcolor #000000 -orient horiz \
+        -troughcolor #808080 \
+        -command "$base.input01 xview"
+#       
+    label $base.label01 \
+        -background #bbbbbb -borderwidth 1 \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -text {Select a working folder} 
+#
+#   bouton pour rafraichir le champ d entree/affichage et le browser
+#        
+    button $base.button01 \
+        -activebackground #66ff66 -activeforeground #000000 \
+        -background #bbbbbb \
+        -command {  
+           cd $folder
+           refresh $folder $filtre
+           raise .top26 } \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -padx 9 -pady 3 \
+        -text {Refresh AODSEM browser}
+    button $base.button02 \
+        -activebackground #66ff66 -activeforeground #000000 \
+        -background #bbbbbb -command {Window show .top31
+                                      raise .top31} \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -padx 9 -pady 3 -text Info 
+    button $base.button03 \
+        -activebackground #66ff66 -activeforeground #000000 \
+        -background #bbbbbb -command {Window show .top26
+                                      raise .top26} \
+         -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -padx 9 -pady 3 -text Browse 
+    button $base.button04 \
+        -activebackground #66ff66 -activeforeground #000000 \
+        -background #bbbbbb -command {exec infor &} \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -padx 9 -pady 3 -text Help 
+    button $base.button05 \
+        -activebackground #ff4444 -activeforeground #000000 \
+        -background #bbbbbb -command exit \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -padx 9 -pady 3 -text Exit
+    button $base.button05a \
+        -activebackground #ff4444 -activeforeground #000000 \
+        -background #bbbbbb -command {exec aoda6.tcl & }\
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -padx 9 -pady 3 -text Wizard/Assistant         
+    button $base.button06 \
+        -activebackground #66ff66 -activeforeground #000000 \
+        -background #bbbbbb -command {cd 
+                                     set folder [pwd]
+                                     refresh $folder $filtre
+                                     } \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -padx 9 -pady 3 -text Home         
+
+
+
+
+##############################################################################
+#
+#   Aeroprop
+#  
+#      
+    menubutton $base.menu01 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -menu $base.menu01.m -padx 4 -pady 3 \
+        -relief flat -text {Micro-physical} -underline 0
+    menu $base.menu01.m \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb -cursor {} \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.menu01.m add cascade \
+        -label {Particle Size Distribution} -menu $base.menu01.m.menu02 
+    $base.menu01.m add cascade \
+        -label {Interactive Mie's computations} -menu $base.menu01.m.menu03 
+    $base.menu01.m add command \
+        -command {exec konsole -e bmies &} \
+        -label {Multiple size-bin, aerosol type and relative humidity \
+         Mie's computations} 
+    $base.menu01.m add command \
+        -command {exec konsole -e humgr &} \
+        -label {Create a relative humidity growth file} 
+    menu $base.menu01.m.menu02 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.menu01.m.menu02 add command \
+        -command {exec konsole -e mkpsd &} -label {Make PSD file} 
+    $base.menu01.m.menu02 add command \
+        -command {exec konsole -e cmbps &} -label {Combine 2 PSD files} 
+    menu $base.menu01.m.menu03 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.menu01.m.menu03 add command \
+        -command {exec konsole -e mkimi &} \
+        -label {Edit input file} 
+    $base.menu01.m.menu03 add command \
+        -command {exec konsole -e imies &} -label {Execute imies}
+    $base.menu01.m add command \
+        -command {exec konsole -e op2na &} \
+        -label {Convert optical data from AODSEM to NARCM format}
+    $base.menu01.m add command \
+        -command {exec konqueror ~/AODSEM/Doc/mie.html &} \
+        -label {Help}  
+########################################################################
+#
+#   Mapping functions
+#
+#        
+    menubutton $base.menu04 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -menu $base.menu04.m -padx 4 -pady 3 \
+        -relief flat -text {Mapping} -underline 0
+    menu $base.menu04.m \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb -cursor {} \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000        
+#--------------------------------------------------------------
+#    Apply a buffer mask to an image
+#  
+    $base.menu04.m add cascade \
+        -label {Apply a buffer mask image} \
+        -menu $base.menu04.m.menu75       
+     menu $base.menu04.m.menu75 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000   
+    $base.menu04.m.menu75 add command \
+        -command {exec konsole -e epar_buffe &} -label {Edit parameters}
+    $base.menu04.m.menu75 add command \
+        -command {exec konsole -e buffe &} -label {Execute buffe} 
+#--------------------------------------------------------------
+#    Apply a random buffer mask to an image
+#  
+    $base.menu04.m add cascade \
+        -label {Apply a random mask to an image} \
+        -menu $base.menu04.m.menu76       
+     menu $base.menu04.m.menu76 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000   
+    $base.menu04.m.menu76 add command \
+        -command {exec konsole -e epar_randm &} -label {Edit parameters}
+    $base.menu04.m.menu76 add command \
+        -command {exec konsole -e randm &} -label {Execute randm} 
+
+
+#-----------------------------------------------------------------
+#   Create an empty AOD map
+#
+    $base.menu04.m add command \
+        -command {exec konsole -e nodat &} \
+        -label {Create an empty AOD map}  
+#---------------------------------------------------------------
+#   Create an AOD map from lat-lon-AOD file
+#      
+    $base.menu04.m add command \
+        -command {exec konsole -e xytto &} \
+        -label {Create an AOD map from lat-lon-AOD file}  
+#--------------------------------------------------------------
+#   Read values on a AOD map
+#   
+    $base.menu04.m add cascade \
+        -label {Read values on a AOD map} -menu $base.menu04.m.menu08  
+    menu $base.menu04.m.menu08 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000         
+    $base.menu04.m.menu08 add command \
+        -command {exec konsole -e epar_reada &} -label {Edit parameters}  
+    $base.menu04.m.menu08 add command \
+        -command {exec konsole -e reada &} \
+        -label {Execute reada}   
+#----------------------------------------------------------------
+#   Write AOD values on a AOD map
+#     
+    $base.menu04.m add cascade \
+        -label {Write AOD values on a AOD map} -menu $base.menu04.m.menu09
+    menu $base.menu04.m.menu09 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000         
+    $base.menu04.m.menu09 add command \
+        -command {exec konsole -e epar_writa &} -label {Edit parameters}
+    $base.menu04.m.menu09 add command \
+        -command {exec konsole -e writa &} \
+        -label {Execute writa}    
+#------------------------------------------------------------------
+#   Extract time series from a set of aod maps
+#
+    $base.menu04.m add cascade \
+        -label {Extract time series} -menu $base.menu04.m.menu089
+    menu $base.menu04.m.menu089 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000         
+    $base.menu04.m.menu089 add command \
+        -command {exec konsole -e epar_timse &} -label {Edit parameters}
+    $base.menu04.m.menu089 add command \
+        -command {exec konsole -e timse &} \
+        -label {Execute timse}    
+#----------------------------------------------------------------
+#   Composite images
+# 
+    $base.menu04.m add cascade \
+        -label {Composite AOD images} -menu $base.menu04.m.menu07
+    menu $base.menu04.m.menu07 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000         
+    $base.menu04.m.menu07 add command \
+        -command {exec konsole -e epar_compo &} -label {Edit parameters}
+    $base.menu04.m.menu07 add command \
+        -command {exec konsole -e compo &} \
+        -label {Execute compo}     
+#----------------------------------------------------------------
+#   1 image aritmetics
+#      
+    $base.menu04.m add cascade \
+        -label {1 image aritmetics} -menu $base.menu04.m.menu16        
+    menu $base.menu04.m.menu16 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.menu04.m.menu16 add command \
+        -command {exec konsole -e epar_simar &} -label {Edit parameters} \
+        -state active 
+    $base.menu04.m.menu16 add command \
+        -command {exec konsole -e simar &} -label {Execute simar}  
+#-----------------------------------------------------------------
+#   2 images aritmetics  
+#
+    $base.menu04.m add cascade \
+        -label {2 images aritmetics} -menu $base.menu04.m.menu15          
+    menu $base.menu04.m.menu15 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.menu04.m.menu15 add command \
+        -command {exec konsole -e epar_aodar &} -label {Edit parameters} \
+        -state active 
+    $base.menu04.m.menu15 add command \
+        -command {exec konsole -e aodar &} -label {Execute aodar} 
+# ---------------------------------------
+# Create a sorted list of a set of AOD pgm files
+#
+    $base.menu04.m add command \
+        -command {exec konsole -e lstdf &} \
+        -label {Create a sorted AOD map list}  
+# ---------------------------------------
+# Combine two AOD sorted data list into on using comba
+# and create the output file list for rdata
+#
+    $base.menu04.m add command \
+        -command {exec konsole -e dbrda &} \
+        -label {Combine two sorted AOD map list using comba}
+
+#------------------------------------------------------------
+#  combine and interpolate up to 4 aod maps taking into account for
+#  errors 
+#            
+    $base.menu04.m add cascade \
+        -label {Combine observation maps} -menu $base.menu04.m.menu061
+    menu $base.menu04.m.menu061 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000   
+    $base.menu04.m.menu061 add command \
+        -command {exec konsole -e epar_comba &} -label {Edit parameters}
+    $base.menu04.m.menu061 add command \
+        -command {exec konsole -e comba &} -label {Execute comba} 
+
+
+#------------------------------------------------------------
+#   Resample a map  spatial interpolation
+#            
+    $base.menu04.m add cascade \
+        -label {Spatial interpolator} -menu $base.menu04.m.menu06
+    menu $base.menu04.m.menu06 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000   
+    $base.menu04.m.menu06 add command \
+        -command {exec konsole -e epar_inter &} -label {Edit parameters}
+    $base.menu04.m.menu06 add command \
+        -command {exec konsole -e inter &} -label {Execute inter} 
+#--------------------------------------------------------------
+#   spectral extrapolation constant alpha
+#
+    $base.menu04.m add cascade \
+        -label {Spectral extrapolation (const. angst. coeff.} -menu $base.menu04.m.menu14 
+    menu $base.menu04.m.menu14 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.menu04.m.menu14 add command \
+        -command {exec konsole -e epar_angst &} -label {Edit parameters} 
+    $base.menu04.m.menu14 add command \
+        -command {exec konsole -e angst &} -label {Execute angst}
+#-------------------------------------------------------------
+#   spectral extrapolation using aod map and alpha map
+#
+    $base.menu04.m add cascade \
+        -label {Spectral extrapolation (alpha image, aod image} -menu $base.menu04.m.menu34 
+    menu $base.menu04.m.menu34 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.menu04.m.menu34 add command \
+        -command {exec konsole -e epar_aodal &} -label {Edit parameters} 
+    $base.menu04.m.menu34 add command \
+        -command {exec konsole -e aodal &} -label {Execute aodal}
+#-------------------------------------------------------------
+#   spectral interpolation using 2 aod images
+#
+    $base.menu04.m add cascade \
+        -label {Spectral interpolation} -menu $base.menu04.m.menu12
+    menu $base.menu04.m.menu12 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000         
+    $base.menu04.m.menu12 add command \
+        -command {exec konsole -e epar_speci &} -label {Edit parameters}
+    $base.menu04.m.menu12 add command \
+        -command {exec konsole -e speci &} \
+        -label {Execute speci} 
+#-------------------------------------------------------------
+#   compute angstrom coeff. using 2 aod images
+#
+    $base.menu04.m add cascade \
+        -label {Angstrom coeff. image} -menu $base.menu04.m.menu17
+    menu $base.menu04.m.menu17 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000         
+    $base.menu04.m.menu17 add command \
+        -command {exec konsole -e epar_2aod2 &} -label {Edit parameters}
+    $base.menu04.m.menu17 add command \
+        -command {exec konsole -e 2aod2 &} \
+        -label {Execute 2aod2}
+
+#-------------------------------------------------------------
+#   Temporal & spatial linear interpolation
+#  
+    $base.menu04.m add command \
+        -label {Temporal & spatial linear interpolation} \
+        -command {exec konsole -e matin &}
+  
+
+#
+#####################################
+#
+#  Statistics and data reduction
+#
+    $base.menu04.m add cascade \
+        -label {Statistics and data reduction} -menu $base.menu04.m.stat 
+    menu $base.menu04.m.stat  \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000
+#-------------------------------------------------------------
+#   Filter AERONET data in .cxy file format
+#
+    $base.menu04.m.stat add command \
+        -command {exec konsole -e fanet &} -label {Filter AERONET data} 
+
+#-------------------------------------------------------------
+#   Basic image statistics
+#
+    $base.menu04.m.stat add cascade \
+        -label {Basic image statistics} -menu $base.menu04.m.stat.menu25          
+    menu $base.menu04.m.stat.menu25 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.menu04.m.stat.menu25 add command \
+        -command {exec konsole -e epar_stati &} -label {Edit parameters} \
+        -state active 
+    $base.menu04.m.stat.menu25 add command \
+        -command {exec konsole -e stati &} -label {Execute stati} 
+
+#-------------------------------------------------------------
+#   Calibrate AOD map using AERONET data
+#
+    $base.menu04.m.stat add cascade \
+        -label {Calibrate AOD map using AERONET data} \
+        -menu $base.menu04.m.stat.menu11 
+    menu $base.menu04.m.stat.menu11 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000         
+    $base.menu04.m.stat.menu11 add command \
+        -command {exec konsole -e epar_calib &} -label {Edit parameters}
+    $base.menu04.m.stat.menu11 add command \
+        -command {exec konsole -e calib &} \
+        -label {Execute calib}  
+#-----------------------------------------------------------------
+#   Set a maximum to an AOD image
+#
+    $base.menu04.m.stat add cascade \
+        -label {Set a maximum to an AOD image} -menu $base.menu04.m.stat.menu26        
+    menu $base.menu04.m.stat.menu26 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.menu04.m.stat.menu26 add command \
+        -command {exec konsole -e epar_filte &} -label {Edit parameters} \
+        -state active 
+    $base.menu04.m.stat.menu26 add command \
+        -command {exec konsole -e filte &} -label {Execute filte} 
+
+#-------------------------------------------------------------
+#   create a diffusiogram
+#
+    $base.menu04.m.stat  add cascade \
+        -label {Create a diffusiogram} -menu $base.menu04.m.stat.menu05  
+    menu $base.menu04.m.stat.menu05 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000  
+    $base.menu04.m.stat.menu05 add command \
+        -command {exec konsole -e epar_diffu &} -label {Edit parameters}
+    $base.menu04.m.stat.menu05 add command \
+        -command {exec konsole -e diffu &} -label {Execute diffu}      
+#-------------------------------------------------------------
+#   compute correlation coefficient
+#
+    $base.menu04.m.stat add cascade \
+        -label {Compute correlation coeff.on x-y file} \
+        -menu $base.menu04.m.stat.menu006         
+    menu $base.menu04.m.stat.menu006 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000             
+    $base.menu04.m.stat.menu006 add command \
+        -command {exec konsole -e epar_corco &} \
+        -label {Edit parameters}
+    $base.menu04.m.stat.menu006 add command \
+        -command {exec konsole -e corco &} -label {Execute corco}   
+#-------------------------------------------------------------
+#   compute auto-correlation between 2 .cxy files
+#
+    $base.menu04.m.stat add cascade \
+        -label {Compute auto-correlation on 2 x-y files} \
+        -menu $base.menu04.m.stat.menu007         
+    menu $base.menu04.m.stat.menu007 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000             
+    $base.menu04.m.stat.menu007 add command \
+        -command {exec konsole -e epar_tidif &} \
+        -label {Edit parameters}
+    $base.menu04.m.stat.menu007 add command \
+        -command {exec konsole -e tidif &} -label {Execute tidif}
+
+#-------------------------------------------------------------
+#   compute cross-correlation between 2 .pgm files
+#
+    $base.menu04.m.stat add cascade \
+        -label {Compute cross-correlation from 2 images} \
+        -menu $base.menu04.m.stat.menu0071         
+    menu $base.menu04.m.stat.menu0071 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000             
+    $base.menu04.m.stat.menu0071 add command \
+        -command {exec konsole -e epar_cross &} \
+        -label {Edit parameters}
+    $base.menu04.m.stat.menu0071 add command \
+        -command {exec konsole -e cross &} -label {Execute cross}
+#
+#-------------------------------------------------------------
+#   apply a cloud mask on aod pgm file
+#
+    $base.menu04.m add cascade \
+        -label {Apply cloud mask} -menu $base.menu04.m.menu80 
+    menu $base.menu04.m.menu80 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.menu04.m.menu80 add command \
+        -command {exec konsole -e epar_cldms &} -label {Edit parameters}
+    $base.menu04.m.menu80 add command \
+        -command {exec konsole -e cldms &} -label {Execute cldms}
+#
+#
+####################################################################
+#  section de dessin
+#
+#
+    $base.menu04.m add cascade \
+        -label {Drawing & plotting} -menu $base.menu04.m.plot 
+    menu $base.menu04.m.plot \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000
+
+
+
+
+#-------------------------------------------------------------
+#   plot a cxy file
+#
+    $base.menu04.m.plot add command \
+        -command {exec konsole -e plotf &} \
+        -label {Plot an x-y file} 
+
+#-------------------------------------------------------------
+#   plot a cxy ou xyt file using gnuplot
+#
+    $base.menu04.m.plot add cascade \
+        -label {Plot cxy or xyt file (gnuplot based)} -menu $base.menu04.m.plot.gplot 
+    menu $base.menu04.m.plot.gplot \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.menu04.m.plot.gplot add command \
+        -command {exec konsole -e epar_gplot &} -label {Edit parameters}
+    $base.menu04.m.plot.gplot add command \
+        -command {exec konsole -e gplot & } -label {Execute gplot}
+
+
+
+
+#-------------------------------------------------------------
+#   plot and compute an histogram
+#                     
+    $base.menu04.m.plot add command \
+        -command {exec konsole -e histo &} \
+        -label {Compute and plot an histogram} 
+
+
+
+#-------------------------------------------------------------
+#   Draw shapes on a AOD map
+#
+    $base.menu04.m.plot add command \
+        -command {exec konsole -e drawa &} \
+        -label {Draw shapes on a AOD map} 
+#-------------------------------------------------------------
+#   Color AOD map
+#
+    $base.menu04.m.plot add cascade \
+        -label {Color AOD map} -menu $base.menu04.m.plot.menu10 
+    menu $base.menu04.m.plot.menu10 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.menu04.m.plot.menu10 add command \
+        -command {exec konsole -e epar_color &} -label {Edit parameters}
+    $base.menu04.m.plot.menu10 add command \
+        -command {exec konsole -e color &} -label {Execute color}
+#-------------------------------------------------------------
+#   Color composite
+#
+    $base.menu04.m.plot add cascade \
+        -label {Color composite} -menu $base.menu04.m.plot.menu116 
+    menu $base.menu04.m.plot.menu116 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.menu04.m.plot.menu116 add command \
+        -command {exec konsole -e epar_compc &} -label {Edit parameters}
+    $base.menu04.m.plot.menu116 add command \
+        -command {exec konsole -e compc &} -label {Execute compc}
+
+#-------------------------------------------------------------
+#   Plot AOD contour map
+#
+    $base.menu04.m.plot add cascade \
+        -label {Plot AOD contour map} -menu $base.menu04.m.plot.menu13 
+    menu $base.menu04.m.plot.menu13 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.menu04.m.plot.menu13 add command \
+        -command {exec konsole -e conto &} -label {Execute conto}
+#
+#
+####################################################################
+#  section de conversion de format
+#
+#
+    $base.menu04.m add cascade \
+        -label {Format converters} -menu $base.menu04.m.format 
+    menu $base.menu04.m.format \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000
+#-------------------------------------------------------------
+#   PATMOS-II -> AODSEM
+#
+    $base.menu04.m.format add command \
+        -command {exec konsole -e patmo &} -label {PATMOS-II -> AODSEM} 
+#-------------------------------------------------------------
+#   TOMS -> AODSEM
+#
+    $base.menu04.m.format add command \
+        -command {exec konsole -e toms2 &} -label {TOMS -> AODSEM} 
+
+#-------------------------------------------------------------
+#   NARCM AOD -> AODSEM
+#
+    $base.menu04.m.format add cascade \
+        -label {NARCM AOD -> AODSEM AOD} -menu $base.menu04.m.format.menu136 
+    menu $base.menu04.m.format.menu136 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.menu04.m.format.menu136 add command \
+        -command {exec konsole -e epar_narca &} -label {Edit parameters}
+    $base.menu04.m.format.menu136 add command \
+        -command {exec konsole -e narca &} -label {Execute narca}
+#-------------------------------------------------------------
+#   Convert AERONET data in .pgm file format
+#   JD Giguere aero2 script (archived as aero2.old replaced by the 
+#   new scripts from M.Nguyen aero2xy and xy2pgm called by a new version
+#   of aero2
+#
+    $base.menu04.m.format add command \
+        -command {exec konsole -e aero2 &} -label {Convert AERONET ZIP files to AODSEM PGM}
+
+#-------------------------------------------------------------
+#   AODSEM pgm 8 bit to AODSEM 16 bit
+#
+    $base.menu04.m.format add cascade \
+        -label {8 bit AOD -> 16 bit AOD} -menu $base.menu04.m.format.menu136a 
+    menu $base.menu04.m.format.menu136a \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.menu04.m.format.menu136a add command \
+        -command {exec konsole -e epar_8bit2 &} -label {Edit parameters}
+    $base.menu04.m.format.menu136a add command \
+        -command {exec konsole -e 8bit2 &} -label {Execute 8bit2}
+
+
+#########################################################################
+#
+#  3 D functions
+# 
+#       
+    menubutton $base.3D \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -menu $base.3D.menu -padx 4 -pady 3 \
+        -relief flat -text {3D} -underline 0
+    menu $base.3D.menu \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb -cursor {} \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+#-----------------------------------------------------
+#   AOD -> 3D
+#
+    $base.3D.menu add cascade \
+        -label {AOD -> 3D} -menu $base.3D.menu.aodto 
+    menu $base.3D.menu.aodto \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.3D.menu.aodto add command \
+        -command {exec konsole -e epar_aodto &} -label {Edit parameters} \
+        -state active 
+    $base.3D.menu.aodto add command \
+        -command {exec konsole -e aodto &} -label {Execute aodto (10 levels)}
+#    $base.3D.menu.aodto add command \
+#        -command {exec konsole -e faodt &} -label {Execute faodt (3 levels)}  
+#---------------------------------------------------------------
+#   3D -> AOD
+#
+    $base.3D.menu add cascade \
+        -label {3D -> AOD} -menu $base.3D.menu.3dtoa 
+    menu $base.3D.menu.3dtoa \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.3D.menu.3dtoa add command \
+        -command {exec konsole -e epar_3dtoa &} -label {Edit parameters} \
+        -state active 
+    $base.3D.menu.3dtoa add command \
+        -command {exec konsole -e 3dtoa &} -label {Execute 3dtoa}
+#-------------------------------------------------------------------
+#   Transport model
+#
+    $base.3D.menu add cascade \
+        -label {Transport model} -menu $base.3D.menu.transport 
+    menu $base.3D.menu.transport \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.3D.menu.transport add command \
+        -command {exec konsole -e epar_dynam &} -label {Edit parameters} 
+
+
+    $base.3D.menu.transport add cascade \
+        -label {GEM -> AODSEM} -menu $base.3D.menu.transport.men31 
+    menu $base.3D.menu.transport.men31 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.3D.menu.transport.men31 add command \
+        -command {exec konsole -e gemin &} -label {Edit parameters (gemin)} \
+        -state active 
+    $base.3D.menu.transport.men31 add command \
+        -command {exec konsole -e gem21 &} -label {Execute gem21 V1.0} 
+    $base.3D.menu.transport.men31 add command \
+        -command {exec konsole -e gem22 &} -label {Execute gem22 V2.0} 
+$base.3D.menu.transport.men31 add command \
+        -command {exec konsole -e gem2n &} -label {Execute gem2n (GEM files from www downloaded by NOMAD)}
+
+    
+    $base.3D.menu.transport add command \
+        -command {exec konsole -e narcm &} -label {NARCM -> AODSEM }        
+    $base.3D.menu.transport add command \
+        -command {exec konsole -e prind &} \
+        -label {Create precipitation file index} 
+    $base.3D.menu.transport add command \
+        -command {exec konsole -e rhuin &} \
+        -label {Create relative humidity file index} 
+    $base.3D.menu.transport add command \
+        -command {exec konsole -e wspin &} \
+        -label {Create wind speed file index} 
+    $base.3D.menu.transport add command \
+        -command {exec konsole -e ttind &} \
+        -label {Create temperature file index}
+    $base.3D.menu.transport add command \
+        -command {exec konsole -e bufin &} \
+        -label {Create buffer file index}
+
+#----------------------------
+# make source
+#
+    $base.3D.menu.transport add cascade \
+        -label {Make emission inventory} -menu $base.3D.menu.transport.men30 
+    menu $base.3D.menu.transport.men30 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.3D.menu.transport.men30 add command \
+        -command {exec konsole -e epar_mksrc &} -label {Edit parameters} \
+        -state active 
+    $base.3D.menu.transport.men30 add command \
+        -command {exec konsole -e mksrc &} -label {Execute mksrc} 
+
+
+#----------------------------
+# apply a gain factor to a .3ds source inventory
+#
+    $base.3D.menu.transport add cascade \
+        -label {Normalize a 3ds source inventory} -menu $base.3D.menu.transport.m30 
+    menu $base.3D.menu.transport.m30 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.3D.menu.transport.m30 add command \
+        -command {exec konsole -e epar_no3ds &} -label {Edit parameters} \
+        -state active 
+    $base.3D.menu.transport.m30 add command \
+        -command {exec konsole -e no3ds &} -label {Execute no3ds}
+
+#-------------------------------------------------------------
+#   GEIA -> AODSEM
+#
+    $base.3D.menu.transport add cascade \
+        -label {GEIA -> AODSEM } -menu $base.3D.menu.transport.g23ds 
+    menu $base.3D.menu.transport.g23ds \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.3D.menu.transport.g23ds add command \
+        -command {exec konsole -e epar_geia2 &} -label {Edit geia2 parameters}
+    $base.3D.menu.transport.g23ds add command \
+        -command {exec konsole -e geia2 &} -label {Execute geia2 (->pgm)}
+    $base.3D.menu.transport.g23ds add command \
+        -command {exec konsole -e epar_g23ds &} -label {Edit g23ds parameters}
+    $base.3D.menu.transport.g23ds add command \
+        -command {exec konsole -e g23ds &} -label {Execute g23ds (->3ds)}
+
+#-------------------------------------------------------------
+#   combine two GEIA pgm files
+#
+    $base.3D.menu.transport add cascade \
+        -label {Combine 2 GEIA PGM files} -menu $base.3D.menu.transport.cmbge 
+    menu $base.3D.menu.transport.cmbge \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.3D.menu.transport.cmbge add command \
+        -command {exec konsole -e epar_cmbge &} -label {Edit parameters}
+    $base.3D.menu.transport.cmbge add command \
+        -command {exec konsole -e cmbge &} -label {Execute cmbge}
+
+
+    $base.3D.menu.transport add command \
+        -command {exec konsole -e mkcli &} \
+        -label {Make AOD climatology file} 
+    $base.3D.menu.transport add command \
+        -command {exec konsole -e dynam &} \
+        -label {Execute transport model}  
+#----------------------------------------------------------------
+#   Compute mean R.H.
+#
+    $base.3D.menu add cascade \
+        -label {Compute mean R.H.} -menu $base.3D.menu.rhmea  
+    menu $base.3D.menu.rhmea \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.3D.menu.rhmea add command \
+        -command {exec konsole -e epar_rhmea &} -label {Edit parameters} \
+        -state active 
+    $base.3D.menu.rhmea add command \
+        -command {exec konsole -e rhmea &} -label {Execute rhmea}
+#----------------------------------------------------------------
+#   Extract meteo vertical profile from GEM files.
+#
+    $base.3D.menu add cascade \
+        -label {Extract meteo vert. profile from GEM} -menu $base.3D.menu.gemvp  
+    menu $base.3D.menu.gemvp \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.3D.menu.gemvp add command \
+        -command {exec konsole -e epar_gemvp &} -label {Edit parameters} \
+        -state active 
+    $base.3D.menu.gemvp add command \
+        -command {exec konsole -e gemvp &} -label {Execute gemvp}
+#----------------------------------------------------------------
+#   DAT viewer
+#
+    $base.3D.menu add command \
+        -label {DAT viewer} -command {exec datvi &}
+#----------------------------------------------------------------
+#   3D distribution inspector
+#
+    $base.3D.menu add cascade \
+        -menu $base.3D.menu.inspe \
+        -label {3D distribution inspector} 
+    menu $base.3D.menu.inspe \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.3D.menu.inspe add command \
+        -command {exec konsole -e epar_inspe &} \
+        -label {Edit parameters} 
+    $base.3D.menu.inspe add command \
+        -command {exec konsole -e inspe &} \
+        -label {Execute inspe} 
+#-------------------------------------------------------------------
+#   Change 3D dist. resolution
+#
+    $base.3D.menu add cascade \
+        -menu $base.3D.menu.chres \
+        -label {Change .dat file resolution} 
+    menu $base.3D.menu.chres \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.3D.menu.chres add command \
+        -command {exec konsole -e epar_chres &} \
+        -label {Edit parameters} 
+    $base.3D.menu.chres add command \
+        -command {exec konsole -e chres &} \
+        -label {Change .dat file resolution} 
+
+
+#-------------------------------------------------------------------
+#   Filling empty column with nearest neighbour 3D dist. value
+#
+    $base.3D.menu add cascade \
+        -menu $base.3D.menu.3dfil \
+        -label {Fill .dat empty column with nearest neighbour} 
+    menu $base.3D.menu.3dfil \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.3D.menu.3dfil add command \
+        -command {exec konsole -e epar_3dfil &} \
+        -label {Edit parameters} 
+    $base.3D.menu.3dfil add command \
+        -command {exec konsole -e 3dfil &} \
+        -label {Change .dat file resolution} 
+
+#-------------------------------------------------------------------
+#   Reduce 3D dist. resolution
+#
+    $base.3D.menu add command \
+        -command {exec konsole -e deres &} \
+        -label {Reduce 3D dist. resolution} 
+#------------------------------------------------------------------
+#   Data Assimilation System
+#
+    $base.3D.menu add command \
+       -command {exec konsole -e datas &} -label {Single data Assimilation System}     
+#----------------------------------------------------------------
+#   multiple data assimilation (long run)
+#
+    $base.3D.menu add cascade \
+        -label {Multiple data assimilation system} -menu $base.3D.menu.rdata  
+    menu $base.3D.menu.rdata \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.3D.menu.rdata add command \
+        -command {exec konsole -e epar_rdata &} -label {Edit parameters} \
+        -state active 
+    $base.3D.menu.rdata add command \
+        -command {exec konsole -e rdata &} -label {Execute rdata}
+#------------------------------------------------------------------
+#   No Assimilation System
+#
+    $base.3D.menu add command \
+       -command {exec konsole -e freem &} -label {Running without data Assimilation}     
+#----------------------------------------------------------------
+#   3D artimetics
+#
+    $base.3D.menu add cascade \
+        -menu $base.3D.menu.sim3d \
+        -label {1 3D file arithmetics} 
+    menu $base.3D.menu.sim3d \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.3D.menu.sim3d add command \
+        -command {exec konsole -e epar_sim3d &} \
+        -label {Edit parameters} 
+    $base.3D.menu.sim3d add command \
+        -command {exec konsole -e sim3d &} \
+        -label {Execute sim3d} 
+#
+#
+    $base.3D.menu add cascade \
+        -menu $base.3D.menu.3dari \
+        -label {2 3D file arithmetics} 
+    menu $base.3D.menu.3dari \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.3D.menu.3dari add command \
+        -command {exec konsole -e epar_3dari &} \
+        -label {Edit parameters} 
+    $base.3D.menu.3dari add command \
+        -command {exec konsole -e 3dari &} \
+        -label {Execute 3dari} 
+#
+# 2d +3d arithmetic
+#
+    $base.3D.menu add cascade \
+        -menu $base.3D.menu.23dar \
+        -label {2D & 3D file arithmetics} 
+    menu $base.3D.menu.23dar \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 
+    $base.3D.menu.23dar add command \
+        -command {exec konsole -e epar_23dar &} \
+        -label {Edit parameters} 
+    $base.3D.menu.23dar add command \
+        -command {exec konsole -e 23dar &} \
+        -label {Execute 23dar} 
+
+#
+####################################################################
+#
+#  geometrie des composantes de la fenetre principale
+#
+#  bouton service
+#
+    place $base.menu91 \
+    -x 304 -y 0 -width 80 -height 25 -anchor nw -bordermode ignore
+#
+#  bouton packages
+#
+    place $base.menu92 \
+    -x 230 -y 0 -width 80 -height 25 -anchor nw -bordermode ignore
+#
+# AEroprop        
+#
+    place $base.menu01 \
+        -x 10 -y 0 -width 90 -height 25 -anchor nw -bordermode ignore       
+#
+# Mapping        
+#
+    place $base.menu04 \
+        -x 120 -y 0 -width 60 -height 25 -anchor nw -bordermode ignore     
+#
+# 3D        
+#
+    place $base.3D \
+        -x 190 -y 0 -width 40 -height 25 -anchor nw -bordermode ignore 
+#   
+# cadre vacant
+#
+    place $base.cadre03 \
+        -x 10 -y 146 -width 365 -height 35 -anchor nw -bordermode ignore   
+#   
+# cadre pour help, info, exit
+#
+    place $base.cadre02 \
+        -x 10 -y 188 -width 365 -height 42 -anchor nw -bordermode ignore
+#
+#  bouton assistant
+#
+    place $base.button05a \
+        -x 20 -y 151 -width 345 -height 25 -anchor nw -bordermode ignore        
+#
+# Exit        
+#
+    place $base.button05 \
+        -x 255 -y 195 -width 110 -height 30 -anchor nw -bordermode ignore       
+#
+# Cadre entree folder        
+#
+    place $base.cadre01 \
+        -x 10 -y 30 -width 365 -height 110 -anchor nw -bordermode ignore 
+#
+# Box input select a dir        
+#
+    place $base.input01 \
+        -x 20 -y 60 -width 285 -height 20 -anchor nw -bordermode ignore       
+#
+# scrollbar input select a dir
+#
+    place $base.scroll01 \
+        -x 16 -y 77 -width 286 -height 20            
+#
+# Select a working folder        
+#
+    place $base.label01 \
+        -x 65 -y 40 -width 136 -height 18 -anchor nw -bordermode ignore       
+#
+#  Refresh       
+#
+    place $base.button01 \
+        -x 19 -y 108 -width 287 -height 25 -anchor nw -bordermode ignore
+  
+#
+# Info        
+#
+    place $base.button02 \
+        -x 20 -y 195 -width 110 -height 30 -anchor nw -bordermode ignore 
+#
+# Help    
+#
+    place $base.button04 \
+        -x 137 -y 195 -width 110 -height 30 -anchor nw -bordermode ignore     
+#
+# Browse        
+#
+    place $base.button03 \
+        -x 315 -y 60 -width 50 -height 42 -anchor nw -bordermode ignore
+#
+# return to home        
+#
+    place $base.button06 \
+        -x 315 -y 108 -width 50 -height 25 -anchor nw -bordermode ignore      
+
+}
+
+################################################################
+#
+#   Fenetre Message
+#
+proc vTclWindow.top35 {base} {
+    if {$base == ""} {
+        set base .top35
+    }
+    if {[winfo exists $base]} {
+        wm deiconify $base; return
+    }
+#
+#   CREATING WIDGETS
+#
+    toplevel $base -class AODSEM  -background #bbbbbb \
+       -highlightbackground #bbbbbb  -highlightcolor #000000 
+    wm focusmodel $base passive
+    wm geometry $base 30x5+796+363
+    wm maxsize $base 1265 994
+    wm minsize $base 1 1
+    wm overrideredirect $base 0
+    wm resizable $base 1 1
+    wm title $base "Message"
+    text $base.text -relief sunken -bd 2 -yscrollcommand "$base.scroll set" \
+        -setgrid 1 -height 30 -wrap word
+    scrollbar $base.scroll -command "$base.text yview" \
+        -activebackground #bbbbbb -background #bbbbbb \
+        -highlightbackground #bbbbbb -highlightcolor #000000 \
+        -orient verti \
+        -troughcolor #808080
+#
+#   SETTING GEOMETRY
+#
+pack $base.scroll -side right -fill y
+pack $base.text -expand yes -fill both
+}
+######################################################################
+#
+#   boite de dialogue manipulation de fichiers
+#
+proc vTclWindow.top33 {base} {
+    if {$base == ""} {
+        set base .top33
+    }
+    if {[winfo exists $base]} {
+        wm deiconify $base; return
+    }
+#
+#   CREATING WIDGETS
+#
+    toplevel $base -class AODSEM  -background #bbbbbb \
+       -highlightbackground #bbbbbb  -highlightcolor #000000 
+    wm focusmodel $base passive
+    wm geometry $base 200x550+796+363
+    wm maxsize $base 1265 994
+    wm minsize $base 1 1
+    wm overrideredirect $base 0
+    wm resizable $base 0 0
+    wm title $base "File manager"
+    frame $base.fra37 -borderwidth 2 -height 125 -highlightbackground #bbbbbb \
+       -highlightcolor #000000 -relief groove  -width 125 -background #bbbbbb
+    label $base.fra37.l44 -text {Selected file:} -background #bbbbbb
+    label $base.fra37.l45 -background #ffffff
+    entry $base.fra37.e75 -background #ffffff -textvariable nomfichier2
+    label $base.fra37.l75 -text "New name or target folder" -background #bbbbbb
+    button $base.fra37.b44  -borderwidth 1 \
+       -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+       -foreground #000000 -highlightbackground #bbbbbb \
+       -highlightcolor #000000 -text {Delete} \
+       -activebackground #66ff66 -background #bbbbbb \
+       -command {set nomfichier [.top33.fra37.l45 cget -text] 
+                 if {$nomfichier != ""} {
+                    Window show .top28
+                    }
+                 }
+
+
+
+    button $base.fra37.b144  -borderwidth 1 \
+       -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+       -foreground #000000 -highlightbackground #bbbbbb \
+       -highlightcolor #000000 -text {Delete all} \
+       -activebackground #66ff66 -background #bbbbbb \
+       -command {  Window show .top48}
+    frame $base.fra2 -borderwidth 2 -highlightbackground #bbbbbb \
+       -highlightcolor #000000 -relief groove  -background #bbbbbb
+
+#
+# set time delay in 1/100ths sec
+#
+    set dt 40
+    scale $base.fra2.sca18 \
+        -activebackground #bbbbbb -background #bbbbbb \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -orient horiz -troughcolor #bbbbbb \
+        -tickinterval 50 \
+        -from 0 -to 200 -command {set dt} -label {Set delay in 1/100ths sec}
+#
+#   animate a set of images
+#
+    button $base.fra2.b146  -borderwidth 1 \
+       -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+       -foreground #000000 -highlightbackground #bbbbbb \
+       -highlightcolor #000000 -text {Animate all} \
+       -activebackground #66ff66 -background #bbbbbb \
+       -command {  if {[regexp .gif|.pgm $filtre]} { 
+                     exec convert -delay $dt $filtre animation.gif
+                     exec animate animation.gif &
+                   }
+                   refresh $folder $filtre 
+                 }
+#
+#  animate selection
+#
+    button $base.fra2.b147  -borderwidth 1 \
+       -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+       -foreground #000000 -highlightbackground #bbbbbb \
+       -highlightcolor #000000 -text {Animate file} \
+       -activebackground #66ff66 -background #bbbbbb \
+       -command {  set nomfichier1 [.top33.fra37.l45 cget -text]
+                   exec animate -delay $dt $nomfichier1 &
+                   refresh $folder $filtre 
+                 }
+
+#
+#              
+    button $base.b45  -borderwidth 1 \
+       -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+       -foreground #000000 -highlightbackground #bbbbbb \
+       -activebackground #ff4444 -background #bbbbbb\
+       -highlightcolor #000000 -text {Hide} -command "destroy $base"
+    button $base.fra37.b75  -borderwidth 1 \
+       -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+       -foreground #000000 -highlightbackground #bbbbbb \
+       -highlightcolor #000000 -text {Copy} \
+       -activebackground #66ff66 -background #bbbbbb \
+       -command {set nomfichier1 [.top33.fra37.l45 cget -text]
+                 if {$nomfichier1 != $nomfichier2} {
+                 if {$nomfichier2 != ""} {
+                    exec cp -r $nomfichier1 $nomfichier2
+                    cd $folder
+                    refresh $folder $filtre
+                    } 
+                     } else {
+                          Window show .top35
+                         .top35.text insert 0.0 \
+                         {Warning input file name = target file name}
+                          }                    
+                    }   
+    button $base.fra37.b175  -borderwidth 1 \
+       -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+       -foreground #000000 -highlightbackground #bbbbbb \
+       -highlightcolor #000000 -text {Copy all} \
+       -activebackground #66ff66 -background #bbbbbb \
+       -command {set nomfichier1 [.top33.fra37.l45 cget -text]
+            if {[file isdirectory $nomfichier2]} {
+               if {$nomfichier1 != $nomfichier2} {
+                  if {$nomfichier2 != ""} {
+                     foreach i [lsort [glob . .. $filtre]] {
+                        if {[file isfile $i]} {   
+                           exec cp $i $nomfichier2    
+                        }
+                     }                         
+                     cd $folder
+                     refresh $folder $filtre
+                  } 
+                  } else {
+                     Window show .top35
+                     .top35.text insert 0.0 \
+                     {Warning input file name = target file name!  Please fill correctly the entry field named "New name or target folder".}
+                  }                    
+                 
+           
+            } else {
+                Window show .top35
+                .top35.text insert 0.0 \
+                {Warning target folder don't exist!  Please fill correctly the entry field named "New name or target folder".}
+            }  
+        }
+
+    button $base.fra37.b85  -borderwidth 1 \
+       -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+       -foreground #000000 -highlightbackground #bbbbbb \
+       -highlightcolor #000000 -text {Move/rename} \
+       -activebackground #66ff66 -background #bbbbbb \
+       -command {set nomfichier1 [.top33.fra37.l45 cget -text]
+                    if {$nomfichier1 != $nomfichier2} {
+                    if {$nomfichier2 != ""} {
+                       exec mv $nomfichier1 $nomfichier2
+                       cd $folder
+                       refresh $folder $filtre
+                     } 
+                     } else {
+                         Window show .top35
+                         .top35.text insert 0.0 \
+                         {Warning input file name = target file name}
+                        }
+                     }  
+    button $base.fra37.b185  -borderwidth 1 \
+       -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+       -foreground #000000 -highlightbackground #bbbbbb \
+       -highlightcolor #000000 -text {Move all} \
+       -activebackground #66ff66 -background #bbbbbb \
+       -command {set nomfichier1 [.top33.fra37.l45 cget -text]
+            if {[file isdirectory $nomfichier2]} {
+               if {$nomfichier1 != $nomfichier2} {
+                  if {$nomfichier2 != ""} {
+                     foreach i [lsort [glob . .. $filtre]] {
+                        if {[file isfile $i]} {   
+                           exec mv $i $nomfichier2    
+                        }
+                     }                         
+                     cd $folder
+                     refresh $folder $filtre
+                  } 
+                  } else {
+                     Window show .top35
+                     .top35.text insert 0.0 \
+                     {Warning input file name = target file name!  Please fill correctly the entry field named "New name or target folder".}
+                  }                    
+                 
+           
+            } else {
+                Window show .top35
+                .top35.text insert 0.0 \
+                {Warning target folder don't exist!  Please fill correctly the entry field named "New name or target folder".}
+            }  
+        }
+#
+#   compress all
+#      
+    button $base.fra37.b110  -borderwidth 1 \
+       -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+       -foreground #000000 -highlightbackground #bbbbbb \
+       -highlightcolor #000000 -text {gzip all} \
+       -activebackground #66ff66 -background #bbbbbb \
+       -command {    foreach i [lsort [glob . .. $filtre]] {
+                        if {[file isfile $i]} {   
+                           exec gzip $i    
+                        }
+                      }     
+                       cd $folder
+                       refresh $folder $filtre
+                     }
+#   compress selection
+#      
+    button $base.fra37.b111  -borderwidth 1 \
+       -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+       -foreground #000000 -highlightbackground #bbbbbb \
+       -highlightcolor #000000 -text {gzip file} \
+       -activebackground #66ff66 -background #bbbbbb \
+       -command {set nomfichier1 [.top33.fra37.l45 cget -text]
+                 exec gzip $nomfichier1    
+                       cd $folder
+                       refresh $folder $filtre
+                     }
+#   uncompress all
+#      
+    button $base.fra37.b112  -borderwidth 1 \
+       -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+       -foreground #000000 -highlightbackground #bbbbbb \
+       -highlightcolor #000000 -text {gzip -d all} \
+       -activebackground #66ff66 -background #bbbbbb \
+       -command {    foreach i [lsort [glob . .. $filtre]] {
+  
+                        if {[file isfile $i]} {  
+
+                          if {[regexp .gz $i]} { 
+                             exec gzip -d $i  
+                          }  
+                        }
+                      }     
+                       cd $folder
+                       refresh $folder $filtre
+                     }
+#   uncompress selection
+#      
+    button $base.fra37.b113  -borderwidth 1 \
+       -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+       -foreground #000000 -highlightbackground #bbbbbb \
+       -highlightcolor #000000 -text {gzip -d file} \
+       -activebackground #66ff66 -background #bbbbbb \
+       -command {set nomfichier1 [.top33.fra37.l45 cget -text]
+                          if {[regexp .gz $nomfichier1]} { 
+                             exec gzip -d $nomfichier1  
+                          }  
+                       cd $folder
+                       refresh $folder $filtre
+                     }
+#   Open with
+#
+    button $base.fra37.b90  -borderwidth 1 \
+       -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+       -foreground #000000 -highlightbackground #bbbbbb \
+       -highlightcolor #000000 -text {Open with ...} \
+       -activebackground #66ff66 -background #bbbbbb \
+       -command {set nomfichier [.top33.fra37.l45 cget -text] 
+                 if {$nomfichier != ""} {
+                    Window show .top36
+                    if {[winfo exists .top36]} {
+                      raise .top36
+                    }
+                    }
+                 }                                 
+#
+#   SETTING GEOMETRY
+#
+    place $base.fra37  -x 5 -y 0 -width 190 -height 381 \
+       -anchor nw -bordermode ignore 
+    place $base.fra37.l44  -x 10 -y 5 -width 170 -height 25 \
+       -anchor nw -bordermode ignore
+    place $base.fra37.l45  -x 10 -y 30 -width 170 -height 25 \
+       -anchor nw -bordermode ignore
+    place $base.fra37.b44  -x 10 -y 65 -width 170 -height 25 \
+       -anchor nw -bordermode ignore 
+    place $base.fra37.b144  -x 10 -y 95 -width 170 -height 25 \
+       -anchor nw -bordermode ignore
+    place $base.fra37.b85  -x 10 -y 125 -width 170 -height 25 \
+       -anchor nw -bordermode ignore   
+    place $base.fra37.b185  -x 10 -y 155 -width 170 -height 25 \
+       -anchor nw -bordermode ignore     
+    place $base.fra37.b75  -x 10 -y 185 -width 170 -height 25 \
+       -anchor nw -bordermode ignore 
+    place $base.fra37.b175  -x 10 -y 215 -width 170 -height 25 \
+       -anchor nw -bordermode ignore 
+
+    place $base.fra37.l75  -x 10 -y 245 -width 170 -height 20 \
+       -anchor nw -bordermode ignore              
+    place $base.fra37.e75  -x 10 -y 260 -width 169 -height 25 \
+       -anchor nw -bordermode ignore 
+#  fermer la fenetre
+    place $base.b45  -x 5 -y 518 -width 190 -height 25 \
+       -anchor nw -bordermode ignore   
+# open with...   
+    place $base.fra37.b90 -x 10 -y 290 -width 170 -height 25 \
+       -anchor nw -bordermode ignore      
+# compress
+    place $base.fra37.b111 -x 10 -y 320 -width 84 -height 25 \
+       -anchor nw -bordermode ignore  
+    place $base.fra37.b110 -x 97 -y 320 -width 83 -height 25 \
+       -anchor nw -bordermode ignore  
+# uncompress
+    place $base.fra37.b113 -x 10 -y 350 -width 84 -height 25 \
+       -anchor nw -bordermode ignore  
+    place $base.fra37.b112 -x 97 -y 350 -width 83 -height 25 \
+       -anchor nw -bordermode ignore 
+# frame pour l'animation 
+    place $base.fra2  -x 5 -y 387 -width 190 -height 121 \
+       -anchor nw -bordermode ignore 
+# animate all
+    place $base.fra2.b146 -x 97 -y 5 -width 84 -height 25 \
+       -anchor nw -bordermode ignore 
+# animate file
+    place $base.fra2.b147 -x 10 -y 5 -width 84 -height 25 \
+       -anchor nw -bordermode ignore 
+# set time delay in 1/100ths sec
+    place $base.fra2.sca18 \
+        -x 10 -y 30 -width 170 -height 83 -anchor nw -bordermode ignore 
+}
+#########################################################################
+#
+#   Fenetre liste des apps
+#
+proc vTclWindow.top36 {base} {
+    if {$base == ""} {
+        set base .top36
+    }
+    if {[winfo exists $base]} {
+        wm deiconify $base; return
+    }
+#
+#   CREATING WIDGETS
+#
+    toplevel $base -class AODSEM -background #bbbbbb
+    wm focusmodel $base passive
+    wm geometry $base 200x359+250+774 
+    wm maxsize $base 1265 994
+    wm minsize $base 1 1
+    wm overrideredirect $base 0
+    wm resizable $base 0 0
+    wm deiconify $base
+    wm title $base "Open with ..."
+#
+#   Creation des elements
+#
+    menubutton $base.menu01 -indicatoron 1\
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -menu $base.menu01.m -padx 4 -pady 3 \
+        -relief raised -text {Favorites}
+    menu $base.menu01.m \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb -cursor {} \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 -tearoff 0
+    $base.menu01.m add command -label "gedit" \
+       -command {set selapp gedit
+                 exec $selapp $nomfichier &
+                 destroy .top36                
+                } 
+    $base.menu01.m add command -label "kedit" \
+       -command {set selapp kedit
+                 exec $selapp $nomfichier &
+                 destroy .top36                 
+                }                                
+    $base.menu01.m add command -label "konsole" \
+       -command {set selapp konsole
+                 exec $selapp -e ./$nomfichier &
+                 destroy .top36                 
+                }                
+    $base.menu01.m add command -label "display" \
+       -command {set selapp display
+                 exec $selapp $nomfichier &
+                 destroy .top36
+                }                         
+    listbox $base.list1 -yscroll "$base.scroll01 set"  \
+       -xscroll "$base.scroll4 set" -height 20 -background #ffffff \
+       -selectbackground #bbbbbb
+    scrollbar $base.scroll01 -command "$base.list1 yview" \
+       -activebackground #bbbbbb -background #bbbbbb -cursor left_ptr \
+        -highlightbackground #bbbbbb -highlightcolor #000000 -orient verti \
+        -troughcolor #808080
+    scrollbar $base.scroll4 -orient horiz -command "$base.list1 xview"  \
+        -activebackground #bbbbbb -background #bbbbbb -cursor left_ptr \
+        -highlightbackground #bbbbbb -highlightcolor #000000 -orient horiz \
+        -troughcolor #808080           
+    button $base.but2 -text Hide \
+    -command {destroy .top36} \
+    -activebackground #ff4444 -background #bbbbbb -foreground #000000 \
+    -highlightbackground #bbbbbb \
+      -highlightcolor #000000
+#   
+#   geometrie des elements    
+#
+    place $base.menu01 -x 5 -y 5 -width 190 -height 25
+    place $base.list1 -x 5 -y 35  -width 165 -height 260
+    place $base.scroll01 -x 175 -y 35 -width 20 -height 260
+    place $base.scroll4 -x 5 -y 302 -width 165 -height 20
+    place $base.but2 -x 5 -y 327 -width 190 -height 25
+
+#
+#   Afficher les fichiers
+#
+    foreach i [lsort [glob /usr/bin/*]] {
+       $base.list1 insert end $i     
+    }   
+    foreach i [lsort [glob /usr/X11R6/bin/*]] {
+       $base.list1 insert end $i     
+    }       
+     bind $base.list1 <Double-ButtonPress-1> {
+        set selapp [selection get]
+        exec $selapp $nomfichier &
+        destroy .top36        
+    } 
+        
+
+
+
+}
+
+#########################################################################
+#
+#   Fenetre effacer oui/non
+#
+proc vTclWindow.top28 {base} {
+    if {$base == ""} {
+        set base .top28
+    }
+    if {[winfo exists $base]} {
+        wm deiconify $base; return
+    }
+#
+#   CREATING WIDGETS
+#
+    toplevel $base -class AODSEM -background #bbbbbb
+    wm focusmodel $base passive
+    wm geometry $base 150x80+250+774 
+    wm maxsize $base 1265 994
+    wm minsize $base 1 1
+    wm overrideredirect $base 0
+    wm resizable $base 1 1
+    wm deiconify $base
+    wm title $base "Really want to delete?"
+#
+#   Creation des elements
+#
+    label .top28.label1 -text {Really want to proceed?} -background #bbbbbb
+    button .top28.but1 -text Yes -activebackground #66ff66 \
+       -background #bbbbbb -height 20 -command {
+                    exec rm -fr $nomfichier
+                    cd $folder
+                    refresh $folder $filtre
+                    destroy .top28
+                    } -foreground #000000 \
+      -highlightbackground #bbbbbb \
+      -highlightcolor #000000
+    button .top28.but2 -text No -activebackground #ff4444 \
+      -background #bbbbbb -command "destroy .top28" -foreground #000000 \
+    -highlightbackground #bbbbbb \
+      -highlightcolor #000000
+#   
+#   geometrie des elements    
+#
+    place .top28.label1 -x 5 -y 5 
+    place .top28.but1 -x 28 -y 40 -width 40 -height 25
+    place .top28.but2 -x 83 -y 40 -width 40 -height 25
+
+}
+#########################################################################
+#
+#   Fenetre effacer oui/non  fichiers filtres (liste de droite du browser)
+#
+proc vTclWindow.top48 {base} {
+    if {$base == ""} {
+        set base .top48
+    }
+    if {[winfo exists $base]} {
+        wm deiconify $base; return
+    }
+#
+#   CREATING WIDGETS
+#
+    toplevel $base -class AODSEM -background #bbbbbb
+    wm focusmodel $base passive
+    wm geometry $base 170x80+250+774 
+    wm maxsize $base 1265 994
+    wm minsize $base 1 1
+    wm overrideredirect $base 0
+    wm resizable $base 1 1
+    wm deiconify $base
+    wm title $base "Really want to delete all?"
+#
+#   Creation des elements
+#
+    label .top48.label1 -text {Really want to delete ALL?} -background #bbbbbb
+    button .top48.but1 -text Yes -activebackground #66ff66 \
+       -background #bbbbbb -height 20 -command {
+                   foreach i [lsort [glob . .. $filtre]] {
+                     if {[file isfile $i]} {   
+                        exec rm -f $i     
+                     }
+                   }      
+                    cd $folder
+                    refresh $folder $filtre
+                    destroy .top48
+                    } -foreground #000000 \
+      -highlightbackground #bbbbbb \
+      -highlightcolor #000000
+    button .top48.but2 -text No -activebackground #ff4444 \
+      -background #bbbbbb -command "destroy .top48" -foreground #000000 \
+    -highlightbackground #bbbbbb \
+      -highlightcolor #000000
+#   
+#   geometrie des elements    
+#
+    place .top48.label1 -x 5 -y 5 
+    place .top48.but1 -x 28 -y 40 -width 40 -height 25
+    place .top48.but2 -x 83 -y 40 -width 40 -height 25
+
+}
+
+
+#########################################################################
+#
+#   Fenetre du Browser
+#
+proc vTclWindow.top26 {base} {
+    if {$base == ""} {
+        set base .top26
+    }
+    if {[winfo exists $base]} {
+        wm deiconify $base; return
+    }
+#
+#   CREATING WIDGETS
+#
+    toplevel $base -class AODSEM \
+        -background #bbbbbb -highlightbackground #bbbbbb \
+        -highlightcolor #000000 
+    wm focusmodel $base passive
+    wm geometry $base 500x663+115+158 
+    wm maxsize $base 1265 994
+    wm minsize $base 1 1
+    wm overrideredirect $base 0
+    wm resizable $base 0 0
+    wm deiconify $base
+    wm title $base "AODSEM Browser"
+    
+        set filtre *
+#
+#   Creation des elements
+#
+
+    entry .top26.input01 -xscrollcommand ".top26.scroll02 set"\
+        -background #ffffff -borderwidth 1 \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -textvariable folder \
+        -relief ridge    
+    scrollbar .top26.scroll02 -relief sunken -orient horiz \
+        -command "$base.input01 xview" \
+       -activebackground #bbbbbb -background #bbbbbb -cursor left_ptr \
+        -highlightbackground #bbbbbb -highlightcolor #000000 -orient horiz \
+        -troughcolor #808080        
+    listbox .top26.list2 -yscroll ".top26.scroll2 set"  \
+       -xscroll ".top26.scroll3 set" -height 20 -background #ffffff \
+       -selectbackground #bbbbbb       
+    scrollbar .top26.scroll2 -command ".top26.list2 yview" \
+        -activebackground #bbbbbb -background #bbbbbb -cursor left_ptr \
+        -highlightbackground #bbbbbb -highlightcolor #000000 -orient verti \
+        -troughcolor #808080    
+    
+    listbox .top26.list1 -yscroll ".top26.scroll01 set"  \
+       -xscroll ".top26.scroll4 set" -height 20 -background #ffffff \
+       -selectbackground #bbbbbb
+    scrollbar .top26.scroll01 -command ".top26.list1 yview" \
+        -activebackground #bbbbbb -background #bbbbbb -cursor left_ptr \
+        -highlightbackground #bbbbbb -highlightcolor #000000 -orient verti \
+        -troughcolor #808080
+    scrollbar .top26.scroll3 -orient horiz -command ".top26.list2 xview" \
+        -activebackground #bbbbbb -background #bbbbbb -cursor left_ptr \
+        -highlightbackground #bbbbbb -highlightcolor #000000 -orient horiz \
+        -troughcolor #808080
+    scrollbar .top26.scroll4 -orient horiz -command ".top26.list1 xview" \
+        -activebackground #bbbbbb -background #bbbbbb -cursor left_ptr \
+        -highlightbackground #bbbbbb -highlightcolor #000000 -orient horiz \
+        -troughcolor #808080
+    button $base.but46 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -padx 9 -pady 3 -text Home \
+        -activebackground #66ff66 \
+        -command {cd
+                  set folder [pwd]
+                  refresh $folder $filtre
+                 }
+    button $base.but47 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -padx 9 -pady 3 -text {Parent dir} \
+        -activebackground #66ff66 \
+        -command {cd ..
+                  set folder [pwd]
+                  refresh $folder $filtre
+                 } 
+    button $base.but52 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -padx 9 -pady 3 -text Hide \
+        -activebackground #ff4444 \
+        -command { destroy .top26 }     
+    label $base.lab17 \
+        -background #bbbbbb -borderwidth 1 \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -text Path: 
+    label $base.lab18 \
+        -background #bbbbbb -borderwidth 1 \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -text Folders 
+    button $base.but18 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -padx 9 -pady 3 -text {New folder} \
+        -activebackground #66ff66 \
+        -command { exec mkdir NewFolder 
+                   refresh $folder $filtre} 
+#
+#   ramener le centre de controle en premier plan
+#
+    button $base.but38 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -padx 9 -pady 3 -image aodsmall \
+        -activebackground #66ff66 \
+        -command { raise .top01} 
+    label $base.lab19 \
+        -background #bbbbbb -borderwidth 1 \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -text Files 
+    button $base.but19 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -padx 9 -pady 3 -text {File manager} \
+        -activebackground #66ff66 \
+        -command { Window show .top33 
+                   raise .top33}
+
+
+    menubutton $base.menu01 -indicatoron 1\
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -menu $base.menu01.m -padx 4 -pady 3 \
+        -relief raised -text "Filter"
+    menu $base.menu01.m \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb -cursor {} \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 -tearoff 0
+     
+    entry .top26.input07 -background #ffffff -borderwidth 1 \
+        -font -adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -textvariable filtre \
+        -relief ridge        
+    button $base.but53 \
+        -activebackground #bbbbbb -activeforeground #000000 \
+        -background #bbbbbb \
+        -font -adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1 \
+        -foreground #000000 -highlightbackground #bbbbbb \
+        -highlightcolor #000000 -padx 9 -pady 3 -text {Set} \
+        -activebackground #66ff66  -command { refresh $folder $filtre
+                 .top26.menu01 configure -text "Filter:"
+                 }  
+  
+    
+    $base.menu01.m add command -label "*" \
+       -command {set filtre *
+                 refresh $folder $filtre
+
+                 } 
+    $base.menu01.m add command -label "*.3ds" \
+       -command {set filtre *.3ds
+                 refresh $folder $filtre
+
+                 }                  
+    $base.menu01.m add command -label "*.bmi" \
+       -command {set filtre *.bmi
+                 refresh $folder $filtre
+
+                 }                                              
+    $base.menu01.m add command -label "*.cxy" \
+       -command {set filtre *.cxy
+                 refresh $folder $filtre
+
+                 }
+    $base.menu01.m add command -label "*.dat" \
+       -command {set filtre *.dat
+                 refresh $folder $filtre
+                 }
+    $base.menu01.m add command -label "*.fit" \
+       -command {set filtre *.fit
+                 refresh $folder $filtre
+                 }
+    $base.menu01.m add command -label "*.gif" \
+       -command {set filtre *.gif
+                 refresh $folder $filtre
+                 }
+    $base.menu01.m add command -label "*.gz" \
+       -command {set filtre *.gz
+                 refresh $folder $filtre
+                 }
+    $base.menu01.m add command -label "*.index" \
+       -command {set filtre *.index
+                 refresh $folder $filtre
+                 }                               
+    $base.menu01.m add command -label "*.mie" \
+       -command {set filtre *.mie
+                 refresh $folder $filtre
+                 }
+    $base.menu01.m add command -label "*.out" \
+       -command {set filtre *.out
+                 refresh $folder $filtre
+                 }
+    $base.menu01.m add command -label "*.par" \
+       -command {set filtre *.par
+                 refresh $folder $filtre
+                 }
+    $base.menu01.m add command -label "*.pgm" \
+       -command {set filtre *.pgm
+                 refresh $folder $filtre
+                 }
+    $base.menu01.m add command -label "*.pho" \
+       -command {set filtre *.pho
+                 refresh $folder $filtre
+                 }
+    $base.menu01.m add command -label "*.PR*" \
+       -command {set filtre *.PR*
+                 refresh $folder $filtre
+                 }
+    $base.menu01.m add command -label "*.pro" \
+       -command {set filtre *.pro
+                 refresh $folder $filtre
+                 }
+    $base.menu01.m add command -label "*.psd" \
+       -command {set filtre *.psd
+                 refresh $folder $filtre
+                 }
+    $base.menu01.m add command -label "*.rhu" \
+       -command {set filtre *.rhu
+                 refresh $folder $filtre
+                 }
+    $base.menu01.m add command -label "*.txt" \
+       -command {set filtre *.txt
+                 refresh $folder $filtre
+                 }
+    $base.menu01.m add command -label "*.vis" \
+       -command {set filtre *.vis
+                 refresh $folder $filtre
+                 }
+    $base.menu01.m add command -label "*.wsp" \
+       -command {set filtre *.wsp
+                 refresh $folder $filtre
+                 }   
+    $base.menu01.m add command -label "*.xyt" \
+       -command {set filtre *.xyt
+                 refresh $folder $filtre
+                 }
+    $base.menu01.m add command -label "*.3ds" \
+       -command {set filtre *.3ds
+                 refresh $folder $filtre
+                 }
+#   
+#   geometrie des elements    
+#
+    place .top26.input01 \
+       -x 55 -y 15 -width 200 -height 22 -anchor nw -bordermode ignore
+    place .top26.scroll02 \
+       -x 54 -y 40 -width 200 -height 21 -anchor nw -bordermode ignore
+#   liste des repertoires
+    place .top26.list2 \
+       -x 5 -y 115 -width 190 -height 516 -anchor nw -bordermode ignore
+    place .top26.scroll2 \
+       -x 200 -y 115 -width 21 -height 517 -anchor nw -bordermode ignore
+    place .top26.scroll3 \
+       -x 5 -y 635 -width 192 -height 21 -anchor nw -bordermode ignore
+#   liste des fichiers
+    place .top26.list1 \
+       -x 253 -y 115 -width 190 -height 516 -anchor nw -bordermode ignore
+    place .top26.scroll01 \
+       -x 448 -y 115 -width 21 -height 517 -anchor nw -bordermode ignore
+    place .top26.scroll4 \
+       -x 253 -y 635 -width 192 -height 21 -anchor nw -bordermode ignore 
+    place $base.but46 \
+        -x 263 -y 15 -width 52 -height 21 -anchor nw -bordermode ignore 
+    place $base.but47 \
+        -x 318 -y 15 -width 76 -height 21 -anchor nw -bordermode ignore 
+    place $base.but52 \
+        -x 398 -y 15 -width 71 -height 21 -anchor nw -bordermode ignore
+    place $base.lab17 \
+        -x 15 -y 20 -anchor nw -bordermode ignore 
+#  etiquette directories
+    place $base.lab18 \
+        -x 5 -y 92 -anchor nw -bordermode ignore 
+#  bouton creer un nouveau repertoire
+    place $base.but18 \
+        -x 104 -y 90 -height 21 -anchor nw -bordermode ignore
+#  etiquette files
+    place $base.lab19 \
+        -x 253 -y 92 -anchor nw -bordermode ignore 
+#  bouton file manager
+    place $base.but19 \
+        -x 300 -y 90 -height 21 -width 145 -anchor nw -bordermode ignore
+    place $base.menu01 \
+        -x 263 -y 41 -height 21 -width 100 -anchor nw -bordermode ignore  
+
+    place $base.input07 \
+        -x 368 -y 41 -height 21 -width 65 -anchor nw -bordermode ignore
+    place $base.but53 \
+        -x 438 -y 41 -height 21 -width 31 -anchor nw -bordermode ignore
+#   bouton mettre le centre de controle en avant plan
+    place $base.but38 \
+       -x 468 -y 630 -anchor nw -bordermode ignore
+#
+#   Afficher les fichiers
+#
+    set folder [pwd]
+    .top26.input01 configure -text $folder
+    foreach i [lsort [glob . .. $filtre]] {
+       if {[file isdirectory $i]} {   
+         .top26.list2 insert end $i 
+       } else {
+         .top26.list1 insert end $i     
+       }
+    }   
+#
+#   Activer le bouton de droite
+#
+    bind .top26.list1 <ButtonPress-3> {
+       set whatfile [selection get]
+       if {$whatfile != ""} {
+          effacer $whatfile
+       } else {
+          .top35.text insert 0.0 \
+          {Select a file by clicking using left mouse button.}          
+       }
+    }
+    bind .top26.list2 <ButtonPress-3> {
+       set whatfile [selection get]
+       if {$whatfile != ""} {
+          effacer $whatfile
+       } else {
+          .top35.text insert 0.0 \
+          {Select a file by clicking using left mouse button.}          
+       }
+    }
+#
+#   Activer le double click gauche
+#
+    bind .top26.list1 <Double-ButtonPress-1> {
+       browse $folder [selection get] $filtre
+       set folder [pwd]
+       refresh $folder $filtre
+    }
+        bind .top26.list2 <Double-ButtonPress-1> {
+       browse $folder [selection get] *
+       set folder [pwd]
+       refresh $folder $filtre
+    }
+ 
+    
+       
+}
+
+###################################################################
+#
+#   Routine pour effacer/copier un fichier
+#
+proc effacer {select} {
+   if {[winfo exist .top33]} {
+     .top33.fra37.l45 configure -text $select
+   }
+}
+###################################################################
+#
+#   Routine pour copier un fichier
+#
+proc copier {select} {
+   if {[winfo exist .top33]} {
+      .top33.fra37.label45 configure -text $select
+   } 
+}
+###################################################################
+#
+#   Routine du Browser
+#
+proc browse {folder file filtre} {
+   refresh $file $filtre
+   if {$folder != "."} {
+      set file $folder/$file
+   } 
+   if {[file isdirectory $file]} {   
+      cd $file 
+   } else {
+      if {[file isfile $file]} {  
+         if {[regexp .pgm|.gif|.eps|.ppm|.jpg|.png|.tif|.bmp $file]} { 
+            exec display $file &
+         } else {
+            if {[regexp .pdf|.ps $file]} { 
+               exec gv $file &
+            } else {
+               if {[regexp .gz $file]} {
+                  exec gzip -d $file &
+               } else { 
+                  if {[regexp .tar $file]} {
+                     exec tar -xvf $file &
+                  } else { 
+                     exec kedit $file &
+                  }
+               } 
+            }   
+         }
+      } else { 
+         error "can't browse $file"
+      } 
+   }
+}   
+###################################################################
+#
+#    Routine pour rafraichir le browser
+#
+proc refresh {dir filtre} {
+   set dir [pwd]
+   set power [pwd]
+   cd $power
+   if [winfo exist .top26] {
+      .top26.input01 delete 0 end   
+      .top26.input01 insert end $dir
+      .top26.list1 delete 0 end  
+      .top26.list2 delete 0 end          
+      foreach i [lsort [glob . .. *]] {
+       if {[file isdirectory $i]} {   
+         .top26.list2 insert end $i     
+       }
+      }
+      foreach i [lsort [glob . .. $filtre]] {
+       if {[file isfile $i]} {   
+
+         .top26.list1 insert end $i     
+       }
+      }        
+   }  
+}
+
+###################################################################
+#
+Window show .
+Window show .top31
+Window show .top01
+
+
+
+
+
+

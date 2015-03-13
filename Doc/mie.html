@@ -1,0 +1,707 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="StarOffice/5.2 (Linux)">
+	<META NAME="AUTHOR" CONTENT="Martin Aub&eacute;">
+	<META NAME="CREATED" CONTENT="20001002;23162300">
+	<META NAME="CHANGEDBY" CONTENT="Martin Aub&eacute;">
+	<META NAME="CHANGED" CONTENT="20001107;23243700">
+	<STYLE>
+	<!--
+		@page { size: 21.59cm 27.94cm; margin: 2cm }
+		P { margin-bottom: 0.21cm }
+		TD P { margin-bottom: 0.21cm }
+	-->
+	</STYLE>
+</HEAD>
+<BODY>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm; font-weight: medium"><BR>
+</P>
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0cm"><h1> Detailed description of AODSEM Mie theory fonctions</h1></P>
+<p> Summary:</p>
+<table cellpadding=0><tr><td bgcolor="ffcccc"><b>Continuous size distribution (lognormal,etc.)&#160;&#160;&#160;</b></td><td bgcolor="ccccff"><b>Limited bins size distribution</b></td></tr>
+<tr><td bgcolor="ffeeee">|</td><td bgcolor="eeeeff">|</td></tr>
+<tr><td bgcolor="ffeeee">|- <a href="#mkimi">mkimi</a> <br>|&#160; &#160; (edit input file)</td><td bgcolor="eeeeff">|- <a href="#humgr">humgr</a> <br>|&#160; &#160; (compute hygroscopic database)</td></tr>
+<tr><td bgcolor="ffeeee">|- <a href="#mkpsd">mkpsd</a><br>|&#160; &#160;  (create a size distribution file)</td><td bgcolor="eeeeff">|- <a href="#bmies">bmies</a><br>|&#160; &#160;  (compute Mie theory  for multiple bins and relative humidity)</td></tr>
+
+<tr><td bgcolor="ffeeee">|- <a href="#imies">imies</a> <br>|&#160; &#160; (Continuous Mie calculations)</td><td bgcolor="eeeeff">|<br>|</td></tr>
+<tr><td bgcolor="ffeeee">|- <a href="#cmbps">cmbps</a> <br>|&#160; &#160; (Combine 2 psd files)</td><td bgcolor="eeeeff">|<br>|</td></tr>
+</table>
+
+<HR>
+<H2><A NAME="mkpsd"></A><FONT FACE="Times, serif"><FONT SIZE=3>mkpsd</FONT></FONT></H2>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><B><I>Create a particle
+size distribution file (PSD).</I></B> </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>Sample file NAME.mie.psd: </FONT></FONT>
+</P>
+<table bgcolor="ffffaa"><tr><td>
+<PRE><FONT FACE="Times, serif"><FONT SIZE=3> <FONT SIZE=2><FONT FACE="Courier, monospace">3        ** size distribution type **</FONT></FONT></FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 0.15     ** dX constant increment (99999=variable) **</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 333      ** Number of bins **</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 1        ** Interpolation (0=terrasse, 1=linear, 9=discret **</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  0.150000006  0.00748402089 ** X, Psd **</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  0.300000012  0.026195416   ** X, Psd **</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  0.449999988  0.0453268057  ** X, Psd **</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  0.600000024  0.0615793337  ** X, Psd **</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  0.75  0.0744992284         ** X, Psd **</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  0.899999976  0.0844182061  ** X, Psd **</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  1.04999995  0.0918335254   ** X, Psd **</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  .</FONT></FONT></PRE></td></tr>
+</table><P>
+<FONT FACE="Times, serif"><FONT SIZE=3>X = the size parameter defined
+as 2 pi r / wavelength </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>r = the geometric radius of
+the particle. </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>Possible size distribution
+type are: </FONT></FONT>
+</P>
+<PRE><FONT FACE="Times, serif"><FONT SIZE=3> 1) MONODISPERSED          X</FONT></FONT>
+<FONT FACE="Times, serif"><FONT SIZE=3> 2) GATES-GAUDIN-SCHUMANN  X**(-A), A&gt;1</FONT></FONT>
+<FONT FACE="Times, serif"><FONT SIZE=3> 3) LOG-NORMAL             1/(SG*X*SQRT[2*pi])*EXP(-(LOG(X)-LOG(XM))**2/(2*SG**2))</FONT></FONT>
+<FONT FACE="Times, serif"><FONT SIZE=3> 4) GAMMA                  U**(U+1)/U!*(X**U/S**(U+1))*EXP(-U*X/S)</FONT></FONT>
+<FONT FACE="Times, serif"><FONT SIZE=3> 5) MODIFIED GAMMA         X**A*EXP(-B*X**G)</FONT></FONT>
+<FONT FACE="Times, serif"><FONT SIZE=3> 6) ROSIN-RAMMLER          X**(N-1)*EXP(-B*X**N)</FONT></FONT>
+<FONT FACE="Times, serif"><FONT SIZE=3> 7) INDEPENDANT SIZE-BINS</FONT></FONT></PRE><P>
+<FONT FACE="Times, serif"><FONT SIZE=3>Interpolation consist in how
+imies program will interpolate sub-bins values.</FONT></FONT></P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>Tthere are 3 options: </FONT></FONT>
+</P>
+<PRE><FONT FACE="Times, serif"><FONT SIZE=3> 0 = Constant value inside the bin (stepped)</FONT></FONT>
+<FONT FACE="Times, serif"><FONT SIZE=3> 1 = Linear interpolation</FONT></FONT>
+<FONT FACE="Times, serif"><FONT SIZE=3> 9 = Discret mode (non zero values for the begin. of the bin)</FONT></FONT></PRE><P STYLE="margin-bottom: 0cm">
+<FONT FACE="Times, serif"><FONT SIZE=3>It is important to note that
+for the log-normal distribution, the user is asked to enter the sigma
+value wich is subsequently converted by the program to SG=log(sigma).
+A typical value for sigma is 2.5 (SG=0.4).</FONT></FONT></P>
+<HR>
+<H2><A NAME="cmbps"></A><FONT FACE="Times, serif"><FONT SIZE=3>cmbps</FONT></FONT></H2>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><B><I>Combine two particle
+size distribution file.</I></B> </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>(mkpsd output files) </FONT></FONT>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3>To
+combine more than two PSD, you can first combine first two and the
+re-run cmbps to combine this first result with a third PSD and so
+on... </FONT></FONT>
+</P>
+<HR>
+<H2><A NAME="mkimi"></A><FONT FACE="Times, serif"><FONT SIZE=3>mkimi</FONT></FONT></H2>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3><B><I>Create
+an imies's input file.</I></B> </FONT></FONT>
+</P>
+<HR>
+<H2><A NAME="imies"></A><FONT FACE="Times, serif"><FONT SIZE=3>imies</FONT></FONT></H2>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><B><I>Interactive fine
+resolution Mie's computations.</I></B> </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>mkimi and mkpsd have to be
+executed first in order to produce input files for imies (file
+&laquo;&nbsp;NAME.mie&nbsp;&raquo; and &laquo;&nbsp;NAME.mie.psd&nbsp;&raquo;).
+</FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>imies is adapted from mie.f
+initially written at DREV by Blair Evans. The original program was
+restructured and some bugs were fixed. imies can only take into
+account for spherical shaped particles (including coated particles). </FONT></FONT>
+</P>
+<P><BR><BR>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><SPAN STYLE="font-weight: medium">Sample
+file: &laquo;&nbsp;NAME.mie&nbsp;&raquo;</SPAN><B> </B></FONT></FONT>
+</P>
+<table bgcolor="ffffaa"><tr><td>
+<PRE><FONT FACE="Courier, monospace"><FONT SIZE=2>  1                  ** 1 = VERBOSE **</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  0.55               ** SENSOR WAVELENGTH ** </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  1                  ** Aerosol shape**</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  0.00 180.00   1.00 ** i angle , f angle , delta **</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  3                  ** Polarisation state (1=//,2=_|_,3=random) **</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  1.50000 .00000E+00 ** Refractive index (a-ib) **</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  1                  ** 1 = VERBOSE **</FONT></FONT>
+</PRE>
+</td></tr>
+</table>
+
+<P>
+<FONT FACE="Times, serif"><FONT SIZE=3>Log of the mkmie execution
+used for the example below (user input in <FONT COLOR="#ff0000">red</FONT>):</FONT></FONT></P>
+<P>
+</P>
+<table bgcolor="000000">
+<tr><td>
+<PRE><font color="#ffffff">
+[prof@portable Source]$ mkimi
+************************************************
+*                                              *
+*                     mkimi                    *
+*                                              *
+*         Edit input file for imies.f          *
+*                                              *
+*     Martin Aube 2000                         *
+*                                              *
+************************************************
+
+ Experiment directory /home/prof/AODSEM/Source
+ Executing MakeMieIn...
+ Root name of the imies input file ?
+<FONT COLOR="#ff0000">test</FONT>
+ Verbose imies mode? (1 = yes)
+<FONT COLOR="#ff0000">1</FONT>
+ WHICH PARTICLE TYPE:
+ 1)  SPHERE                    EXACT
+ 2)  COATED SPHERE             EXACT
+<FONT COLOR="#ff0000">1</FONT>
+ ENTER SENSOR WAVELENGTH (IN MICRONS):
+<FONT COLOR="#ff0000">.55</FONT>
+ ENTER LOWEST,HIGHEST AND INCREMENT OF ANGLES IN PHASE   FUNCTION
+ INCREMENT MUST BE .01 OR GREATER
+<FONT COLOR="#ff0000">0 180 1</FONT>
+ WHICH POLARIZATION STATE ? 1) PARALLEL
+                            2) PERPENDICULAR
+                         OR 3) RANDOM
+ WITH RESPECT TO SCATTERING PLANE.
+
+<FONT COLOR="#ff0000">3</FONT>
+ INDEX OF REFRACTION m & k (of m - ik) ->
+
+<FONT COLOR="#ff0000">1.5 0</FONT>
+ Deleting temporary files in  /home/prof/AODSEM/Source
+ Normal end of mkimi.
+</font>      
+</PRE><P>
+</td></tr>
+</table>
+
+<FONT FACE="Times, serif"><FONT SIZE=3>Sample file NAME.mie.psd (see
+mkpsd) </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>Log of the mkpsd execution
+used for the example below (user input in <FONT COLOR="#ff0000">red</FONT>):</FONT></FONT></P>
+<table  bgcolor="000000">
+<tr><td>
+<PRE><font color="#ffffff">[prof@portable prof]$ mkpsd
+************************************************
+*                                              *
+*                     mkpsd                    *
+*                                              *
+*        Create a PSD file for imies.f         *
+*                                              *
+*     Martin Aube 2000                         *
+*                                              *
+************************************************
+
+ Experiment directory /home/prof
+ Executing MakePSD...
+ Root name of the PSD output file ?
+<FONT COLOR="#ff0000">test</FONT>
+ WHICH PARTICLE SIZE DISTRIBUTION ON A SIZE             PARAMETER SCALE:
+ 1) MONODISPERSED          X
+ 2) GATES-GAUDIN-SCHUMANN  X**(-A), A>1
+ 3) LOG-NORMAL             1/(SG*X*SQRT[2*pi])*EXP(-(LOG(X)-LOG(XM))**2/(2*SG**2))
+ 4) GAMMA                  U**(U+1)/U!*(X**U/S**(U+1))*EXP(-U*X/S)
+ 5) MODIFIED GAMMA         X**A*EXP(-B*X**G)
+ 6) ROSIN-RAMMLER          X**(N-1)*EXP(-B*X**N)
+ 7) INDEPENDANT SIZE-BINS
+<FONT COLOR="#ff0000">3</FONT>
+ Interpolation type betwen PSD s values ?
+ 0 = Constant value inside the bin
+ 1 = Linear interpolation
+ 9 = Discret mode (non zero values for the begin. of the bin)
+<FONT COLOR="#ff0000">1</FONT>
+ INPUT INTEGRATION dX [d(SIZE PARAMETER)] OVER SIZE     DIST.
+
+ SIZE PARAMETER IS DEFINED AS X=2*PI*R/WAVELENGTH
+
+<FONT COLOR="#ff0000">.1</FONT>
+ LOWER AND UPPER LIMITS OF PSD DIST. IN SIZE PARAMETER  SCALE (BETWEEN X=0 AND X=   500.00)
+
+<FONT COLOR="#ff0000">0 200</FONT>
+ 3) LOG-NORMAL             1/(SG*X*SQRT[2*pi])*EXP(-(LOG(X)-LOG(XM))**2/(2*SG**2))
+ INPUT mean SIZE PARAMETER, sigma
+
+<FONT COLOR="#ff0000">6 2.5</FONT>
+ Deleting temporary files in  /home/prof
+ Normal end of mkpsd.
+</FONT></PRE></td></tr>
+</table>
+
+
+<P>
+<FONT FACE="Times, serif"><FONT SIZE=3>Typical output file
+NAME.mie.out: </FONT></FONT>
+</P>
+<table bgcolor="ffffaa"><tr><td>
+<PRE><FONT FACE="Courier, monospace"><FONT SIZE=2> |--------|------------|</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> | ANGLE  |  PHASE FCT |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |--------|------------|</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>     0.00   1685.8    </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>     1.00   738.47    </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>     2.00   268.94    </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>      .        .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>      .        .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>      .        .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>   180.00  0.89045    </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |--------|------------|</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>0.500000     micron = Wavelength</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 2.24693     = Extinction efficiency (Q)</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 2.24693     = Scattering efficiency (Qs)</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 0.00000     = Absorption efficiency (Qa)</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 14.1123     = Lidar ratio</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 4.10201     micron^2 = &lt;b&gt; = Average surface area per particle</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 9.21694     microns^2 = Extinction cross section (C)</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 9.21694     microns^2 = Scattering cross section (Cs)</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 0.00000     microns^2 = Absorption cross section (Ca)</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |----------------------------------------------------|</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> | COMMENTAIRES:                                      |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |----------------------------------------------------|</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |   -Cross section / &lt;b&gt; should = efficiency         |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |    is independant of the normalisation of dN/dx    |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |   -The integral of the phase fct/4 pi over all     |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |    directions (solid angle) = 1.                   |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |   -The volume coefficient (k) is equal to C * N    |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |      = cross section * Number density              |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |      typical units: [um^2]*[particles/cm^3] =      |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |      [10^-3 km-1]                                  |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |      N = M/(d*4/3*pi*r^3) where d is the density   |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |      of particle, M is the mass per unit volume    |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |      and 4/3*pi*r^3 is the average volume  of a    |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |      particle.                                     |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |      typical units:  M -&gt; [ug/m^3], d -&gt; [g/cm^3]  |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |                      r -&gt; [um]                     |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |      Lidar ratio= 4 pi Qe / phase_fct(180)*Qs      |</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> |----------------------------------------------------|</FONT></FONT>
+
+</PRE></td></tr>
+</table><P>
+
+<FONT FACE="Times, serif"><FONT SIZE=3>Sample log for imies (user
+input in <FONT COLOR="#ff0000">red</FONT>):</FONT></FONT></P>
+<P>
+</P>
+<table  bgcolor="000000">
+<tr><td>
+<PRE><font color="#ffffff">[prof@portable prof]$ imies
+************************************************                                              *                                              *
+*                     imies                    *
+*                                              *
+*         Mie's calculations for any PSD       *
+*     definition, particle type, wavelength    *
+*            and relative humidity             *
+*                                              *
+*     Martin Aube 2000                         *
+*                                              *
+************************************************
+ Experiment directory /home/martin/AODSEM/Examples/imies
+ Executing intermie...
+ Root name for input-output files ?(MAX 40 CHAR):
+ Extensions .mie (input file), .mie.out (output file) and  .mie.psd (psd file)
+ will be add to the root name.
+<FONT COLOR="#ff0000">test</FONT>
+ Reading input file:test.mie.         ..
+ Opening output file:test.mie.out...
+ ... Termine.
+ Ouverture du fichier psd:test.mie.psd...
+ ...Done.
+ Reading psd file:test.mie.psd.      ..
+ ...Done.
+ In how many Sub-bins do you wish to split PSD? (MAX.   5000., MIN 1334)
+<FONT COLOR="#ff0000">1500</FONT>
+ Closing psd file.
+ Particle shape:
+ 1)  SPHERE                    EXACT
+ Defining size increment...
+ ...Done
+ Defining size distribution...
+ |----------------------------|
+ |      SIZE DISTRIBUTION     |
+ |-------------|--------------|
+ | SIZE PARAM. | PSD          |
+ |        0.267|      0.004722|
+ |        0.400|      0.012229|
+           .              .
+           .              .
+           .              .
+ |      199.950|      0.000002|
+ |----------------------------|
+ ...Done.
+ Optical computations...
+ Random polarization state
+ Indice de refraction= 1.500 -i .00000E+00
+ finished Mie computations for size parameter =     6.80
+ finished Mie computations for size parameter =    13.46
+ .
+ .
+ .
+ finished Mie computations for size parameter =   200.08
+ ...Done.
+ Closing input-output files...
+ ...Done.
+ Computation result in file: test.mie.out
+ ...end of mies !
+ Deleting temporary files in  /home/martin/AODSEM/Examples/imies
+ Normal end of imies.</FONT></PRE></td></tr>
+</table>
+<P>
+<BR><BR>
+</P>
+<P>Phase function normalisation.</P>
+<P ALIGN=JUSTIFY>The phase function is defined as 4 pi times the
+probability of scattering per unit of solid angle (sterad) for a
+given scattering angle (theta=0 -&gt;forward scattering, theta=180 -&gt;
+back scattering).  The integration of the phase function over the
+sphere is equal to 4 pi.  It is important to consider that the phase
+function value for a given scattering angle is the same for any
+azimutal angle so that to get the total scattering contribution for a
+particular scattering angle (integration over phi), we have to
+multiply the phase function value by the equivalent solid angle
+dOMEGA corresponding to a ring defined by the angle increment dTHETA
+(see  fig below).  This solid angle is given by the equation:</P>
+<P ALIGN=CENTER><IMG SRC="Images/domega.gif" NAME="Objet1" ALIGN=ABSMIDDLE HSPACE=8 WIDTH=139
+HEIGHT=22></P> <P ALIGN=CENTER><IMG SRC="Images/phase-fct-norm.jpg" NAME="Image1" ALIGN=BOTTOM
+WIDTH=247 HEIGHT=331 BORDER=0></P> <P><BR><BR>
+</P>
+<P>Example of phase function integration:</P>
+<P><BR><BR>
+</P>
+<PRE>THETA	Phase fct.	dOMEGA	P(THETA)=Phase fct. * dOMEGA / 4 pi
+0	1685,8	0,0000	0
+1	738,47	0,0019	0,11
+2	268,94	0,0038	0,08
+3	126,45	0,0057	0,06
+4	69,42		0,0076	0,04
+5	42,47		0,0096	0,03
+6	28,23		0,0115	0,03
+7	20,04		0,0134	0,02
+8	15,04		0,0153	0,02
+9	11,81		0,0172	0,02
+10	9,64		0,0190	0,01
+11	8,11		0,0209	0,01
+12	7,01		0,0228	0,01
+13	6,18		0,0247	0,01
+14	5,55		0,0265	0,01
+15	5,05		0,0284	0,01
+16	4,64		0,0302	0,01
+17	4,3		0,0321	0,01
+18	4,03		0,0339	0,01
+19	3,76		0,0357	0,01
+20	3,53		0,0375	0,01
+21	3,34		0,0393	0,01
+22	3,18		0,0411	0,01
+23	3,02		0,0428	0,01
+24	2,88		0,0446	0,01
+25	2,74		0,0463	0,01
+26	2,61		0,0481	0,01
+27	2,49		0,0498	0,01
+28	2,37		0,0515	0,01
+29	2,27		0,0532	0,01
+30	2,16		0,0548	0,01
+31	2,07		0,0565	0,01
+32	1,98		0,0581	0,01
+33	1,89		0,0597	0,01
+34	1,8		0,0613	0,01
+35	1,72		0,0629	0,01
+36	1,65		0,0645	0,01
+37	1,57		0,0660	0,01
+38	1,5		0,0675	0,01
+39	1,43		0,0690	0,01
+40	1,37		0,0705	0,01
+41	1,31		0,0719	0,01
+42	1,25		0,0734	0,01
+43	1,19		0,0748	0,01
+44	1,14		0,0762	0,01
+45	1,08		0,0775	0,01
+46	1,04		0,0789	0,01
+47	0,99		0,0802	0,01
+48	0,94		0,0815	0,01
+49	0,9		0,0828	0,01
+50	0,85		0,0840	0,01
+51	0,82		0,0852	0,01
+52	0,78		0,0864	0,01
+53	0,74		0,0876	0,01
+54	0,71		0,0887	0
+55	0,67		0,0898	0
+.	.		.		.
+.	.		.		.
+.	.		.		.
+180	0,89		0,0000	0
+			
+				Sum=	0,97    -&gt; ~ 1.
+
+
+</PRE>
+<HR>
+<P><BR><BR>
+</P>
+<H2><A NAME="humgr"></A><FONT FACE="Times, serif"><FONT SIZE=3>humgr</FONT></FONT></H2>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><B><I>Create an aerosol
+size hygroscopic growth file.</I></B> Output file named humout
+contain a table of how particle radius and density vary with respect
+to relative humidity. <BR>e.g. </FONT></FONT>
+</P>
+<table bgcolor="ffffaa"><tr><td>
+<PRE><FONT FACE="Times, serif"><FONT SIZE=3> <FONT SIZE=2><FONT FACE="Courier, monospace">5 13 12     * N types, N RH, N bins *</FONT></FONT></FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> SEASALT     </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 0.00000000  * RELATIVE HUMIDITY *</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> Bin Number, Radius Ratio, Final Density</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 1 1.00000000    2240.000000</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 2 1.00000000    2240.000000</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 3 1.00000000    2240.000000</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 4 1.00000000    2240.000000</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 5 1.00000000    2240.000000</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 6 1.00000000    2240.000000</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 7 1.00000000    2240.000000</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 8 1.00000000    2240.000000</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 9 1.00000000    2240.000000</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 10 1.00000000    2240.000000</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 11 1.00000000    2240.000000</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 12 1.00000000    2240.000000</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 10.00000000 * RELATIVE HUMIDITY *</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> Bin Number, Radius Ratio, Final Density</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 1 1.000000000 2240.000000</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 2 1.000000000 2240.000000</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> .</FONT></FONT></PRE></td></tr>
+</table>
+<HR>
+<H2><A NAME="bmies"></A><FONT FACE="Times, serif"><FONT SIZE=3>bmies</FONT></FONT></H2>
+<P><FONT FACE="Times, serif"><FONT SIZE=3><B><I>Mutiple size bins,
+wavelenght, relative humidity and aerosol species Mie's calculations.</I></B>
+</FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>Input files: </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>size bin definition file:
+NAME.bns.bmi </FONT></FONT>
+</P>
+<table bgcolor="ffffaa"><tr><td>
+<PRE><FONT FACE="Courier, monospace"><FONT SIZE=2>  10           * NUMBER OF SUB-SIZE-BIN DIVISIONS FOR CALCULATIONS *</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  0            *SUB-BIN PSD VALUES.</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  12           *NOMBRE DE BINS*</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  1 0.005 0.01 *BIN NO, RMIN(micron), RMAX*</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  2 0.01 0.02</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  3 0.02 0.04</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  4 0.04 0.08</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  5 0.08 0.16</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  6 0.16 0.32</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  7 0.32 0.64</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  8 0.64 1.28</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  9 1.28 2.56</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  10 2.56 5.12</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  11 5.12 10.24</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  12 10.24 20.48</FONT></FONT>
+<FONT FACE="Times, serif"><FONT SIZE=3> </FONT></FONT></PRE></td></tr></table><P>
+<FONT FACE="Times, serif"><FONT SIZE=3>SUB-BIN PSD VALUES: </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>The value is passed to the subroutine mies which is responsible for computing of sub bin variation of the PSD. </FONT></FONT>
+</P>
+<UL>
+	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3>0=constant value across the bin </FONT></FONT>
+	</P>
+	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3>1=Linear interpolation between bins (inadequate with bmies since we only consider one bin a once. </FONT></FONT>
+	</P>
+	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3>2=the psd value follows a lognormal distribution dependant on  aerosol models defined in 
+	 WCP-55 report or from Shettle and Fenn (1979). </FONT></FONT>
+	</P>
+	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3>3=proprotionnal
+	to 1/X (moment 0) </FONT></FONT>
+	</P>
+	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3>4=proportionnal
+	to abs(log X)/X (moment 1) </FONT></FONT>
+	</P>
+	<LI><P><FONT FACE="Times, serif"><FONT SIZE=3>9=non zero only for the first sub bin of the bin.  </FONT></FONT>
+	</P>
+</UL>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>The program consider that each bin is K times larger dans the preceeding one ( bin-limit_NB=bin_limit_1*K^(NB-1) where K is an arbitrary constant determined by the user and NB is the bin number.</FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>refractive index definition
+file: NAME.ref.bmi </FONT></FONT>
+</P>
+<table bgcolor="ffffaa"><tr><td>
+<PRE><FONT FACE="Courier, monospace"><FONT SIZE=2>  4                     * NUMBER OF AEROSOL TYPES*</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  7                      * NUMBER OF WAVELENGTH*</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  SEASALT               * AEROSOL TYPE *</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  440 .44 1.5 2.544e-08 * WAVEL.ID,WAVEL.(um),R.REF.IND.,IMM.REF. IND.*</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  500 .50 1.5 1.55e-08</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  550 .55 1.5 1e-08</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  670 .67 1.49 1.0544e-07</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  860 .86 1.48 2.622e-05</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  940 .94 1.476 8.184e-05</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  1020 1.02 1.47 3.146e-04</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  SULFATE               * AEROSOL TYPE *</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  440 .44 1.53 5e-03    * WAVEL.ID,WAVEL.(um),R.REF.IND.,IMM.REF. IND.*</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  500 .50 1.53 5e-03</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  550 .55 1.53 6e-03</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>       .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>       .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>       .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  water</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  440 0.44      1.3373E+0       1.4702E-9</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  500 0.5       1.3345E+0       1.0765E-9</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  550 0.55      1.3330E+0       2.1141E-9</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  670 0.67      1.331422        2.3788E-8</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  860 0.86      1.329036        3.2360E-7</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  940 0.94      1.32783         1.8309E-6</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  1020 1.02     1.326615        3.3905E-6</FONT></FONT></PRE></td></tr></table>
+<P>
+<FONT FACE="Times, serif"><FONT SIZE=3>Typical output file:
+NAME.res.bmi </FONT></FONT>
+</P>
+<table bgcolor="ffffaa"><tr><td><PRE><FONT FACE="Times, serif"><FONT SIZE=3> <FONT SIZE=2><FONT FACE="Courier, monospace">      4      13     7        12                    * # types         , # wavelength, # bins *</FONT></FONT></FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>            SULFATE</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 00   * Relative Humidity (%)*</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>   .44000   .15300E+01   .50000E-02              * Wavelength (um),  mr,  mi             *</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        1   .21166E-06   .90332E-08   .20263E-06 * Bin number     ,   C,  Cs, Ca (um^2)  *</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        2   .22412E-05   .58041E-06   .16608E-05  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        3   .52030E-04   .37510E-04   .14521E-04  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        4   .23650E-02   .22167E-02   .14828E-03  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        5   .73631E-01   .71808E-01   .18237E-02  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        6   .72733E+00   .70988E+00   .17444E-01  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        7   .17288E+01   .15865E+01   .14222E+00  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        8   .71431E+01   .62464E+01   .89671E+00  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        9   .26282E+02   .20850E+02   .54314E+01  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>       10   .10121E+03   .70094E+02   .31115E+02  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>       11   .39558E+03   .23758E+03   .15800E+03  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>       12   .15590E+04   .86697E+03   .69207E+03  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>   .50000   .15300E+01   .50000E-02              * Wavelength (um),  mr,  mi             *</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        1   .18340E-06   .54154E-08   .17798E-06 * Bin number     ,   C,  Cs, Ca (um^2)  *</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        2   .17987E-05   .34768E-06   .14510E-05  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        3   .34911E-04   .22453E-04   .12458E-04  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        4   .15129E-02   .13897E-02   .12317E-03  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        .   </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>       11   .40617E+03   .23058E+03   .17559E+03  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>       12   .15852E+04   .86517E+03   .72007E+03  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>  1.02000   .15200E+01   .15975E-01              * Wavelength (um),  mr,  mi             *</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        1   .27979E-06   .30287E-09   .27949E-06 * Bin number     ,   C,  Cs, Ca (um^2)  *</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        2   .22655E-05   .19398E-07   .22461E-05  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        3   .19536E-04   .12448E-05   .18291E-04  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        4   .23663E-03   .80249E-04   .15638E-03  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        5   .64800E-02   .49535E-02   .15266E-02  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        6   .20477E+00   .18618E+00   .18580E-01  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        7   .25996E+01   .24276E+01   .17207E+00  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        8   .76533E+01   .63188E+01   .13345E+01  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        9   .28077E+02   .20365E+02   .77122E+01  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>       10   .10666E+03   .67208E+02   .39453E+02  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>       11   .40743E+03   .22910E+03   .17832E+03  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>       12   .15886E+04   .86477E+03   .72383E+03  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2> 10   * Relative Humidity (%)*</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>   .44000   .15300E+01   .50000E-02              * Wavelength (um),  mr,  mi             *</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        1   .21166E-06   .90332E-08   .20263E-06 * Bin number     ,   C,  Cs, Ca (um^2)  *</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        2   .22412E-05   .58041E-06   .16608E-05  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        3   .52030E-04   .37510E-04   .14521E-04  </FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        .</FONT></FONT>
+<FONT FACE="Courier, monospace"><FONT SIZE=2>        .    </FONT></FONT></PRE></td></tr></table>
+<P>
+<FONT FACE="Times, serif"><FONT SIZE=3><B><I>Recommandations for
+bmies optical calculations validation.</I></B> </FONT></FONT>
+</P>
+<P><FONT FACE="Times, serif"><FONT SIZE=3>The best way to validate
+the bmies results is to run imies for each bmies size-bin using a
+standard bi-modal log-normal PSD inside the bin as defined by Shettle
+and Fenn (1979). You can also use the uni-modal log-normal PSD
+parameters suggested below from table 4.5 of WCP-55. </FONT></FONT>
+</P>
+<CENTER>
+	<TABLE WIDTH=225 BORDER=1 CELLPADDING=2 CELLSPACING=3>
+		<COL WIDTH=115>
+		<COL WIDTH=45>
+		<COL WIDTH=39>
+		<TR>
+			<TD WIDTH=115>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>species</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=45>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>r (um)</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>sigma</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=115>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>Water soluble</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=45>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.0285</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>2.239</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=115>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>Dust-like</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=45>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.471</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>2.512</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=115>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>Soot</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=45>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.0118</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>2.00</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=115>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>75% H2SO4</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=45>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.0695</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>1.86</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=115>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>Volcanic ash</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=45>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>0.217</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>1.77</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=115>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>Desert dust storm</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=45>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>10.8</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39>
+				<P><FONT FACE="Times, serif"><FONT SIZE=3>2.74</FONT></FONT></P>
+			</TD>
+		</TR>
+	</TABLE>
+</CENTER>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Times, serif"><FONT SIZE=3>You
+have to compute the size parameters equivalent of the size bin
+limits. The size param. is define as <I>X=2 pi r / wavlen</I> where <I>r</I>
+is the particle radius in the same units than the wavelength. </FONT></FONT>
+</P>
+
+</BODY>
+</HTML>

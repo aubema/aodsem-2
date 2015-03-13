@@ -1,0 +1,11 @@
+0 0 0 1 1 2000    begining date
+0 0 0 2 1 2000    ending date
+3    Dynamical time step (hour)
+5    Number of N-S pixels
+10    Number of E-W pixels
+0.5    Pixel size in degrees
+0    Center latitude of the south-west pixel in degrees
+0    Center longitude of the south-west pixel in degrees
+1    Number of ponctual sources
+2 2 100 5000000 10000000 20000000    lat lon height SUflux BCflux OCflux
+0    Activate geia and SS emission

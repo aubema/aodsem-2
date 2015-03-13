@@ -1,0 +1,18 @@
+Nom de la fonction: 3dtoa
+
+Commande d'edition de parametres: oui
+
+Utilite:   Creating aerosol optical depth maps from 3-D aerosol 
+distribution model
+
+Entree: fichier 3dtoaod.par, fichiers .dat (ici numvol_0001.dat), 
+fichier .vis decrivant la position, le nombre et l'orientation des 
+photometres solaires a simuler ainsi que les niveaux verticaux ou 
+horizontaux sur lesquels l'AOD doit etre integree(ici numvol_0001.vis), 
+fichier relhum.index, fichiers d'humidite relative (ici demo1.rhu et 
+demo2.rhu), Fichier de donnees optiques (ici newdemo.res.bmi)
+
+Sortie: Fichier resultat .pgm pour chaque longueur d'onde (ici 
+numvol_0001340_01.pgm par exemple le _01 est pour le profil 
+d'integration numero 1), Fichier .pho de simulation des 
+photometres decrits dans le fichier .vis (ici numvol_0001.pho)

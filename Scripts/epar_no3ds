@@ -1,0 +1,40 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *            Edit parameter for normaliz3ds           *"
+echo " *                                                     *"
+echo " *                     Normalize a                     *"
+echo " *                  AODSEM 3ds format                  *"
+echo " *                                                     *"
+echo " *     Martin Aube 2004                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f normaliz3ds.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more normaliz3ds.par
+fi 
+ls *.3ds
+echo " "
+echo " New parameters:"
+echo " "
+echo "Input root file name (.3ds extension will be added by the script)?"
+read nom0
+
+
+echo "Output root file name (.3ds will be added)?"
+read outf
+echo "Normalizing gain value (output val.=original val x gain)?"
+read gain
+
+echo $nom0".3ds   Input root file name" > normaliz3ds.par
+echo $outf".3ds   Output root file name" >> normaliz3ds.par
+echo $gain "   Normalizing gain value (output val.=original val x gain)" >> normaliz3ds.par
+
+echo "Done"
+
+

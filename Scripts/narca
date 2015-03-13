@@ -1,0 +1,31 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *                       narca                         *"
+echo " *                                                     *"
+echo " *         Convert NARCM AOD file output into          *"
+echo " *                   AODSEM pgm format                 *"
+echo " *                                                     *"
+echo " *     Martin Aube 2002                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+
+rm -f core
+echo " Experiment directory "$folder
+ln -s ~/AODSEM/Bin/narcmaod2aodsem narcmaod2aodsem
+echo " Executing narcmaod2aodsem..."
+
+./narcmaod2aodsem
+echo " Deleting temporary files in " $folder
+rm -f narcmaod2aodsem
+
+if [ -f core ] 
+   then   echo "******** An error occured during execution of narca! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of narca." 
+fi 

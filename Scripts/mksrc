@@ -1,0 +1,54 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                    mksrc                     *"
+echo "*                                              *"
+echo "*         Create aerosol 3d distribution       *"
+echo "*     corresponding to emission injections     *"
+echo "*      for each time step of a AODSEM run.     *"
+echo "*                                              *"
+echo "*     Martin Aube 2003                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+if [ -f makesource.par ] 
+   then
+      echo " Reading parameter file."  
+   else
+      echo " No parameter file found!"
+      epar_mksrc
+fi 
+ln -s ~/AODSEM/Bin/makesource makesource
+ln -s ~/AODSEM/Nesfiles/land-sea.pbm land-sea.pbm
+ln -s ~/AODSEM/Nesfiles/humout humout
+cd $HOME/AODSEM/Nesfiles/
+l3ds=`ls -1 *.3ds |sed 's/@/ /g' | sed 's/*/ /g'`
+cd $folder
+for i in $l3ds
+do if [ -f $i ]
+   then echo "Skipping download of file: " $i
+   else  echo "Downloading " $i
+         ln -s $HOME/AODSEM/Nesfiles/$i .
+   fi
+done
+
+echo " Executing makesource..."
+./makesource
+echo " Deleting temporary files in " $folder
+rm -f makesource
+rm -f land-sea.pbm
+rm -f humout
+
+
+if [ -f core ] 
+   then   echo "******** An error occured during execution of mksrc! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of mksrc." 
+fi 
+

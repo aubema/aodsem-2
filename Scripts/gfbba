@@ -1,0 +1,28 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                    gfbba                     *"
+echo "*                                              *"
+echo "*   multiple gaussian and polynomial fitting   *"
+echo "*               interactive mode               *"
+echo "*                                              *"
+echo "*     Martin Aube 2004                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+
+ln -s $HOME/AODSEM/Bin/gfb .
+./gfb
+rm -f gfb
+if [ -f core ] 
+   then   echo "******** An error occured during execution of gfbba! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of epar_gfbba." 
+fi 
+exit 0

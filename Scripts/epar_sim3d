@@ -1,0 +1,46 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *           Edit parameter for simarit3d              *"
+echo " *                                                     *"
+echo " *              Compute aritmetics on an               *"
+echo " *             aerosol 3D distribution                 *"
+echo " *                                                     *"
+echo " *     Martin Aube 2001                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f simarit3d.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more simarit3d.par
+fi 
+ls *.dat
+echo " "
+echo " New parameters:"
+echo " "
+echo "Root name of file (.dat will be added)?"
+read nom1
+echo "Choose an operation:"
+echo " "
+echo "   1 ..... +"
+echo "   2 ..... -"
+echo "   3 ..... x"
+echo "   4 ..... /"
+read oper
+
+echo "Numerical value?"
+read value
+echo "Output root file name (.dat will be added)?"
+read nom3
+
+
+echo $nom1 "   Root name of file" > simarit3d.par
+echo $oper "   Operation" >> simarit3d.par
+echo $value "   Numerical value" >> simarit3d.par
+echo $nom3 "   Output root file name" >> simarit3d.par
+echo $neg "   1=set negative values to 0" >> simarit3d.par
+echo "Done"

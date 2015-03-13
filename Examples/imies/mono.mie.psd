@@ -1,0 +1,7 @@
+ 1 ** size distribution type **
+  0.12 ** dX constant increment (99999=variable) **
+ 1 ** Number of bins **
+ 0 ** Interpolation (0=terrasse, 1=linear, 9=discret **
+  0.55 ** Wavelength in microns **
+  12.  1. ** X, Psd **
+  12.12 ** last X **

@@ -1,0 +1,42 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *             Edit parameter for diffusio             *"
+echo " *                                                     *"
+echo " *        Make a diffusiogram from two aerosol         *"
+echo " *               optical depth pgm maps                *"
+echo " *                                                     *"
+echo " *     Martin Aube 2000                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f diffusio.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more diffusio.par
+fi 
+ls *.pgm
+echo " "
+echo " Output root file name (.cxy will be added)"
+read out
+echo " Root name of observation file (.pgm will be added)?"
+read obs
+echo " Root name of model results file (.pgm will be added)?"
+read model
+echo " Width of the buffer zone (in pixel)?"
+read buff
+
+
+
+
+
+
+echo $out "   Output file" > diffusio.par
+echo $obs "   AOD reference file" >> diffusio.par
+echo $model "   AOD comparison file" >> diffusio.par
+echo $buff "   Buffer zone width" >> diffusio.par
+
+echo "Done"

@@ -1,0 +1,11 @@
+Nom de la fonction: cmbps
+
+Commande d'edition de parametres: non
+
+Utilite: Sommer deux fichier de PSD .mie.psd
+
+Entree: Fichiers .mie.psd (ici psd1.mie.psd et psd2.mie.psd)
+
+Sortie: Fichier .mie.psd resultant (ici pds1+2.mie.psd).
+
+

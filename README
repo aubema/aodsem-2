@@ -1,0 +1,49 @@
+AODSEM  (Aerosol Optical Depth Spatiotemporal Evolution Model)
+
+28-01-2000
+
+general package description
+
+The purpose of AODSEM package is to provide a set of tools to work with
+ optical properties from a 3-d distribution of aerosol.  The package is
+designed for a unix system environnement.  All the programs are written in
+FORTRAN 77.  Each program can be used separately but it is preferable to take
+advantage of the shell scripts (e.g. aodto, 3dtoa, dynam, etc.).  Those
+scripts allow the execution of any program from any working directory.  All
+the necessary files will be managed by those scripts.  To install AODSEM, the
+user may first add the following path line (PATH=...:$HOME/AODSEM/Scripts) in
+his .profile file situated in his home directory.   Finally the AODSEM
+directory as to be copied in the home directory of the user. 
+
+- The package can convert a 3-d multiple size-type aerosol number density 
+distribution into an aerosol optical depth map for a given set of wavelength.
+It can also simulate sunphotometer observation in a specific line of sight. 
+It is  also possible to convert a set of aerosol optical depth measurements
+into a 3-d distribution.  This is done by first interpolate the data to obtain
+a complete aerosol optical depth (aod) map.  Then the program uses simple
+aerosol model and vertical profiles to convert the aod map into a 3-d
+distribution.  The 13 models used (from a combination of oceanic, rural, urban
+models) are chosen from a 1x1 degres world land-sea mask and a 1x1 degres
+fossil fuel Black Carbon emission (BC) mask (the latest from GEIA inventory).
+
+The user can also produce an aerosol extinction cross-section file for many 
+aerosol types, wavelength, and relative humidity.  The relative humidity
+growing factor can also be computed.
+
+Finally the user may compute the temporal variation of the aerosol optical 
+depth using a semi Lagrangian-Eulerian advection and deposition model or a
+data assimilatio system.
+
+You can find a description of functions in html format in the AODSEM/Doc 
+directory or simply accessed to it by entering infor in a terminal window.
+
+---
+Martin Aube
+Centre d'applications et de recherches en teledetection (CARTEL),
+Universite de Sherbrooke,
+Sherbrooke, Quebec, Canada J1K 2R1
+tel. (819)-821-8000 ext 1904, (819)-820-9702 
+Email: martin.aube@altavista.net
+http://www.callisto.si.usherb.ca/~85675489/
+
+

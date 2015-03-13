@@ -1,0 +1,9 @@
+ 7  ** type de distribution de taille **
+ 99999.0000000000000  ** Increment dX constant (99999=variable) **
+ 4  ** nombre de bins de la distribution **
+ 1.00000000000000000  ** longueur d onde en microns **
+ 0.00000001 1.  ** X, Psd **
+ 3. 2.  ** X, Psd **
+ 4. 0.  ** X, Psd **
+ 5. 3.  ** X, Psd **
+ 7.  ** X final **

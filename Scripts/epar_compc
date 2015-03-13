@@ -1,0 +1,48 @@
+#!/bin/bash
+echo " *******************************************************"
+echo " *                                                     *"
+echo " *            Edit parameter for compcolor             *"
+echo " *                                                     *"
+echo " *              Create a color composite               *"
+echo " *               from up to 3 pgm files                *"
+echo " *                                                     *"
+echo " *     Martin Aube 2001                                *"
+echo " *                                                     *"
+echo " *******************************************************"
+echo " "
+folder=`pwd`
+echo " Experiment directory "$folder
+echo " "
+if [ -f compcolor.par ] 
+   then   echo " Actual parameters set to:"
+          echo " "
+          more compcolor.par
+fi 
+ls *.pgm
+echo " "
+echo " New parameters:"
+echo " "
+
+echo "Root name of red layer file (.pgm will be added, 0=no image)?"
+read nom1
+echo "Offset and gain (result=value*gain+offset)?"
+read offset1 gain1
+echo "Root name of green layer file (.pgm will be added, 0=no image)?"
+read nom2
+echo "Offset and gain (result=value*gain+offset)?"
+read offset2 gain2
+echo "Root name of blue layer file (.pgm will be added, 0=no image)?"
+read nom3
+echo "Offset and gain (result=value*gain+offset)?"
+read offset3 gain3
+echo "Draw geographical mask (1=yes, 0=no)?"
+read geomsk
+
+echo $nom1 "   Root name of file #1 .pgm will be added" > compcolor.par
+echo $offset1 $gain1 "offset gain" >> compcolor.par
+echo $nom2 "   Root name of file #2 .pgm will be added" >> compcolor.par
+echo $offset2 $gain2 "offset gain" >> compcolor.par
+echo $nom3 "   Root name of file #3 .pgm will be added" >> compcolor.par
+echo $offset3 $gain3 "offset gain" >> compcolor.par
+echo $geomsk "  draw geo mask" >> compcolor.par
+echo "Done"

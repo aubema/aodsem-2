@@ -1,0 +1,12 @@
+Nom de la fonction: buffe
+
+Commande d'edition de parametres: oui
+
+Utilite:  Appliquer un masque-eponge sur le pourtour d'une image d'AOD .pgm
+
+Entree: Fichier .pgm d'AOD (ici aod_0001.pgm)
+
+Sortie: Fichier .pgm (ici meme nom que le fichier d'entree) ou le masque
+prend la valeur numerique 254 (dans ce exemple,une eponge de 2 pixel a
+ete appliquee)
+

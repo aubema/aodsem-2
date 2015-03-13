@@ -1,0 +1,42 @@
+#!/bin/bash
+echo "************************************************"
+echo "*                                              *"
+echo "*                   reada                      *"
+echo "*                                              *"
+echo "*     Read aerosol optical depth map value     *"
+echo "*        for some particular locations         *"
+echo "*                                              *"
+echo "*     Martin Aube 2000                         *"
+echo "*                                              *"
+echo "************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo " Experiment directory "$folder
+ls *.pgm
+if [ -f readaod.par ] 
+   then
+      echo " Reading parameter file."  
+   else
+      echo " No parameter file found!"
+      epar_reada
+fi 
+echo " Preparing input files..."
+ln -s ~/AODSEM/Bin/readaod readaod 
+echo " Executing readaod..."
+./readaod
+echo " Output file name ?"
+read output
+cp readaod.res $output
+echo " Deleting temporary files in " $folder
+rm -f readaod
+rm -f readaod.res
+if [ -f core ] 
+   then   echo "******** An error occured during execution of reada! ********"
+   rm -f core
+   echo "Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo " Normal end of reada." 
+fi
+

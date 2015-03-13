@@ -1,0 +1,39 @@
+#!/bin/bash
+echo "inter == ************************************************"
+echo "inter == *                                              *"
+echo "inter == *                   inter                      *"
+echo "inter == *                                              *"
+echo "inter == *      Aerosol optical depth map optimal       *"
+echo "inter == *           interpolation algorithm            *"
+echo "inter == *                                              *"
+echo "inter == *     Martin Aube 2000                         *"
+echo "inter == *                                              *"
+echo "inter == ************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo "inter == Experiment directory "$folder
+if [ -f interp.par ] 
+   then
+      echo "inter == Reading parameter file."
+      echo "inter == Parameter file content"
+      cat interp.par  
+   else
+      echo "inter == No parameter file found!"
+      epar_inter
+fi 
+echo "inter == Preparing input files..."
+ln -s ~/AODSEM/Bin/interp interp
+echo "inter == Executing interp..."
+./interp
+echo "inter == Deleting temporary files in " $folder
+rm -f interp
+if [ -f core ] 
+   then   echo "inter == ******** An error occured during execution of inter! ********"
+   rm -f core
+   echo "inter == Hit <CTRL-c> or <CRTL-z> to kill that process"
+   read bidon
+else
+  echo "inter == Normal end of inter." 
+fi 
+

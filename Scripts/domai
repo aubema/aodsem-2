@@ -1,0 +1,36 @@
+#!/bin/bash
+echo "domai == ************************************************"
+echo "domai == *                                              *"
+echo "domai == *                     domai                    *"
+echo "domai == *                                              *"
+echo "domai == *         Determine domain properties          *"
+echo "domai == *                                              *"
+echo "domai == *                                              *"
+echo "domai == *     Martin Aube 2003                         *"
+echo "domai == *                                              *"
+echo "domai == ************************************************"
+echo " "
+folder=`pwd`
+rm -f core
+echo "domai == Experiment directory "$folder
+echo
+echo "domai == Spatial resolution in 1/100 th degrees?"
+read pixsiz
+echo "domai == Number of N-S grid points?"
+read nlat
+echo "domai == Number of E-W grid points?"
+read nlon
+echo "domai == SW grid point latitude?"
+read lat0
+echo "domai == SW grid point longitude?"
+read lon0
+
+#
+# ecrire les donnees dans le fichier domain.par
+#
+
+echo $pixsiz $nlat $nlon $lat0 $lon0 > domain.par
+
+echo "domai == Normal end of domai." 
+ 
+
